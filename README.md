@@ -120,7 +120,7 @@ The reasons are shown in plain Spanish. The rules' level stays visible: the fail
 
 - **93 rules from 15 primary sources**, each downloaded and read before writing the rules that use it: WHO/UNICEF IMCI 2014 and the 2019 young-infant booklet, WHO/UNICEF *Caring for the sick child in the community* (iCCM), NOM-031-SSA2-1999 (child health), NOM-007-SSA2-2016 (pregnancy, birth, newborn), IMSS GPC prenatal care, WHO PCPNC 2015, PAHO dengue algorithms 2020, WHO/ICRC/MSF IITT (adult and paediatric), CDC stroke and heart-attack, NICE NG143, WHO diarrhoea manual 2005, WHO mhGAP 2.0 (suicide risk) and IMSS measles.
 - Each rule is marked **verbatim** or **adapted**, with the page and a short quote. The rule-to-source table is generated from the code: [`docs/clinical-sources.md`](docs/clinical-sources.md).
-- Where sources disagree, we chose the more cautious level and listed the conflict as **[DECIDIR]** (31 mentions) for the physician.
+- Where sources disagree, the team made a provisional recommendation for each of the 19 open decisions using written principles (Mexican NOM first; community-level guideline over clinic-level; the more protective level only when that source applies to community care). See `docs/decisiones-clinicas.md`; all are pending the physician's review.
 - **Pending review by a physician: Dra. Ines.** Until she signs off, nothing here should be called "clinically validated".
 - **Out of scope:** dosing and treatment, chronic disease, scorpion stings (the NOM was cancelled; no current source yet), malaria, ear infections, TB, anything needing labs or vital-sign devices.
 
@@ -236,7 +236,7 @@ On the phone, enter the enrollment token in **Ajustes → Envío al centro de sa
 ## Limitations & what's next
 
 **Known limitations**
-- **Clinical review pending.** 31 [DECIDIR] points await the physician. Known gaps:
+- **Clinical review pending.** 19 provisional clinical decisions (`docs/decisiones-clinicas.md`) await the physician. Known gaps:
   - An adult with fever for 7+ days gets "Atender aquí" (the prolonged-fever rule covers children under 5 only).
   - Ear pain or discharge has no rule; it only triggers the fail-safe.
   - Adult "no danger signs" results cite the child rule `IMCI-NOSIGNS-01`.
@@ -253,7 +253,7 @@ On the phone, enter the enrollment token in **Ajustes → Envío al centro de sa
 - Náhuatl UI is 4 words; no Náhuatl voice. The UI copy mixes *tú* and *usted*.
 
 **Next**
-1. Physician sign-off on the [DECIDIR] list, and fixes for the clinical gaps above.
+1. Physician sign-off on the provisional decisions in `docs/decisiones-clinicas.md`, and fixes for the clinical gaps above.
 2. **test_v3** from outside the team: physician-written vignettes, then consented, anonymised promotora transcripts.
 3. Field pilot with promotoras in the Sierra Norte de Puebla: vocabulary, fail-safe noise, real-phone latency.
 4. Per-phone enrollment keys (revocable), encryption at rest, shared rate limit.

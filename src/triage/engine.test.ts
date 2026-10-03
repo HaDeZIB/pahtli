@@ -232,9 +232,16 @@ describe('umbrales de edad y respiración (AIEPI)', () => {
     expect(triage(F({ tos: true, respira_rapido: true }, { edad_meses: 24 })).level).toBe('centro_hoy');
     expect(ids(F({ tos: true, respira_rapido: true }, { edad_meses: 24, resp_por_min: 30 }))).toEqual([]);
   });
-  it('temperatura del lactante: 37.5 sí, 37.4 no; <35.5 hipotermia', () => {
-    expect(ids(F({}, { edad_meses: 1, temperatura_c: 37.5 }))).toContain('IMCI-YI-04');
+  it('temperatura del lactante (decisión provisional #1): >=38 urgencia; 37.5–37.9 centro hoy; 37.4 nada; <35.5 hipotermia', () => {
+    expect(ids(F({}, { edad_meses: 1, temperatura_c: 38 }))).toContain('IMCI-YI-04');
+    expect(triage(F({}, { edad_meses: 1, temperatura_c: 38 })).level).toBe('urgencia');
+    expect(ids(F({}, { edad_meses: 1, temperatura_c: 37.9 }))).not.toContain('IMCI-YI-04');
+    expect(ids(F({}, { edad_meses: 1, temperatura_c: 37.5 }))).toContain('IITT-Y-YI-01');
+    expect(triage(F({}, { edad_meses: 1, temperatura_c: 37.5 })).level).toBe('centro_hoy');
     expect(ids(F({}, { edad_meses: 1, temperatura_c: 37.4 }))).not.toContain('IMCI-YI-04');
+    expect(ids(F({}, { edad_meses: 1, temperatura_c: 37.4 }))).not.toContain('IITT-Y-YI-01');
+    // La calentura referida sigue siendo urgencia aunque no haya termómetro (NOM-007 5.6.1.9).
+    expect(triage(F({ fiebre: true }, { edad_meses: 1 })).level).toBe('urgencia');
     expect(ids(F({}, { edad_meses: 1, temperatura_c: 35.5 }))).not.toContain('IMCI-YI-05');
   });
   it('movimientos fetales: antes de 28 semanas no dispara; semanas desconocidas sí (conservador)', () => {
@@ -453,9 +460,26 @@ describe('regresiones del fact-check clínico (oct-2026)', () => {
     expect(ids(F({ fiebre: true, sarpullido: true, adenomegalias: true }, { edad_meses: years(20) }))).toContain('IMCI-MEAS-01');
   });
 
-  it('quejido → urgencia; aleteo nasal → centro hoy (<5 años)', () => {
+  it('quejido → urgencia; aleteo nasal → urgencia (<5 años, IITT rojo; decisión provisional #12)', () => {
     expect(lvl(F({ quejido: true }, { edad_meses: 18 }))).toBe('urgencia');
-    expect(lvl(F({ aleteo_nasal: true }, { edad_meses: 18 }))).toBe('centro_hoy');
+    expect(lvl(F({ aleteo_nasal: true }, { edad_meses: 18 }))).toBe('urgencia');
+  });
+
+  it('IITT-R-NEURO-01 en ≥12 años (decisión provisional #14): fiebre + dolor de cabeza solos no bastan', () => {
+    expect(ids(F({ fiebre: true, dolor_cabeza: true }, { edad_meses: years(30) }))).not.toContain('IITT-R-NEURO-01');
+    expect(ids(F({ fiebre: true, dolor_cabeza_intenso: true }, { edad_meses: years(30) }))).not.toContain('IITT-R-NEURO-01');
+    // Dengue típico del adulto → centro hoy (PAHO-DEN-03), ya no urgencia.
+    expect(lvl(F({ fiebre: true, dolor_cabeza: true, dolor_muscular_articular: true }, { edad_meses: years(30) }))).toBe('centro_hoy');
+    // Con alteración mental o cuello tieso sí dispara.
+    expect(ids(F({ fiebre: true, confusion: true }, { edad_meses: years(30) }))).toContain('IITT-R-NEURO-01');
+    expect(ids(F({ dolor_cabeza: true, rigidez_nuca: true }, { edad_meses: years(30) }))).toContain('IITT-R-NEURO-01');
+    expect(ids(F({ dolor_cabeza: true, letargico: true }, { edad_meses: years(30) }))).toContain('IITT-R-NEURO-01');
+    // Edad desconocida: aplica la rama pediátrica (alteración mental + fiebre) y la adulta exige el mismo signo mayor.
+    expect(ids(F({ fiebre: true, dolor_cabeza: true }))).not.toContain('IITT-R-NEURO-01');
+    // Y el motor sigue preguntando por cuello tieso / confusión cuando hay fiebre + dolor de cabeza.
+    // (la app hace hasta 4 preguntas: MAX_FOLLOWUP_QUESTIONS)
+    const q = followUpQuestions(F({ fiebre: true, dolor_cabeza: true }, { edad_meses: years(30) }), 'aqui', 4).map((x) => x.campo);
+    expect(q.some((c) => ['rigidez_nuca', 'letargico', 'confusion'].includes(c))).toBe(true);
   });
 
   it('adulto con diarrea y deshidratación ya no sale "aquí" (OMS 2005 tabla 1)', () => {

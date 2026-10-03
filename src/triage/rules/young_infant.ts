@@ -1,5 +1,5 @@
 import type { Rule } from './types';
-import { anyComplaint, anyOf, days, has, hasFever, isNum, isPostpartum, isPregnant, knownAge } from './helpers';
+import { anyComplaint, anyOf, days, has, isNum, isPostpartum, isPregnant, knownAge } from './helpers';
 import { CITE, SRC } from './sources';
 
 /** Lactante menor de 2 meses: estas reglas exigen edad CONOCIDA (< 2 meses). */
@@ -40,7 +40,7 @@ export const YOUNG_INFANT_RULES: Rule[] = [
     applies: (f) => YI(f) && (f.edad_meses as number) >= days(7) && isNum(f.resp_por_min) && f.resp_por_min >= 60,
     explicacion: { es: 'Bebé de 7 a 59 días con respiración rápida (60 o más por minuto).', nah: '' },
     accion: {
-      es: 'Llevar HOY a la unidad de salud (necesita antibiótico y revisión en 3 días). Mantenerlo calientito y con pecho. Si aparece cualquier otro signo de peligro: URGENCIA.',
+      es: 'Según la OMS 2019 se trata en la unidad de salud, pero la NOM-031 cuenta "menor de dos meses" como factor de mal pronóstico y manda al hospital (ver NOM031-IRA-03): seguir la indicación URGENTE. Mantenerlo calientito y con pecho.',
       nah: '',
     },
     fuente: `${CITE.IMCI_YI_2019}, p. 1 impresa / p. 5 del PDF ("Fast breathing (60 breaths per minute or more) in infants 7–59 days old" → PNEUMONIA, amoxicilina oral, control en 3 días)`,
@@ -52,13 +52,15 @@ export const YOUNG_INFANT_RULES: Rule[] = [
     id: 'IMCI-YI-04',
     block: 'young_infant',
     level: 'urgencia',
-    applies: (f) => YI(f) && hasFever(f),
-    explicacion: { es: 'Bebé menor de 2 meses con fiebre (calentura o 37.5 °C o más en la axila).', nah: '' },
+    // Decisión provisional #1 (docs/decisiones-clinicas.md): umbral medido >= 38 °C (NOM-031 3.33 + IMCI 2019).
+    // La calentura referida por la familia sigue disparando (NOM-007 5.6.1.9: "fiebre" sin umbral). 37.5–37.9 °C medido → piso IITT-Y-YI-01.
+    applies: (f) => YI(f) && (has(f, 'fiebre') || (isNum(f.temperatura_c) && f.temperatura_c >= 38)),
+    explicacion: { es: 'Bebé menor de 2 meses con fiebre (calentura referida o 38 °C o más en la axila).', nah: '' },
     accion: { es: `${REFER_YI} No abrigar de más si está muy caliente.`, nah: '' },
-    fuente: `${CITE.IMCI_2014}, p. 45 del PDF ("Fever (37.5°C or above)" → VERY SEVERE DISEASE, refer URGENTLY); ${CITE.IMCI_YI_2019}, p. 1 impresa / p. 5 del PDF (umbral actualizado: 38 °C o más); ${CITE.NOM_007}, num. 5.6.1.9 (fiebre del recién nacido amerita atención urgente)`,
-    fuente_url: SRC.IMCI_2014,
+    fuente: `${CITE.NOM_031}, num. 3.33 ("Fiebre… arriba de 38.0ºC"); ${CITE.IMCI_YI_2019}, p. 1 impresa / p. 5 del PDF ("High body temperature (38°C* or above)" → POSSIBLE SERIOUS BACTERIAL INFECTION, refer URGENTLY); ${CITE.NOM_007}, num. 5.6.1.9 ("fiebre" de la persona recién nacida, sin umbral, "amerita atención médica urgente")`,
+    fuente_url: SRC.IMCI_YI_2019,
     needs: ['fiebre', 'temperatura_c', 'edad_meses'],
-    // adaptado: el IMCI 2014 (>=37.5) y el 2019 (>=38) no coinciden; además dispara con calentura referida.
+    // adaptado: además del umbral medido, dispara con calentura referida (la promotora a menudo no tiene termómetro).
     fidelidad: 'adaptado',
   },
   {
@@ -184,13 +186,15 @@ export const YOUNG_INFANT_RULES: Rule[] = [
     level: 'centro_hoy',
     // Piso para el lactante enfermo: la promotora no puede completar la exploración del AIEPI del lactante
     // (temperatura axilar, respiraciones, tiraje grave, movimiento), así que "infección poco probable" no aplica.
-    applies: (f) => YI(f) && !isPregnant(f) && !isPostpartum(f) && anyComplaint(f),
-    explicacion: { es: 'Bebé menor de 2 meses con alguna molestia: a esta edad lo debe revisar personal de salud el mismo día.', nah: '' },
+    // También con temperatura medida de 37.5 a 37.9 °C (decisión provisional #1): el IMCI 2014 (p. 45) la consideraba fiebre; no se deja en "aquí".
+    applies: (f) =>
+      YI(f) && !isPregnant(f) && !isPostpartum(f) && (anyComplaint(f) || (isNum(f.temperatura_c) && f.temperatura_c >= 37.5)),
+    explicacion: { es: 'Bebé menor de 2 meses con alguna molestia o temperatura de 37.5 °C o más: a esta edad lo debe revisar personal de salud el mismo día.', nah: '' },
     accion: {
       es: 'Llevar HOY a la unidad de salud. Mantenerlo calientito y seguir con el pecho. Si no come, está frío o caliente, respira con dificultad o casi no se mueve: URGENCIA.',
       nah: '',
     },
-    fuente: `${CITE.IITT} pediátrico (<12 años), criterio amarillo "Any infant 8 days to 6 months old"; ${CITE.ICCM}, p. 3 (el AIEPI comunitario cubre de 2 meses a 5 años; "any condition you cannot manage → Refer child to health facility")`,
+    fuente: `${CITE.IITT} pediátrico (<12 años), criterio amarillo "Any infant 8 days to 6 months old"; ${CITE.IMCI_2014}, p. 45 del PDF ("Fever (37.5°C or above)", umbral anterior al de 2019); ${CITE.ICCM}, p. 3 (el AIEPI comunitario cubre de 2 meses a 5 años; "any condition you cannot manage → Refer child to health facility")`,
     fuente_url: SRC.IITT_PED,
     needs: ['edad_meses'],
     fidelidad: 'adaptado',

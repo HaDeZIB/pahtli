@@ -1,0 +1,109 @@
+# Decisiones clínicas provisionales de Pahtli
+
+> **Para:** Dra. Ines (revisión clínica).
+> **Estado de TODAS las decisiones: provisional — pendiente de revisión Dra. Ines.** El equipo trabaja con estas recomendaciones hasta que usted indique cambios.
+> **Fecha:** 3 de octubre de 2026. Resuelve los 20 puntos marcados [DECIDIR] en `docs/clinical-sources.md` (sección 4.1). Los puntos 4 y 14 de esa sección eran la misma pregunta y aquí son una sola decisión (#2), así que hay **19 decisiones**.
+> Cada decisión cita la fuente que sigue. Los textos se volvieron a verificar en los PDF originales (texto extraído) el 3-oct-2026. No se inventó ningún criterio.
+
+## Principios con los que decidimos
+
+1. **Contexto de la usuaria.** Una promotora en una comunidad rural, a veces a horas de un hospital, sin habilidades de exploración clínica, sin oxígeno ni laboratorio. El sub-triaje cuesta mucho más que el sobre-triaje, **pero** el sobre-triaje excesivo destruye la confianza y satura el centro de salud. Por eso escalamos **cuando la fuente lo respalda** o cuando la guía de nivel comunitario (AIEPI comunitario/ICCM, NOM de primer nivel) es más estricta que la de clínica. Preferimos la versión comunitaria o de primer nivel de una guía sobre la versión de clínica.
+2. **La NOM manda.** Si una Norma Oficial Mexicana y una guía internacional no coinciden, gana la NOM, salvo que la NOM esté claramente desactualizada y la OMS sea más reciente **y** más protectora.
+3. **Entre dos fuentes en conflicto** se elige el nivel más protector solo si la fuente más protectora es aplicable al entorno comunitario.
+4. **Toda decisión cita su fuente.** Nada de criterios inventados.
+
+**Equivalencia de niveles** (sin cambio, `docs/clinical-sources.md` §1): `urgencia` = traslado inmediato al hospital; `centro_hoy` = acudir hoy, lo antes posible, a la unidad de salud; `aqui` = cuidados en casa con signos para regresar. Convención del proyecto: "acuda urgentemente a la unidad de salud" (NOM-031) = `centro_hoy`; "envío inmediato a un hospital" (NOM-031) o "refer URGENTLY" (AIEPI) = `urgencia`.
+
+## Resumen
+
+| Resultado | Decisiones |
+|---|---|
+| **Cambian el código** (3) | #1 fiebre del lactante: umbral medido 38 °C · #12 aleteo nasal → `urgencia` · #14 fiebre + dolor de cabeza en ≥12 años ya no es `urgencia` sola |
+| Se mantiene lo que ya hacía el motor (16) | #2–#11, #13, #15–#19 |
+| Etiquetas de eval cambiadas | Ninguna. D35 (dengue típico del adulto) ya da el nivel esperado (`centro_hoy`) por la decisión #14. |
+
+---
+
+## Las 5 que más importan
+
+Son las que más cambian qué pacientes salen de la comunidad. Le pedimos que las revise primero.
+
+| # | Regla(s) | La pregunta | NUESTRA RECOMENDACIÓN | Fuente que sigue | Impacto | Estado |
+|---|---|---|---|---|---|---|
+| **14** | `IITT-R-NEURO-01` | En ≥12 años, ¿fiebre + dolor de cabeza solos son `urgencia` (lectura literal del IITT)? | **CAMBIO: No.** En ≥12 años la combinación debe incluir alteración mental (confusión, muy dormido) **o** cuello tieso. Fiebre + dolor de cabeza solos → lo decide la regla de dengue (`centro_hoy` si es caso sospechoso) o `aqui` con signos de alarma. El motor sigue preguntando por cuello tieso y confusión. | OPS, Algoritmos dengue 2020, p. 6–7 (fiebre + cefalea + otra manifestación, sin signos de alarma = dengue sin signos de alarma: "Primer nivel. Manejo ambulatorio"). El IITT es triaje **dentro** de un servicio de urgencias (su rojo significa "pasar a reanimación" estando ya en el hospital), no un protocolo de referencia comunitaria: por el principio 3 no se adopta su lectura más protectora en este punto. | **Menos sobre-triaje** (casi todo dengue típico del adulto salía `urgencia`). Riesgo: meningitis del adulto sin rigidez ni alteración mental al momento de la visita; mitigado por las preguntas de seguimiento y por los signos de regreso. | provisional — pendiente de revisión Dra. Ines |
+| **10** | `NOM031-IRA-03` | Neumonía leve (respiración rápida contada) + "dificultad para trasladarse a una unidad de salud" → ¿`urgencia`? | **Mantener `urgencia`.** Se mantiene la pregunta "¿Es difícil llevarlo HOY a la unidad de salud (queda lejos o no hay transporte)?". | NOM-031-SSA2-1999, num. 3.32 (factores de mal pronóstico, incluye "dificultad para trasladarse a una unidad de salud") y 8.2.5.3 (Plan C: "Envío inmediato a un hospital"). Principio 2: la NOM manda; el ICCM la trata en casa con amoxicilina, que la promotora en México no da. | **Menos sub-triaje.** Más sobre-triaje: en la práctica casi toda neumonía leve rural será `urgencia`, como dice la NOM. Si en campo satura, la palanca es la redacción de la pregunta, no el criterio. | provisional — pendiente de revisión Dra. Ines |
+| **1** | `IMCI-YI-04`, `IITT-Y-YI-01` | Fiebre en el lactante menor de 2 meses: ¿umbral 37.5 °C (IMCI 2014) o 38 °C (IMCI 2019)? | **CAMBIO: temperatura medida ≥38 °C → `urgencia`.** 37.5–37.9 °C medido → `centro_hoy` (piso del lactante, ya no puede salir `aqui`). **La calentura referida por la familia sigue siendo `urgencia`**, con o sin termómetro (si la familia dice "calentura de 37.8", el extractor marca fiebre y sale `urgencia`). | NOM-031-SSA2-1999, num. 3.33 ("Fiebre… arriba de 38.0ºC") + OMS, AIEPI lactante 2019, p. 5 del PDF ("High body temperature (38°C* or above)"). Principio 2: NOM y OMS más reciente coinciden. La calentura referida: NOM-007 5.6.1.9 ("fiebre" sin umbral). El 37.5 del IMCI 2014 se conserva solo como piso `centro_hoy`. | **Menos sobre-triaje** en el caso raro de 37.5–37.9 medido sin queja de "calentura". Sub-triaje acotado: nunca baja de `centro_hoy`. | provisional — pendiente de revisión Dra. Ines |
+| **5** | `IITT-Y-YI-01`, `IITT-R-NEONATE-01` | Lactante <2 meses con cualquier molestia: ¿piso `centro_hoy`? ¿Y `urgencia` si tiene menos de 8 días? | **Mantener:** <2 meses con alguna molestia → `centro_hoy`; <8 días con alguna molestia → `urgencia`. Se acepta que la ictericia fisiológica de los días 2–7 salga `urgencia`. | IITT pediátrico: rojo "Any infant <8 days old", amarillo "Any infant 8 days to 6 months old". El AIEPI comunitario (ICCM, p. 3) solo cubre de 2 meses a 5 años y el verde del AIEPI del lactante exige una exploración (temperatura, respiraciones, tiraje grave, movimiento) que la promotora no puede completar. Para la ictericia en la primera semana la NOM-007 5.6.1.9 también la lista como signo que "amerita atención médica urgente". | **Menos sub-triaje** en la edad de mayor riesgo. Sobre-triaje aceptado (ictericia fisiológica, molestias menores del recién nacido). | provisional — pendiente de revisión Dra. Ines |
+| **12** | `NICE-RESP-01`, `NICE-RESP-02` | Menores de 5 años: quejido → `urgencia`; aleteo nasal → ¿`centro_hoy` (NICE, ámbar) o `urgencia`? | Quejido: **mantener `urgencia`.** Aleteo nasal: **CAMBIO → `urgencia`.** | IITT pediátrico, rojo "Respiratory distress*"; la tarjeta de referencia del IITT define los signos de dificultad respiratoria del niño: "Nasal flaring, grunting", uso de músculos accesorios (tiraje), respiración muy rápida, no puede hablar, comer o mamar. NICE NG143 pone el aleteo en ámbar. Principio 3: el más protector es aplicable porque en la comunidad no hay oxímetro ni oxígeno para descartar hipoxemia. | **Menos sub-triaje** de neumonía con hipoxemia. Más sobre-triaje leve (el aleteo referido es poco frecuente sin enfermedad respiratoria real). | provisional — pendiente de revisión Dra. Ines |
+
+---
+
+## Todas las decisiones, por bloque
+
+### A. Lactante menor de 2 meses
+
+| # | Regla(s) | La pregunta | Opciones | NUESTRA RECOMENDACIÓN | Fuente que sigue | Impacto | Estado |
+|---|---|---|---|---|---|---|---|
+| 1 | `IMCI-YI-04`, `IITT-Y-YI-01` | Umbral de fiebre en <2 meses | (a) 37.5 °C → urgencia; (b) 38 °C → urgencia | **(b) + piso:** ≥38 °C medido o calentura referida → `urgencia`; 37.5–37.9 °C medido → `centro_hoy`. **Cambia el código.** | NOM-031 3.33 ("arriba de 38.0ºC"); AIEPI lactante 2019 p. 5 ("38°C* or above"); NOM-007 5.6.1.9 (fiebre referida) | Menos sobre-triaje; nunca baja de `centro_hoy` | provisional — pendiente de revisión Dra. Ines |
+| 2 | `IMCI-YI-03`, `NOM031-IRA-03` | Respiración rápida (≥60) en bebés de 7 a 59 días: ¿`centro_hoy` (IMCI 2019) o `urgencia`? | (a) `centro_hoy` (OMS 2019, amoxicilina ambulatoria); (b) `urgencia` (NOM-031 Plan C; IMCI 2014) | **(b) `urgencia`** (ya era el resultado final). Se cambió el texto de acción de IMCI-YI-03 para que no diga "llevar hoy" junto a una indicación urgente. | NOM-031 3.32 ("menor de dos meses" = mal pronóstico) y 8.2.5.3 ("Envío inmediato a un hospital"). Principio 2: la OMS 2019 es más reciente pero **menos** protectora, así que no aplica la excepción. | Menos sub-triaje | provisional — pendiente de revisión Dra. Ines |
+| 3 | `NOM007-RN-01`, `WHO-PCPNC-PP-03` | ¿Cómo leer "ameritan atención médica urgente" de la NOM-007 5.6.1.9 (llanto inconsolable, distensión, vómito, no orina/evacúa; madre con fiebre o cefalea persistente)? | (a) `urgencia`; (b) `centro_hoy` | **(b) `centro_hoy`** (sin cambio). La frase agrupa signos que el AIEPI clasifica en rosa (fiebre, apnea, convulsiones) y en amarillo (ictericia después de 24 h), así que no define un nivel por sí sola: se toma el nivel de la guía clínica específica. Coincide con la convención "acuda urgentemente a la unidad" = `centro_hoy`. | NOM-007 5.6.1.9 (texto verificado: orientación a la madre al alta, sin destino); OMS PCPNC D28 ("as soon as possible" para fiebre posparto); en <8 días gana IITT-R-NEONATE-01 (`urgencia`) | Neutro. Fiebre posparto + no se puede levantar sigue en `urgencia` (PP-02) | provisional — pendiente de revisión Dra. Ines |
+| 4 | `IITT-R-NEONATE-01`, `IITT-Y-YI-01` | Criterios del IITT solo por edad: ¿exigir alguna molestia? ¿Aplicar el amarillo "8 días a 6 meses" también de 2 a 6 meses? | (a) solo por edad, hasta 6 meses; (b) con molestia y solo hasta 2 meses | **(b)** (sin cambio). De 2 meses a 5 años aplica el AIEPI comunitario, que tiene un verde explícito ("treat at home"); el IITT es triaje de urgencias y se aplica a quien ya llegó enfermo. | ICCM 2014 p. 3 y p. 8 (2 meses a 5 años; "If SICK but NO danger sign: treat at home"); IITT pediátrico | Menos sobre-triaje de 2 a 6 meses; sin cambio de 0 a 2 meses | provisional — pendiente de revisión Dra. Ines |
+| 5 | `IITT-Y-YI-01`, `IITT-R-NEONATE-01` | Piso `centro_hoy` en <2 meses con molestia; `urgencia` en <8 días | (a) mantener; (b) quitar el piso y usar solo AIEPI | **(a) mantener** (ver "Las 5 que más importan") | IITT pediátrico (rojo <8 días, amarillo 8 días–6 meses); ICCM p. 3; NOM-007 5.6.1.9 | Menos sub-triaje; sobre-triaje aceptado | provisional — pendiente de revisión Dra. Ines |
+| 6 | `IITT-R-YI-TEMP-01` | Temperatura 35.5–35.9 °C en <2 meses: ¿`urgencia`? | (a) <36 °C (IITT); (b) <35.5 °C (AIEPI) | **(a) <36 °C → `urgencia`** (sin cambio). | IITT pediátrico, rojo "Age <2 months and temp <36 or >39°C"; NOM-007 5.6.1.9 ("hipotermia", sin umbral, que "amerita atención médica urgente"). Principio 3: el umbral más protector es aplicable (medición con termómetro, sin exploración). | Menos sub-triaje | provisional — pendiente de revisión Dra. Ines |
+| 7 | `IITT-Y-CIRC-01` | Palidez intensa en <2 meses: ¿`centro_hoy` o `urgencia`? | (a) `centro_hoy`; (b) `urgencia` | **(a) `centro_hoy`** (sin cambio). Ninguna fuente leída la pone en `urgencia` a esta edad; la NOM-007 5.6.1.9 no incluye la palidez entre los signos del recién nacido (texto verificado). | IITT pediátrico, amarillo "Severe pallor (no red criteria)" | Neutro (sin fuente para escalar) | provisional — pendiente de revisión Dra. Ines |
+| 8 | `IMCI-YI-08` | Ictericia en <2 meses (sin palmas/plantas amarillas, después de 24 h): ¿`centro_hoy` o `urgencia` por la NOM-007? | (a) `centro_hoy`; (b) `urgencia` | **(a) `centro_hoy`** (sin cambio), con la indicación de valoración en hospital si tiene más de 14 días. En <8 días sale `urgencia` por IITT-R-NEONATE-01 (decisión #5). | IMCI 2014 p. 46 ("JAUNDICE… follow-up in 1 day"; "older than 14 days, refer to a hospital"); misma lectura de NOM-007 5.6.1.9 que la decisión #3 | Neutro | provisional — pendiente de revisión Dra. Ines |
+
+### B. Respiratorio
+
+| # | Regla(s) | La pregunta | Opciones | NUESTRA RECOMENDACIÓN | Fuente que sigue | Impacto | Estado |
+|---|---|---|---|---|---|---|---|
+| 9 | `IMCI-RESP-03` | Tiraje subcostal a cualquier edad: ¿`urgencia` (comunitario/NOM) o `centro_hoy` (IMCI de clínica)? | (a) `urgencia`; (b) `centro_hoy` | **(a) `urgencia`** (sin cambio), a cualquier edad (la promotora no puede graduar "tiraje grave" en el lactante). | AIEPI comunitario (ICCM) p. 6 ("Chest indrawing" = danger sign, refer urgently); NOM-031 8.2.3 y 8.2.5.3.1.1 ("Envío inmediato a un hospital"); tarjeta de referencia del IITT (tiraje = signo de dificultad respiratoria, rojo). Principios 1 y 2. | Menos sub-triaje | provisional — pendiente de revisión Dra. Ines |
+| 10 | `NOM031-IRA-03` | Plan C de la NOM-031 con "dificultad para trasladarse" | (a) mantener; (b) quitar `lejos_unidad` | **(a) mantener** (ver "Las 5 que más importan"). No se capturan madre <17 años o analfabeta ni muerte previa de un menor de 5 años. | NOM-031 3.32 y 8.2.5.3 | Menos sub-triaje; más sobre-triaje | provisional — pendiente de revisión Dra. Ines |
+| 11 | `IITT-R-RESP-01` | Dificultad para respirar **referida** de 5 a 11 años: ¿`urgencia`? | (a) `urgencia` (IITT ped); (b) `centro_hoy` como en <5 años | **(a) `urgencia`** (sin cambio). Es la única fuente leída para esa edad (la NOM-031 y el ICCM cubren <5 años). Queda la asimetría: en <5 años la dificultad referida sola es `centro_hoy` (NOM-031 "acuda urgentemente a la unidad"; ICCM no la cuenta como signo de peligro), salvo tiraje, estridor, cianosis, quejido o aleteo. | IITT pediátrico, rojo "Respiratory distress* or central cyanosis" | Menos sub-triaje | provisional — pendiente de revisión Dra. Ines |
+| 12 | `NICE-RESP-01`, `NICE-RESP-02` | Quejido y aleteo nasal en <5 años | Aleteo: (a) `centro_hoy` (NICE); (b) `urgencia` (IITT) | Quejido `urgencia` (sin cambio); **aleteo → `urgencia` (cambia el código)** | IITT ped rojo + tarjeta de referencia ("Nasal flaring, grunting"); NICE NG143 1.2.5 / 1.2.6 | Menos sub-triaje | provisional — pendiente de revisión Dra. Ines |
+
+### C. Fiebre y neurológico
+
+| # | Regla(s) | La pregunta | Opciones | NUESTRA RECOMENDACIÓN | Fuente que sigue | Impacto | Estado |
+|---|---|---|---|---|---|---|---|
+| 13 | `IITT-R-NEURO-01` | ¿Contar "continuamente irritable" (con fiebre) como alteración mental en <12 años, como hace el IITT? | (a) excluir (actual); (b) incluir | **(a) excluir** (sin cambio). En 2 meses–5 años el AIEPI comunitario y el IMCI no lo toman como signo de peligro (en IMCI "inquieto, irritable" es signo de deshidratación). El dato que captura Pahtli (`irritable`: "inquieto", "chillón", "llora mucho") es más amplio que el "continuously irritable" del IITT, así que usarlo agregaría sobre-triaje sin la especificidad de la fuente. | ICCM 2014 p. 6 (lista de signos de peligro); IMCI 2014 p. 5 y p. 7; IITT pediátrico (rojo: "confused, restless, continuously irritable or lethargic" + fiebre), leído y no adoptado | Menos sobre-triaje; **baja** el nivel respecto al IITT. Mitigación: letargo, cuello tieso y convulsiones siguen siendo `urgencia` | provisional — pendiente de revisión Dra. Ines |
+| 14 | `IITT-R-NEURO-01` | Fiebre + dolor de cabeza en ≥12 años | (a) lectura literal (`urgencia`); (b) exigir alteración mental o cuello tieso | **(b) — cambia el código** (ver "Las 5 que más importan") | OPS dengue 2020 p. 6–9; IITT adulto leído como triaje intrahospitalario | Menos sobre-triaje | provisional — pendiente de revisión Dra. Ines |
+| 15 | `NICE-FEV-RASH-01` | Fiebre + petequias / manchas moradas: ¿`urgencia` a cualquier edad, aunque la OPS cuente las petequias como dengue sin signos de alarma? | (a) `urgencia` a cualquier edad; (b) `urgencia` solo <5 años y dengue para el resto | **(a) `urgencia` a cualquier edad** (sin cambio). En <5 años es NICE literal. En ≥5 años, la opción (b) dejaría "fiebre + petequias" sin otra molestia en `aqui` (una sola manifestación no completa la definición de caso de dengue), y el Grupo A de la OPS (tratamiento en el hogar) lo asigna el personal de salud después de evaluar fase, signos de alarma y estado hemodinámico, cosa que la promotora no puede hacer. | NICE NG143 tabla 2 (rojo "Non-blanching rash") y 1.2.18; OPS dengue 2020 p. 2 (material "dirigido al personal de salud"), p. 6 (definición de caso: 2 o más manifestaciones) y p. 8 (preguntas antes de asignar grupo: fase, signos de alarma, "estado hemodinámico y de hidratación") | Menos sub-triaje; sobre-triaje en temporada de dengue | provisional — pendiente de revisión Dra. Ines |
+
+### D. Embarazo y posparto
+
+| # | Regla(s) | La pregunta | Opciones | NUESTRA RECOMENDACIÓN | Fuente que sigue | Impacto | Estado |
+|---|---|---|---|---|---|---|---|
+| 16 | `NOM007-EMB-05`, `NOM007-EMB-04` | Fiebre en el embarazo y dolor abdominal de cualquier intensidad: ¿`urgencia` (NOM-007) o "lo antes posible" (OMS)? | (a) `urgencia`; (b) `centro_hoy` salvo postración / dolor severo | **(a) `urgencia`** (sin cambio). | NOM-007 5.3.1.3 (texto verificado: "fiebre", "dolor abdominal" entre los signos de urgencia obstétrica) y 3.52 (urgencia obstétrica = "requiere una acción inmediata"); GPC IMSS-028 GRR p. 9. Principio 2. | Menos sub-triaje; sobre-triaje aceptado | provisional — pendiente de revisión Dra. Ines |
+| 17 | `WHO-PCPNC-EMB-02`, `IMSS-EMB-04` | Hinchazón de cara/manos, vómitos frecuentes y molestias al orinar en el embarazo: ¿`centro_hoy` o `urgencia`? | (a) `centro_hoy`; (b) `urgencia` | **(a) `centro_hoy`** (sin cambio). La NOM-007 5.3.1.3 **no** los incluye entre los signos de urgencia obstétrica (texto verificado); la GPC IMSS dice "acudir inmediatamente a un hospital **o centro de salud**", que corresponde a `centro_hoy`. Con dolor de cabeza fuerte, visión borrosa, zumbido o dolor en la boca del estómago ya es `urgencia` por otras reglas. | OMS PCPNC C15 ("as soon as possible"); GPC IMSS-028 GRR p. 9; NOM-007 5.3.1.3 | Neutro | provisional — pendiente de revisión Dra. Ines |
+
+### E. Dengue
+
+| # | Regla(s) | La pregunta | Opciones | NUESTRA RECOMENDACIÓN | Fuente que sigue | Impacto | Estado |
+|---|---|---|---|---|---|---|---|
+| 18 | `PAHO-DEN-05` | Posible dengue que no ha orinado en 6 horas: ¿`urgencia`? | (a) `urgencia`; (b) `centro_hoy` | **(a) `urgencia`** (sin cambio). Sin orina cada 6 horas no es Grupo A; la promotora no puede distinguir B1 ("posible remisión a hospital") de B2 (hospital) porque no mide presión ni hematocrito. | OPS dengue 2020 p. 9 ("Orinan al menos una vez cada 6 horas" para Grupo A; B1/B2). Principio 3: el más protector es aplicable porque el algoritmo OPS es de primer nivel. | Menos sub-triaje | provisional — pendiente de revisión Dra. Ines |
+
+### F. Salud mental
+
+| # | Regla(s) | La pregunta | Opciones | NUESTRA RECOMENDACIÓN | Fuente que sigue | Impacto | Estado |
+|---|---|---|---|---|---|---|---|
+| 19 | `MHGAP-SUI-01`, `WHO-PCPNC-PP-04` | Ideas o plan suicida: ¿`urgencia` (mhGAP) aunque la OMS PCPNC diga "as soon as possible" en el posparto? | (a) `urgencia`; (b) `centro_hoy` | **(a) `urgencia`** (sin cambio). La depresión grave posparto **sin** ideas suicidas queda en `centro_hoy`. Se mantiene la Línea de la Vida (800 911 2000). | OMS mhGAP 2.0, módulo SUI ("imminent risk": lugar seguro en una unidad de salud, no dejar sola a la persona). mhGAP está hecho para entornos no especializados, así que es aplicable (principio 3). | Menos sub-triaje | provisional — pendiente de revisión Dra. Ines |
+
+---
+
+## Puntos nuevos que encontramos y NO decidimos
+
+1. **Definición de fiebre en todas las edades.** La NOM-031 (3.33) define fiebre como "arriba de 38.0ºC". El motor usa ≥37.5 °C medido (IMCI 2014 p. 8) para niños mayores y adultos (`hasFever`). Por el principio 2 debería ser 38 °C, pero no era un punto [DECIDIR] y afecta muchas reglas (dengue, sarampión, embarazo, signos neurológicos). Solo se aplicó al lactante (decisión #1). **Necesita su criterio.**
+2. **Signos vitales de alto riesgo del IITT en <5 años** (respiraciones >50 en <1 año, >40 de 1 a 4 años, temperatura >39 °C) no están implementados como regla propia; hoy los cubre el AIEPI (respiración rápida con tos o dificultad).
+3. **Fiebre posparto sola** queda en `centro_hoy` (decisión #3). La NOM-007 define la urgencia obstétrica incluyendo el puerperio (3.52) y lista la fiebre en 5.3.1.3, pero ese numeral está en la sección de atención del embarazo. Si usted lee la NOM como aplicable al puerperio, sería `urgencia`.
+
+## Cambios aplicados en el código
+
+| Decisión | Archivo | Cambio |
+|---|---|---|
+| #1 | `src/triage/rules/young_infant.ts` | `IMCI-YI-04`: calentura referida **o** temperatura ≥38 °C (antes ≥37.5). `IITT-Y-YI-01`: también dispara con temperatura ≥37.5 °C medida sin otra molestia. |
+| #2 | `src/triage/rules/young_infant.ts` | `IMCI-YI-03`: texto de acción que remite a la indicación urgente de NOM031-IRA-03 (nivel sin cambio). |
+| #12 | `src/triage/rules/respiratory_child.ts`, `sources.ts` | `NICE-RESP-02` pasa a `urgencia`; cita la tarjeta de referencia del IITT (nueva URL `SRC.IITT_REFCARD`, copia publicada por el hospital ZOL de Bélgica). |
+| #14 | `src/triage/rules/fever.ts` | `IITT-R-NEURO-01` en ≥12 años exige alteración mental o cuello tieso; pasa a `adaptado`. |
+
+Pruebas: `src/triage/engine.test.ts` actualizado (umbral de temperatura del lactante, aleteo nasal, nueva prueba de NEURO-01 en adultos). Eval: ninguna etiqueta cambió; ver `docs/eval.md`.

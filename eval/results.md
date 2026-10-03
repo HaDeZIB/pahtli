@@ -1,6 +1,6 @@
 # Resultados de la evaluación de Pahtli
 
-> Generado por `npm run eval` el 2026-10-03T21:03:23.052Z. Pipeline: texto → `keywordExtract` → `triage` (Node, sin LLM) + fail-safe `assessUncertainty`.
+> Generado por `npm run eval` el 2026-10-03T21:47:45.903Z. Pipeline: texto → `keywordExtract` → `triage` (Node, sin LLM) + fail-safe `assessUncertainty`.
 > Viñetas sintéticas escritas por el equipo, **pendientes de validación clínica por la Dra. Ines**.
 > `dev` se usó para ajustar. `test_v1` (held-out original) ya se vio y se usó en la ronda 2: ahora es solo regresión. **`test_v2` es el held-out vigente**: se escribió y congeló antes de los cambios de la ronda 2.
 
@@ -9,30 +9,30 @@
 | Métrica | dev | test_v1 | test_v2 | total |
 |---|---:|---:|---:|---:|
 | Casos | 60 | 30 | 40 | 130 |
-| Exactitud (nivel exacto) | 98.3% (59/60), IC95 91–100 % | 100.0% (30/30), IC95 89–100 % | 92.5% (37/40), IC95 80–97 % | 96.9% (126/130), IC95 92–99 % |
+| Exactitud (nivel exacto) | 100.0% (60/60), IC95 94–100 % | 100.0% (30/30), IC95 89–100 % | 92.5% (37/40), IC95 80–97 % | 97.7% (127/130), IC95 93–99 % |
 | **Sub-triaje de urgencias** (urgencia → menor) | **0.0%** (0/22), IC95 0–15 % | **0.0%** (0/11), IC95 0–26 % | **18.8%** (3/16), IC95 7–43 % | **6.1%** (3/49), IC95 2–17 % |
 | …de ellas, sin pregunta de seguimiento que pida el dato faltante | 0/22 | 0/11 | 2/16 | 2/49 |
 | …de ellas, **en silencio** (sin pregunta y sin aviso "no estoy segura") | 0/22 | 0/11 | 1/16 | 1/49 |
 | Sub-triaje total (cualquier nivel → menor) | 0.0% (0/60) | 0.0% (0/30) | 7.5% (3/40) | 2.3% (3/130) |
-| Sobre-triaje total | 1.7% (1/60) | 0.0% (0/30) | 0.0% (0/40) | 0.8% (1/130) |
+| Sobre-triaje total | 0.0% (0/60) | 0.0% (0/30) | 0.0% (0/40) | 0.0% (0/130) |
 | Sensibilidad de referencia (centro/urgencia ≠ aquí) | 100.0% (42/42), IC95 92–100 % | 100.0% (21/21), IC95 85–100 % | 96.7% (29/30), IC95 83–99 % | 98.9% (92/93), IC95 94–100 % |
 | Reglas esperadas que dispararon (todas) | 100.0% (60/60) | 100.0% (30/30) | 92.5% (37/40) | 97.7% (127/130) |
 | Recall / precisión `aqui` | 100.0% / 100.0% | 100.0% / 100.0% | 100.0% / 90.9% | 100.0% / 97.4% |
-| Recall / precisión `centro_hoy` | 95.0% / 100.0% | 100.0% / 100.0% | 100.0% / 87.5% | 97.7% / 95.6% |
-| Recall / precisión `urgencia` | 100.0% / 95.7% | 100.0% / 100.0% | 81.3% / 100.0% | 93.9% / 97.9% |
+| Recall / precisión `centro_hoy` | 100.0% / 100.0% | 100.0% / 100.0% | 100.0% / 87.5% | 100.0% / 95.7% |
+| Recall / precisión `urgencia` | 100.0% / 100.0% | 100.0% / 100.0% | 81.3% / 100.0% | 93.9% / 100.0% |
 | Síntomas anotados extraídos bien (afirmados · negados) | — | — | 94.6% (70/74) · 63/67 · 7/7 | 94.6% (70/74) · 63/67 · 7/7 |
 | Nivel con hallazgos anotados (extracción perfecta) | — | — | 100.0% (36/36) | 100.0% (36/36) |
 | Casos `expected_uncertain`: aviso "no estoy segura" · pregunta algo · pregunta el dato esperado | 2/2 · 2/2 · 1/2 | 2/2 · 2/2 · 2/2 | 4/4 · 3/4 · 2/4 | 8/8 · 7/8 · 5/8 |
-| Aviso "no estoy segura" en casos sin falta de datos (ruido) — si salta las preguntas | 29/58 | 11/28 | 20/36 | 60/122 |
+| Aviso "no estoy segura" en casos sin falta de datos (ruido) — si salta las preguntas | 30/58 | 11/28 | 20/36 | 61/122 |
 | …ruido si contesta las preguntas como en la app (hasta 4; Sí/No según lo anotado o "No") | 11/58 | 4/28 | 9/36 | 24/122 |
-| Latencia extracción+triaje (media / p95, ms) | 0.55 / 1.96 | 0.41 / 0.64 | 0.41 / 1.04 | 0.47 / 1.04 |
+| Latencia extracción+triaje (media / p95, ms) | 0.56 / 2 | 0.38 / 0.5 | 0.38 / 0.69 | 0.46 / 0.84 |
 
 ### Matriz de confusión — dev
 
 | esperado \ predicho | aquí | centro hoy | urgencia |
 |---|---:|---:|---:|
 | **aquí** | **18** | 0 | 0 |
-| **centro hoy** | 0 | **19** | 1 |
+| **centro hoy** | 0 | **20** | 0 |
 | **urgencia** | 0 | 0 | **22** |
 
 ### Matriz de confusión — test_v1
@@ -56,7 +56,7 @@
 | esperado \ predicho | aquí | centro hoy | urgencia |
 |---|---:|---:|---:|
 | **aquí** | **37** | 0 | 0 |
-| **centro hoy** | 0 | **43** | 1 |
+| **centro hoy** | 0 | **44** | 0 |
 | **urgencia** | 1 | 2 | **46** |
 
 ## Extracción por campo (contra valores de referencia anotados en `expected_findings`)
@@ -90,9 +90,6 @@ Síntomas anotados no extraídos (o con polaridad equivocada):
 - **T2-V13** (test_v2) esperado `urgencia`, predicho `centro_hoy` — SUB-TRIAJE (negación errónea): no disparó IITT-R-RESP-01 [dificultad_respirar=false, edad_meses=96]
   - Texto: "Mi sobrino de 8 años es asmático y ahorita no puede ni hablar de lo que le cuesta respirar, le chilla el pecho."
   - Reglas disparadas: IITT-Y-WHEEZE-01 · la app NO pregunta el dato faltante
-- **D35** (dev) esperado `centro_hoy`, predicho `urgencia` — SOBRE-TRIAJE: disparó IITT-R-NEURO-01 [letargico=?, confusion=?, rigidez_nuca=?, dolor_cabeza=true, fiebre=true, temperatura_c=?, edad_meses=456]. Frases detectadas: "dolor de cabesa fuerte"→dolor_cabeza_intenso, "dolor de cabesa"→dolor_cabeza, "con calentura"→fiebre, "calentura"→fiebre, "ronchas"→sarpullido
-  - Texto: "Señora de 38 años con calentura de tres días, dolor de cabeza fuerte, ronchas y náusea."
-  - Reglas disparadas: IITT-R-NEURO-01, PAHO-DEN-03
 
 ## Casos con datos insuficientes (`expected_uncertain`)
 

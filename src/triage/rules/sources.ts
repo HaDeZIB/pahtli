@@ -10,6 +10,8 @@ export const SRC = {
   PAHO_DENGUE_2020: 'https://www.paho.org/sites/default/files/2020-09/2020-cde-algoritmos-manejo-clinico-dengue.pdf',
   IITT_ADULT: 'https://cdn.who.int/media/docs/default-source/integrated-health-services-(ihs)/csy/iitt/iitt_adult.pdf?sfvrsn=b2a91431_1',
   IITT_PED: 'https://cdn.who.int/media/docs/default-source/integrated-health-services-(ihs)/csy/iitt/iitt_pediatric.pdf?sfvrsn=15161bfb_1',
+  /** Copia del IITT con la tarjeta de referencia ("Signs of Respiratory Distress"), publicada por el hospital ZOL (Bélgica); leída oct-2026. */
+  IITT_REFCARD: 'https://www.zol.be/sites/default/files/deelsites/urgentiegeneeskunde/iitt_triage.pdf',
   CDC_STROKE: 'https://www.cdc.gov/stroke/signs-symptoms/index.html',
   CDC_HEART_ATTACK: 'https://www.cdc.gov/heart-disease/about/heart-attack.html',
   NICE_NG143: 'https://www.nice.org.uk/guidance/ng143',

@@ -124,12 +124,13 @@ export const RESPIRATORY_CHILD_RULES: Rule[] = [
   {
     id: 'NICE-RESP-02',
     block: 'respiratory_child',
-    level: 'centro_hoy',
+    // Decisión provisional #12 (docs/decisiones-clinicas.md): se sigue el IITT (rojo), más protector que NICE (ámbar).
+    level: 'urgencia',
     applies: (f) => possiblyAge(f, 0, 60) && has(f, 'aleteo_nasal'),
-    explicacion: { es: 'Niño menor de 5 años con aleteo nasal (se le abren las narices al respirar).', nah: '' },
-    accion: { es: CENTRO_HOY_RESP, nah: '' },
-    fuente: `${CITE.NICE_NG143}, rec. 1.2.6 y tabla 2 (riesgo intermedio, "ámbar": "nasal flaring" → valoración presencial)`,
-    fuente_url: SRC.NICE_NG143,
+    explicacion: { es: 'Niño menor de 5 años con aleteo nasal (se le abren las narices al respirar): signo de dificultad respiratoria.', nah: '' },
+    accion: { es: 'Referir URGENTE al hospital: conseguir transporte o llamar al 911 ahora. Mantenerlo abrigado, en la posición en que respire mejor, y seguir dándole pecho o líquidos si puede.', nah: '' },
+    fuente: `${CITE.IITT} pediátrico (<12 años), rojo "Respiratory distress*"; tarjeta de referencia del IITT, "Signs of Respiratory Distress", niño: "Nasal flaring, grunting"; ${CITE.NICE_NG143}, rec. 1.2.6 y tabla 2 ("nasal flaring" = riesgo intermedio, ámbar: la guía británica es menos protectora)`,
+    fuente_url: SRC.IITT_REFCARD,
     needs: ['aleteo_nasal', 'edad_meses'],
     context: ['tos', 'dificultad_respirar', 'respira_rapido'],
     fidelidad: 'adaptado',

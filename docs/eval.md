@@ -2,16 +2,16 @@
 
 > Estado: **viñetas sintéticas, pendientes de validación clínica por la Dra. Ines.** Las métricas miden si el software reproduce el nivel que dictan las guías para un relato dado. No miden si el triaje es clínicamente correcto en pacientes reales.
 >
-> Última corrida: ronda 2 (3-oct-2026), `npm run eval`. Detalle por caso en `eval/results.md` y `eval/results.json`. La línea base de la ronda 2 (antes de tocar el extractor) está en `eval/baseline-r2-pre/`.
+> Última corrida: después de las decisiones clínicas provisionales (`docs/decisiones-clinicas.md`, 3-oct-2026), `npm run eval`. Detalle por caso en `eval/results.md` y `eval/results.json`. La línea base de la ronda 2 (antes de tocar el extractor) está en `eval/baseline-r2-pre/`.
 
 ## 0. Resumen
 
 | Métrica | dev (60) | test_v1 (30, regresión) | **test_v2 (40, held-out vigente)** |
 |---|---:|---:|---:|
-| Exactitud del nivel | 98.3 % (59/60), IC95 91–100 % | 100 % (30/30), IC95 89–100 % | **92.5 % (37/40), IC95 80–97 %** |
+| Exactitud del nivel | 100 % (60/60), IC95 94–100 % | 100 % (30/30), IC95 89–100 % | **92.5 % (37/40), IC95 80–97 %** |
 | **Sub-triaje de urgencias** | **0/22** (0 %), IC95 0–15 % | **0/11** (0 %), IC95 0–26 % | **3/16 (18.8 %), IC95 7–43 %** |
 | …en silencio (sin pregunta y sin aviso "no estoy segura") | 0/22 | 0/11 | **1/16** |
-| Sobre-triaje total | 1.7 % (1/60) | 0 % | 0 % |
+| Sobre-triaje total | 0 % (0/60) | 0 % | 0 % |
 | Sensibilidad de referencia | 100 % (42/42) | 100 % (21/21) | 96.7 % (29/30), IC95 83–99 % |
 | Síntomas anotados extraídos bien | — | — | 94.6 % (70/74) |
 | Nivel con hallazgos anotados (extracción perfecta) | — | — | 100 % (36/36) |
@@ -65,7 +65,7 @@ No se evalúa el LLM (web-llm no corre en Node) ni la voz (Whisper; ver `docs/ai
 - **test_v2:** las 36 viñetas con síntomas anotados dan el nivel esperado con las reglas actuales (prueba automática). Las otras 4 son casos `aqui` sin signos.
 - **dev y test_v1:** con la extracción correcta, las 90 viñetas dan el nivel esperado, salvo D35.
 - **No se cambió ninguna etiqueta en la ronda 2.** El único cambio sigue siendo D42 (`centro_hoy` → `urgencia`, fact-check del 3-oct, NOM-031 3.32 y 8.2.5.3.1.1; ver el final del documento).
-- **D35 se dejó como está** (`centro_hoy` según la OPS; el motor da `urgencia` por IITT-R-NEURO-01). No hubo ningún cambio de regla que lo justifique: es el conflicto [DECIDIR 23] de `docs/clinical-sources.md`, que debe resolver la Dra. Ines.
+- **D35** (`centro_hoy` según la OPS) daba `urgencia` por IITT-R-NEURO-01. Con la decisión provisional #14 (`docs/decisiones-clinicas.md`) ya da `centro_hoy`; la etiqueta no se tocó.
 - Se agregó `expected_uncertain` a D22, D23, T12 y T13 (respiración rápida sin saber si es difícil llegar a la unidad, o sin conteo). No cambia su nivel esperado.
 
 ## 3. Resultados
@@ -145,7 +145,7 @@ Los 7 fallos de la ronda 1 se corrigieron **sin agregar sinónimos para esas fra
 
 ### 4.3 dev
 
-Sin cambios: D35 sigue como sobre-triaje documentado (sección 2.3).
+Sin fallos: D35 ya no es sobre-triaje tras la decisión provisional #14 (sección 2.3).
 
 ### 4.4 Aviso "no estoy segura" (`src/triage/uncertainty.ts`, módulo de otro equipo)
 
@@ -187,7 +187,7 @@ Tests: más de 50 casos nuevos en `src/ai/keywords.test.ts`. Incluyen adversaria
 - **Muestras pequeñas.** Con 16 urgencias en test_v2, el IC95 del sub-triaje va de 7 % a 43 %. No hay que presentar estos números como desempeño clínico.
 - **Falta medir la precisión síntoma por síntoma** (los hallazgos extra que el extractor marca de más). Solo se mide su efecto en el sobre-triaje del nivel (0 % en test_v2).
 - **Más vocabulario y marcos = más riesgo de falsos positivos en relatos reales.** El sobre-triaje medido es bajo (1/130), pero el set no tiene muchos relatos largos con contexto irrelevante.
-- Algunas etiquetas dependen de decisiones [DECIDIR] de `docs/clinical-sources.md`.
+- Algunas etiquetas dependen de las decisiones clínicas provisionales de `docs/decisiones-clinicas.md` (pendientes de revisión de la Dra. Ines).
 - No se evaluó el LLM.
 
 ## 7. Cómo correrlo
@@ -215,5 +215,6 @@ Reglas para agregar casos:
 
 ## Historial de etiquetas
 
-- **Fact-check clínico (3-oct-2026):** D42 ("Bebé de tres semanas, le conté 64 respiraciones por minuto") pasó de `centro_hoy` a `urgencia`, con reglas esperadas NOM031-IRA-03 + IMCI-YI-03. Motivo: la NOM-031 cuenta "menor de dos meses" como factor de mal pronóstico (3.32) y manda la neumonía leve con factor de mal pronóstico a "Envío inmediato a un hospital" (8.2.5.3.1.1). Queda [DECIDIR] (docs/clinical-sources.md 4.1, punto 14).
-- **Ronda 2 (3-oct-2026):** no cambió ninguna etiqueta. Se renombró `test` → `test_v1`. Se agregó `expected_uncertain` a D22, D23, T12 y T13. D35 se mantiene en `centro_hoy` ([DECIDIR 23]).
+- **Fact-check clínico (3-oct-2026):** D42 ("Bebé de tres semanas, le conté 64 respiraciones por minuto") pasó de `centro_hoy` a `urgencia`, con reglas esperadas NOM031-IRA-03 + IMCI-YI-03. Motivo: la NOM-031 cuenta "menor de dos meses" como factor de mal pronóstico (3.32) y manda la neumonía leve con factor de mal pronóstico a "Envío inmediato a un hospital" (8.2.5.3.1.1). Ahora: decisión provisional #2 de `docs/decisiones-clinicas.md` (se mantiene `urgencia`).
+- **Ronda 2 (3-oct-2026):** no cambió ninguna etiqueta. Se renombró `test` → `test_v1`. Se agregó `expected_uncertain` a D22, D23, T12 y T13. D35 se mantiene en `centro_hoy` (después resuelto por la decisión provisional #14).
+- **Decisiones clínicas provisionales (3-oct-2026, `docs/decisiones-clinicas.md`):** **no cambió ninguna etiqueta.** Se revisaron los 130 casos contra los 3 cambios de regla: #1 (fiebre del lactante: ≥38 °C medido o calentura referida → urgencia; 37.5–37.9 °C → centro hoy) no afecta a ningún caso (D21 tiene 38.2 °C y "calentura"; T2-V01 y T2-A10 no traen temperatura medida); #12 (aleteo nasal → urgencia) no aparece en ningún caso; #14 (fiebre + dolor de cabeza en ≥12 años ya no basta para IITT-R-NEURO-01) hace que **D35 pase de sobre-triaje a acierto** sin tocar su etiqueta (`centro_hoy`, PAHO-DEN-03). Métricas después: dev 100 % (60/60), test_v1 100 %, test_v2 92.5 % (sin cambio, 3/16 urgencias sub-triadas por extracción), total 97.7 % (127/130), sobre-triaje 0/130, sensibilidad de referencia 98.9 %. El hash de test_v2 no cambió.

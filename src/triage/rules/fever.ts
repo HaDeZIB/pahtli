@@ -29,22 +29,25 @@ export const FEVER_RULES: Rule[] = [
       if (possiblyAge(f, years(12))) {
         const n = countGroups(f, [['letargico', 'confusion'], ['rigidez_nuca'], ['dolor_cabeza', 'dolor_cabeza_intenso', 'dolor_cabeza_subito']]) +
           (hasFever(f) || hypo ? 1 : 0);
-        if (n >= 2) return true;
+        // Decisión provisional #14 (docs/decisiones-clinicas.md): en ≥12 años, fiebre + dolor de cabeza SOLOS no bastan;
+        // uno de los dos signos debe ser alteración mental o cuello tieso (el dengue típico queda en PAHO-DEN-03).
+        if (n >= 2 && (ams || has(f, 'rigidez_nuca'))) return true;
       }
       // < 12 años: alteración del estado mental + rigidez de nuca, hipotermia o fiebre
       if (possiblyAge(f, 0, years(12)) && ams && (has(f, 'rigidez_nuca') || hypo || hasFever(f))) return true;
       return false;
     },
     explicacion: {
-      es: 'Combinación de alarma del triaje IITT: dos o más de — confusión o muy dormido, cuello tieso, fiebre o temperatura baja, dolor de cabeza (en niños: confusión o muy dormido junto con fiebre, cuello tieso o temperatura baja). No es un diagnóstico: fiebre con dolor de cabeza también se ve en dengue y otras infecciones.',
+      es: 'Combinación de alarma del triaje IITT: confusión o muy dormido, o cuello tieso, junto con otro de — fiebre o temperatura baja, dolor de cabeza, confusión, cuello tieso (en niños: confusión o muy dormido junto con fiebre, cuello tieso o temperatura baja). Puede ser una infección grave del cerebro o sus cubiertas.',
       nah: '',
     },
     accion: { es: REFER_NOW, nah: '' },
-    fuente: `${CITE.IITT}: adulto, rojo "Any two of: altered mental status, stiff neck, hypothermia or fever, headache"; pediátrico, rojo "Altered mental status… with stiff neck, hypothermia or fever"`,
+    fuente: `${CITE.IITT}: adulto, rojo "Any two of: altered mental status, stiff neck, hypothermia or fever, headache" (en ≥12 años no basta fiebre + dolor de cabeza: ver decisiones-clinicas.md #14; ${CITE.PAHO_DENGUE_2020}, p. 6–9: fiebre con cefalea sin signos de alarma = dengue sin signos de alarma); pediátrico, rojo "Altered mental status… with stiff neck, hypothermia or fever"`,
     fuente_url: SRC.IITT_ADULT,
     needs: ['letargico', 'confusion', 'rigidez_nuca', 'dolor_cabeza', 'fiebre', 'temperatura_c', 'edad_meses'],
     context: ['fiebre', 'dolor_cabeza'],
-    fidelidad: 'verbatim',
+    // adaptado: en ≥12 años se excluye la pareja fiebre + dolor de cabeza sola (decisión provisional #14); se excluye 'irritable' (#13).
+    fidelidad: 'adaptado',
   },
   {
     id: 'IMCI-FEV-02',
