@@ -88,7 +88,72 @@ const es = {
   referral_center: 'Centro de salud más cercano',
   referral_fallback: 'Si no llega al hospital: primer contacto',
   referral_followup: 'Para seguimiento',
-  referral_note: 'Distancia en línea recta (no por carretera). Catálogo CLUES, Secretaría de Salud. Confirme que esté abierto.',
+  referral_note: 'Distancia en línea recta, no por carretera; confirma que haya personal antes de salir. Catálogo CLUES, Secretaría de Salud.',
+  referral_straight: 'en línea recta',
+  referral_uncertain: 'Centro de salud más cercano para consultar',
+
+  unc_title: 'No estoy segura',
+  unc_sub: 'Consulta al personal de salud',
+  unc_banner: '⚪ No estoy segura — consulta al personal de salud',
+  unc_also: '⚪ Además, no estoy segura de todo — consulta al personal de salud',
+  unc_why: 'Por qué no estoy segura',
+  unc_rules_say: 'Con los datos que hay, las reglas dicen:',
+  unc_call: 'Llamar al centro de salud',
+  unc_no_phone: 'Agrega el teléfono del centro de salud en Ajustes para llamar desde aquí.',
+  unc_hint: 'Pahtli no adivina. Revisa al paciente con una persona del centro de salud antes de decidir.',
+
+  hitl_title: 'Pahtli sugiere. Tú decides.',
+  hitl_suggests: 'Pahtli sugiere:',
+  hitl_agree: 'Estoy de acuerdo · Guardar caso',
+  hitl_change: 'Cambiar nivel',
+  hitl_pick_level: '¿Qué nivel decides?',
+  hitl_pick_reason: '¿Por qué? (obligatorio)',
+  hitl_note: 'Nota (opcional, sin nombres del paciente)',
+  hitl_save_change: 'Guardar con mi decisión',
+  hitl_cancel: 'Cancelar',
+  hitl_your_decision: 'Tu decisión',
+  hitl_changed_from: 'cambiado de {from}',
+  hitl_downgrade_warn: 'Vas a bajar una urgencia. Confirma que revisaste los signos de peligro con el paciente.',
+  hitl_need_reason: 'Elige un motivo.',
+  hitl_same_level: 'Es el mismo nivel que sugiere Pahtli. Usa “Estoy de acuerdo”.',
+
+  about_link: 'Acerca de la IA',
+  about_title: 'Acerca de la IA',
+
+  history_export: 'Exportar para DHIS2 (JSON)',
+  history_export_hint: 'Archivo en formato DHIS2 Tracker (eventos). Sin texto libre; ubicación redondeada a ~1 km.',
+  history_overridden: 'Nivel cambiado por la promotora',
+  history_uncertain: 'No segura',
+
+  lock_title: 'Pahtli está bloqueado',
+  lock_hint: 'Escribe tu PIN de 4 números',
+  lock_wrong: 'PIN incorrecto',
+  lock_wait: 'Demasiados intentos. Espera {s} s.',
+  lock_forgot: '¿Olvidaste el PIN? Borra los datos desde la pantalla de bloqueo: se pierden los casos de este celular.',
+  lock_wipe: 'Olvidé mi PIN: borrar datos',
+
+  privacy_title: 'Privacidad',
+  privacy_pin: 'PIN para abrir Pahtli',
+  privacy_pin_hint: 'Se pide al abrir y después de 5 minutos fuera de la app.',
+  privacy_pin_set: 'Poner PIN',
+  privacy_pin_change: 'Cambiar PIN',
+  privacy_pin_remove: 'Quitar PIN',
+  privacy_pin_on: 'PIN activo',
+  privacy_pin_new: 'PIN nuevo (4 números)',
+  privacy_pin_repeat: 'Repite el PIN',
+  privacy_pin_mismatch: 'Los PIN no coinciden.',
+  privacy_pin_unsupported: 'Este navegador no permite PIN (se necesita https).',
+  privacy_retention: 'Borrar casos ya enviados después de',
+  privacy_retention_days: '{n} días',
+  privacy_retention_hint: 'Los casos que aún no se envían nunca se borran solos.',
+  privacy_centro_tel: 'Teléfono del centro de salud',
+  privacy_coords: 'Al enviar, la ubicación se redondea a ~1 km. El texto libre y tu nombre nunca salen del celular.',
+  privacy_wipe: 'Borrar todos los datos de este celular',
+  privacy_wipe_confirm: '¿Borrar todos los casos, ajustes y el PIN de este celular? No se puede deshacer.',
+  privacy_wipe_pending: 'Hay {n} casos sin enviar: se perderán.',
+  privacy_wipe_pending_one: 'Hay 1 caso sin enviar: se perderá.',
+  privacy_wipe_yes: 'Sí, borrar todo',
+  privacy_wiped: 'Datos borrados',
   referral_no_location: 'Guarde la ubicación de la comunidad en Ajustes para ver el centro más cercano.',
   referral_none: 'No hay establecimientos del catálogo cerca de esta ubicación.',
 
@@ -131,6 +196,12 @@ const es = {
   config_storage: 'Espacio usado',
   config_airplane: 'Pruebe el modo avión: active el modo avión y haga un caso. Todo debe funcionar igual.',
   config_language: 'Idioma',
+  config_sync_title: 'Envío al centro de salud',
+  config_sync_hint: 'Clave de inscripción de este celular. La da la Jurisdicción Sanitaria. Si el servidor la pide y falta, los casos se quedan guardados aquí hasta que la escribas.',
+  config_sync_token: 'Clave de inscripción',
+  config_sync_on: 'Inscrito',
+  config_sync_save: 'Guardar clave',
+  config_sync_remove: 'Quitar clave',
   config_nah_note: 'Náhuatl: solo palabras verificadas; lo demás sigue en español mientras lo revisa un hablante.',
 
   offline_ready: 'Pahtli ya funciona sin internet',
@@ -178,6 +249,20 @@ export const LEVELS: Record<TriageLevel, LevelMeta> = {
   centro_hoy: { key: 'centro_hoy', bg: '#f59e0b', fg: '#1c1917', soft: '#fef3c7', softFg: '#78350f', emoji: '🟡' },
   urgencia: { key: 'urgencia', bg: '#b91c1c', fg: '#ffffff', soft: '#fee2e2', softFg: '#7f1d1d', emoji: '🔴' },
 };
+
+/** Estado "No estoy segura" (no es un nivel de triaje: el nivel de las reglas se sigue mostrando). Blanco sobre #475569 = 7.6:1 */
+export const UNCERTAIN_META = { bg: '#475569', fg: '#ffffff', soft: '#e2e8f0', softFg: '#1e293b', emoji: '⚪' } as const;
+
+/** Motivos cerrados para cambiar el nivel (el código se puede sincronizar; el texto libre no). */
+export const OVERRIDE_REASONS: { code: string; es: string }[] = [
+  { code: 'vi_mas_grave', es: 'Vi al paciente más grave' },
+  { code: 'vi_menos_grave', es: 'Vi al paciente menos grave' },
+  { code: 'faltaron_datos', es: 'Faltaron datos en lo que dije' },
+  { code: 'app_entendio_mal', es: 'La app entendió mal' },
+  { code: 'indicacion_personal', es: 'Lo indicó el personal de salud' },
+  { code: 'otro', es: 'Otro motivo' },
+];
+export const overrideReasonLabel = (code?: string) => OVERRIDE_REASONS.find((r) => r.code === code)?.es ?? code ?? '';
 
 export function levelLabel(l: TriageLevel, lang: Lang = 'es', short = false): string {
   return t(`level_${l}${short ? '_short' : ''}` as StringKey, lang);

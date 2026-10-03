@@ -84,6 +84,74 @@ const CASES: [string, Expect][] = [
   ['señor a de 40 años le huele el pecho y tiene su dor frío', { pos: ['dolor_pecho', 'sudor_frio'], edad: 480 }], // salida real de whisper-base
   ['Esta embarazada de siete meses le huele mucho la cabeza', { pos: ['dolor_cabeza_intenso'], embarazada: true }], // salida real de whisper-base
   ['le huele feo el sangrado', { pos: ['flujo_mal_olor'], notPos: ['dolor_cabeza'] }],
+
+  // ── Ronda 2: huecos de 1–2 palabras de relleno dentro de la frase ──
+  ['le duele todo el cuerpo y tiene calentura', { pos: ['dolor_muscular_articular', 'fiebre'] }],
+  ['se le hinchan mucho las manos', { pos: ['hinchazon_cara_manos'] }],
+  ['le duele bien feo la cabeza', { pos: ['dolor_cabeza'] }],
+  ['habla como trabado desde la mañana', { pos: ['dificultad_hablar'] }],
+  ['le duele la cabeza, pero la panza no', { pos: ['dolor_cabeza'], notPos: ['dolor_abdominal'] }],
+  // el relleno no puede ser una negación ni cruzar una frontera de cláusula
+  ['se le hinchan, no, las manos no', { notPos: ['hinchazon_cara_manos'] }],
+  ['le duele. todo bien con el cuerpo', { notPos: ['dolor_muscular_articular'] }],
+
+  // ── Ronda 2: "ya no" + capacidad = signo nuevo; "ya no" + síntoma = resuelto ──
+  ['desde ayer ya no quiere agarrar el pecho', { pos: ['no_puede_beber'] }],
+  ['el bebé ya no se pega al pecho', { pos: ['no_come_bien'] }],
+  ['ya no quiere comer nada', { pos: ['no_come_bien'] }],
+  ['ya no puede tragar', { pos: ['no_puede_beber'] }],
+  ['casi no despierta', { pos: ['inconsciente'] }],
+  ['ya no quiere vivir, dice', { pos: ['ideas_suicidas'] }],
+  ['ya no tiene calentura', { absent: ['fiebre'], pos: ['fiebre_reciente'] }],
+  ['tuvo diarrea pero ya no', { pos: ['diarrea'] }], // "ya no" suelto después de una coma no anula lo dicho antes
+  ['ya dejó de vomitar', { absent: ['vomito'] }],
+  ['no deja de vomitar', { pos: ['vomito_persistente'] }],
+  ['la calentura ya se le quitó desde ayer', { notPos: ['fiebre'], pos: ['fiebre_reciente'] }],
+  ['no se le quita la tos', { pos: ['tos'] }],
+  // eventos: lo que ya pasó sigue contando
+  ['le dio un ataque en la noche, ya se le pasó', { pos: ['convulsiones'] }],
+  ['está embarazada, sangró en la mañana pero ya no le sale sangre', { embarazada: true }],
+  ['nunca ha tenido ataques', { neg: ['convulsiones'] }],
+
+  // ── Ronda 2: canonización (diminutivos, equivalentes, conjugaciones) ──
+  ['lo siento calientito', { pos: ['fiebre'] }],
+  ['la pancita le duele mucho', { notPos: ['dolor_pecho'] }],
+  ['le duele mucho la barriga', { pos: ['dolor_abdominal_intenso'] }],
+  ['tiene los ojitos sumidos y la boquita seca', { pos: ['ojos_hundidos', 'boca_seca'] }],
+  ['le duelen las coyunturas', { pos: ['dolor_muscular_articular'] }],
+  ['agua caliente para el té', { notPos: ['fiebre'] }], // "caliente" sin "está/siente" no es fiebre
+
+  // ── Ronda 2: marcos de co-ocurrencia (orden libre) ──
+  ['siente como un peso en el pecho', { pos: ['dolor_pecho'] }],
+  ['le aprieta el pecho', { pos: ['dolor_pecho'] }],
+  ['no se pega al pecho', { notPos: ['dolor_pecho'] }],
+  ['un perro le mordió la pierna', { pos: ['mordedura_animal'] }],
+  ['lo mordió el perro del vecino', { pos: ['mordedura_animal'] }],
+  ['lo arañó un gato', { pos: ['mordedura_animal'] }],
+  ['tiene la muñeca chueca', { pos: ['fractura'] }],
+  ['se le quebró el tobillo', { pos: ['fractura'] }],
+  ['se torció el tobillo', { notPos: ['fractura'] }], // torcedura no es fractura
+  ['hace del baño con sangre', { pos: ['sangre_heces'] }],
+  ['la popó no trae sangre', { neg: ['sangre_heces'] }],
+  ['fue al baño y le salió sangre de la nariz', { notPos: ['sangre_heces'] }],
+  ['la boca se le ve torcida', { pos: ['cara_caida'] }],
+  ['le picó una culebra', { pos: ['mordedura_serpiente'] }],
+
+  // ── Ronda 2: vocabulario coloquial nuevo ──
+  ['está manchando y tiene cólico', { pos: ['sangrado_vaginal', 'dolor_abdominal'] }],
+  ['ve mosquitas y le zumban los oídos', { pos: ['vision_borrosa', 'zumbido_oidos'] }],
+  ['tiene un dolor constante de cabeza', { pos: ['dolor_cabeza_intenso'] }],
+  ['anda con la cursera', { pos: ['diarrea'] }],
+  ['se le trabó la quijada y echaba espuma por la boca', { pos: ['convulsiones'] }],
+  ['se tomó todas las pastillas de la abuela', { pos: ['intoxicacion'] }],
+  ['le da fatiga cuando camina', { pos: ['dificultad_respirar'] }],
+  ['se cayó de la bici, nada grave', { notPos: ['trauma_grave'] }],
+
+  // ── Ronda 2: números y embarazo/posparto ──
+  ['va en su séptimo mes y le duele la cabeza', { embarazada: true, semanas: 31 }],
+  ['el niño va a cumplir su primer año', { absent: [] }],
+  ['tiene diez días de haberse aliviado y tiene calentura', { pos: ['posparto', 'fiebre'] }],
+  ['tiene tres meses de haber dado a luz', { absent: ['posparto'] }],
 ];
 
 describe('keywordExtract — frases coloquiales', () => {

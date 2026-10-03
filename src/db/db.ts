@@ -10,6 +10,11 @@ import type { CaseRecord } from '../types';
  */
 export interface StoredCase extends CaseRecord {
   sync_state: 0 | 1;
+  /**
+   * true si el servidor respondió en modo demostración (aceptó pero NO guardó).
+   * Quien borre "casos ya sincronizados" debe respetar esto: esos casos no existen en el servidor.
+   */
+  sync_demo?: boolean;
 }
 
 export interface Settings {
@@ -18,6 +23,13 @@ export interface Settings {
   lng?: number;
   /** Nombre o clave de la promotora. Se queda en el dispositivo; nunca se sincroniza. */
   promotora?: string;
+  /**
+   * Token de inscripción del dispositivo (cabecera x-pahtli-device en /api/sync).
+   * Lo entrega la Jurisdicción al inscribir el celular. Nunca se sincroniza ni se muestra.
+   */
+  syncToken?: string;
+  /** Clave del tablero (cabecera x-pahtli-key en /api/cases). Solo en equipos del personal. */
+  dashboardKey?: string;
 }
 
 interface SettingsRow extends Settings {
@@ -42,8 +54,9 @@ export const db = new PahtliDB();
 const DEFAULT_SETTINGS: Settings = { comunidad: '' };
 
 function strip(c: StoredCase): CaseRecord {
-  const { sync_state: _s, ...rest } = c;
+  const { sync_state: _s, sync_demo: _d, ...rest } = c;
   void _s;
+  void _d;
   return rest;
 }
 
@@ -91,10 +104,11 @@ export async function pendingCases(limit = 50): Promise<CaseRecord[]> {
   return rows.slice(0, limit).map(strip);
 }
 
-export async function markSynced(ids: string[]): Promise<void> {
+/** Marca como enviados. `demo` = el servidor no guardó (despliegue de demostración). */
+export async function markSynced(ids: string[], demo = false): Promise<void> {
   if (!ids.length) return;
   await db.transaction('rw', db.cases, async () => {
-    await db.cases.where('case_id').anyOf(ids).modify({ synced: true, sync_state: 1 });
+    await db.cases.where('case_id').anyOf(ids).modify({ synced: true, sync_state: 1, sync_demo: demo });
   });
 }
 

@@ -1,9 +1,10 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
-import type { DeviceTier, ExtractionResult, Findings, Lang, TriageResult } from '../types';
+import type { CaseDecision, DeviceTier, ExtractionResult, Findings, Lang, TriageResult } from '../types';
 import { detectTier } from '../ai/capability';
 import { loadSTT, sttReady } from '../ai/stt';
 import { loadLLM, llmReady } from '../ai/llm';
 import { triage } from '../triage/engine';
+import type { AnsweredQuestion } from '../triage/uncertainty';
 import { lsGet, lsSet } from './storage';
 
 export type ModelState = 'idle' | 'loading' | 'ready' | 'error' | 'unavailable';
@@ -15,11 +16,15 @@ export interface Session {
   extraction: ExtractionResult | null;
   result: TriageResult | null;
   asked: string[];
+  /** Respuestas a las preguntas de seguimiento (known=false = "No sé"). Alimenta el fail-safe de incertidumbre. */
+  answers?: AnsweredQuestion[];
   savedId?: string;
+  /** Decisión de la promotora (se fija al guardar). */
+  decision?: CaseDecision;
   triageMs?: number;
 }
 
-const emptySession: Session = { transcript: '', findings: null, extraction: null, result: null, asked: [] };
+const emptySession: Session = { transcript: '', findings: null, extraction: null, result: null, asked: [], answers: [] };
 
 interface Ctx {
   lang: Lang;

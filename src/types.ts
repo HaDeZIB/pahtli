@@ -71,6 +71,25 @@ export interface CaseRecord {
   sindrome?: Syndrome;      // para vigilancia epidemiológica
   device_tier: DeviceTier;
   synced: boolean;
+  /** Decisión humana sobre el nivel sugerido (la promotora decide). Opcional: casos viejos no la tienen. */
+  decision?: CaseDecision;
+  /** true si Pahtli mostró "No estoy segura — consulta al personal de salud" (src/triage/uncertainty.ts). */
+  uncertain?: boolean;
+  /** Motivos legibles de la incertidumbre (español). Se quedan en el celular. */
+  uncertainty_reasons?: string[];
+  /** Códigos cortos de los motivos (UncertaintyCode en src/triage/uncertainty.ts). Es lo que se sincroniza. */
+  uncertainty_codes?: string[];
+}
+
+/** Decisión de la promotora sobre el nivel. `result.level` sigue siendo lo que sugirieron las reglas. */
+export interface CaseDecision {
+  final_level: TriageLevel;
+  overridden: boolean;
+  /** Código del motivo de una lista cerrada (ver OVERRIDE_REASONS en src/i18n/strings.ts). Seguro para sincronizar. */
+  reason?: string;
+  /** Texto libre opcional de la promotora. Puede contener nombres: se queda en el celular, no se sincroniza. */
+  note?: string;
+  decided_at?: string;
 }
 
 export type Syndrome =

@@ -12,7 +12,7 @@ type State =
   | { kind: 'error' }
   | { kind: 'ok'; ref: Ref };
 
-function Row({ f, label }: { f: FacilityWithDistance; label: string }) {
+function Row({ f, label, lang }: { f: FacilityWithDistance; label: string; lang: Lang }) {
   return (
     <li className="flex items-start gap-3 py-2.5">
       <Clinic size={22} className="mt-0.5 shrink-0 text-brand" />
@@ -21,14 +21,20 @@ function Row({ f, label }: { f: FacilityWithDistance; label: string }) {
         <p className="text-[17px] font-bold leading-snug">{f.nombre}</p>
         <p className="text-[13px] text-muted">{f.tipo} · {f.institucion} · {f.localidad}, {f.municipio}</p>
       </div>
-      <span className="shrink-0 rounded-full bg-sand px-2.5 py-1 text-[14px] font-extrabold tabular-nums">{formatKm(f.km)}</span>
+      <span className="shrink-0 rounded-xl bg-sand px-2.5 py-1 text-right text-[12px] font-semibold leading-tight">
+        <span className="block text-[16px] font-extrabold tabular-nums">{formatKm(f.km)}</span>
+        {t('referral_straight', lang)}
+      </span>
     </li>
   );
 }
 
 /** Centro o hospital más cercano (catálogo CLUES precacheado), según el nivel de triaje. Funciona sin internet. */
-export function Referral({ level, lang }: { level: TriageLevel; lang: Lang }) {
+export function Referral({ level: suggested, lang, uncertain = false }: { level: TriageLevel; lang: Lang; uncertain?: boolean }) {
   const [st, setSt] = useState<State>({ kind: 'loading' });
+  // Si Pahtli no está segura, siempre se muestra al menos el centro de salud más cercano para consultar.
+  const level: TriageLevel = uncertain && suggested === 'aqui' ? 'centro_hoy' : suggested;
+  const centerLabel = uncertain && suggested === 'aqui' ? 'referral_uncertain' : 'referral_center';
 
   useEffect(() => {
     let alive = true;
@@ -62,10 +68,10 @@ export function Referral({ level, lang }: { level: TriageLevel; lang: Lang }) {
         <>
           <ul className="mt-1 divide-y divide-line">
             {st.ref.primary.map((f) => (
-              <Row key={f.clues} f={f} label={t(level === 'urgencia' ? 'referral_hospital' : 'referral_center', lang)} />
+              <Row key={f.clues} f={f} lang={lang} label={t(level === 'urgencia' ? 'referral_hospital' : centerLabel, lang)} />
             ))}
             {st.ref.alternative.map((f) => (
-              <Row key={`alt-${f.clues}`} f={f} label={t(level === 'urgencia' ? 'referral_fallback' : 'referral_followup', lang)} />
+              <Row key={`alt-${f.clues}`} f={f} lang={lang} label={t(level === 'urgencia' ? 'referral_fallback' : 'referral_followup', lang)} />
             ))}
           </ul>
           <p className="mt-2 text-[12px] text-muted">{t('referral_note', lang)}</p>

@@ -80,6 +80,89 @@ export const EXTRA_SYNONYMS: Partial<Record<SymptomKeyStrict, string[]>> = {
   ardor_orinar: ['le arde cuando hace del uno', 'le arde cuando orina', 'le arde al hacer del uno', 'le arde cuando hace pipi', 'le arde mucho cuando hace del uno', 'le arde al orinar', 'ardor al hacer pipi', 'le arde la orina'],
 };
 
+/**
+ * Ronda 2 (docs/eval.md §4): vocabulario coloquial de México por grupo. Fuentes de apoyo: la redacción de
+ * los signos de alarma del embarazo del IMSS ("ver lucecitas", "zumbidos de oídos", "dolor constante de
+ * cabeza", "hinchazón de manos o cara", "dolor intenso en la boca del estómago"; imss.gob.mx/_maternidad2/
+ * estas-embarazada/signos-alarma), los términos populares de Gaceta UNAM (empacho, caída de mollera) y el
+ * habla coloquial común. NO validado con promotoras: revisar en campo. Gracias a CANON, cada frase cubre
+ * diminutivos ("pancita"), equivalentes ("barriga/estómago") y conjugaciones ("le duelen").
+ */
+export const EXTRA_SYNONYMS_R2: Partial<Record<SymptomKeyStrict, string[]>> = {
+  // generales
+  convulsiones: ['se puso tieso', 'se puso rigido', 'se puso duro', 'se le trabo la quijada', 'echaba espuma por la boca', 'se le fueron los ojos para arriba', 'se le fueron los ojos para atras', 'se le pusieron los ojos en blanco', 'le dieron temblorinas'],
+  inconsciente: ['no vuelve en si', 'no responde cuando le hablo', 'no responde cuando le hablan', 'se quedo privado', 'se quedo privada'],
+  letargico: ['aletargado', 'aletargada', 'esta como ido', 'esta como ida', 'esta como dopado', 'esta como dopada', 'no hace caso cuando le hablan', 'se la pasa dormido', 'se la pasa dormida', 'no se despabila'],
+  no_puede_beber: ['no puede tomar', 'no puede traga', 'no traga nada', 'no le pasa nada', 'no puede tomar suero', 'no puede tomar agua'],
+  vomita_todo: ['todo lo que le doy lo vomita', 'vomita hasta el agua', 'vomita hasta el suero', 'no le para nada', 'todo lo echa', 'no retiene ni el agua'],
+  debilidad_general: ['no se puede parar', 'no se aguanta parado', 'no se aguanta parada', 'esta tirado', 'esta tirada', 'no tiene fuerzas para nada'],
+  desmayo: ['le dio un vahido', 'se desvanecio', 'se cayo desmayada', 'perdio el sentido'],
+  sangrado_abundante: ['sangra a chorros', 'echa mucha sangre', 'se esta desangrando', 'empapo las toallas', 'empapa los trapos', 'llena las toallas', 'bastante sangre'],
+  // respiratorio
+  dificultad_respirar: ['se fatiga', 'le da fatiga', 'se fatiga mucho', 'se le va el aire', 'no le entra aire', 'no jala aire', 'ahogo', 'se siente ahogado', 'se siente ahogada', 'se queda sin aire', 'respira con mucho trabajo', 'le cuesta respira'],
+  respira_rapido: ['respira muy aprisa', 'respira aprisa', 'respira acelerado', 'respira acelerada', 'resuella'],
+  tiraje: ['se le hunde entre las costillas', 'se le sume entre las costillas', 'se le sumen las costillas', 'se le mete entre las costillas', 'se le hunde abajo del pecho'],
+  estridor: ['ronquido al jalar aire', 'hace ruido cuando jala aire', 'suena ronco al jalar aire'],
+  sibilancias: ['le chifla el pecho', 'le silba al respirar', 'le chilla al respirar'],
+  cianosis: ['se puso morada', 'se pone morada', 'se pone azul', 'labios azules', 'boca morada'],
+  // digestivo / hidratación
+  diarrea: ['cursera', 'cursiento', 'cursienta', 'anda de la cursera', 'hace del bano aguado', 'hace del bano aguadito', 'obra mucho', 'obrando aguado', 'obra aguadito', 'evacua mucho', 'popo como agua', 'del bano como agua'],
+  sangre_heces: ['hace del bano con sangre', 'hizo del bano con sangre', 'evacua con sangre', 'obra con sangre', 'popo con moco y sangre', 'diarrea con moco y sangre', 'caca con sangre'],
+  vomito: ['vomitadera', 'echa el vomito', 'arrojando', 'volvio el estomago'],
+  vomito_persistente: ['vomita seguido', 'vomitando a cada rato', 'vomita y vomita', 'vomito tras vomito', 'no para de devolver'],
+  dolor_abdominal: ['dolor de tripas', 'le duele el vientre', 'torzon', 'colico', 'le duele panza', 'dolorcito en el bajo vientre', 'dolor en el bajo vientre'],
+  dolor_abdominal_intenso: ['le duele panza fuerte', 'le duele fuerte panza', 'le duele muchisimo panza', 'se retuerce de dolor', 'se dobla de dolor', 'grita del dolor de panza'],
+  dolor_epigastrio: ['dolor en la boca del estomago', 'le arde la boca del estomago'],
+  irritable: ['chillon', 'chillona', 'esta chillon', 'esta chillona', 'muy lloron', 'muy llorona', 'no se le quita lo chillon'],
+  boca_seca: ['boca seca', 'lengua reseca', 'labios partidos'],
+  bebe_con_avidez: ['toma con desesperacion', 'se lo toma con desesperacion', 'bebe con desesperacion', 'toma con ansias', 'pide agua a cada rato', 'tiene mucha sed', 'mucha sed'],
+  bebe_mal: ['no quiere toma', 'toma muy poco', 'casi no quiere toma'],
+  ojos_hundidos: ['ojos sumidos', 'se le sumieron los ojos', 'se le hundieron los ojos'],
+  mollera_hundida: ['se le cayo la mollera', 'caida de mollera', 'mollera sumida'],
+  manos_pies_frios: ['manos heladas', 'pies helados', 'manos y pies helados', 'esta frio de las manos'],
+  // fiebre / piel
+  fiebre: ['se siente caliente', 'lo siento caliente', 'la siento caliente', 'arde en fiebre', 'hirviendo en calentura', 'le subio la calentura', 'le subio la temperatura', 'anda con calentura', 'con temperatura', 'calenturiento', 'calenturienta'],
+  rigidez_nuca: ['no puede bajar la cabeza', 'no puede agachar la cabeza', 'tiene el cuello duro', 'cuello tieso'],
+  sarpullido: ['le brotaron ronchas', 'le salieron ronchas', 'le salieron granos', 'le brotaron granos', 'brotes en la piel', 'manchas rojas'],
+  sangrado_mucosas: ['le sale sangre de la nariz', 'echa sangre por la nariz', 'le sale sangre de las encias', 'le sangran las encias'],
+  dolor_muscular_articular: ['le duele todo el cuerpo', 'le duelen los huesos', 'tiene el cuerpo cortado', 'le duelen las coyunturas'],
+  // neurológico
+  dolor_cabeza_intenso: ['le duele la cabeza fuerte', 'le duele fuerte la cabeza', 'dolor de cabeza bien fuerte', 'dolor constante de cabeza', 'dolor de cabeza constante', 'le duele la cabeza todo el tiempo', 'le estalla la cabeza', 'le revienta la cabeza'],
+  vision_borrosa: ['ve mosquitas', 've moscas', 've chispitas', 've lucecitas de colores', 've nublado', 've todo borroso'],
+  zumbido_oidos: ['le suenan los oidos', 'le zumban los oidos', 'zumbido de oidos'],
+  dificultad_hablar: ['habla enredado', 'habla mocho', 'no le salen las palabras', 'arrastra la lengua'],
+  debilidad_un_lado: ['no puede mover el lado', 'se le durmio el brazo y la pierna', 'se le paralizo la mitad'],
+  confusion: ['no sabe ni donde esta', 'no reconoce a nadie', 'dice cosas sin sentido', 'esta desorientado'],
+  // embarazo / posparto
+  sangrado_vaginal: ['esta manchando', 'anda manchando', 'le salio sangre por abajo', 'sangrado por abajo', 'le baja sangre'],
+  salida_liquido_vaginal: ['le esta saliendo agua por abajo', 'le sale agua por abajo', 'se mojo sin orinar', 'se le salio la fuente'],
+  movimientos_fetales_disminuidos: ['no lo siente moverse', 'no siente que se mueva', 'casi no se mueve el bebe', 'el bebe ya no patea', 'ya no lo siente patear'],
+  contracciones: ['le vienen los dolores', 'le dan los dolores', 'le empezaron los dolores', 'dolores de parto'],
+  hinchazon_cara_manos: ['se le hinchan las manos', 'se le hincha la cara', 'se le hinchan los pies', 'manos hinchadas', 'cara hinchada', 'los anillos no le entran'],
+  posparto: ['haberse aliviado', 'haber dado a luz', 'haber parido', 'despues del parto', 'despues de parir', 'acaba de tener su bebe', 'tuvo su bebe hace', 'esta en cuarentena'],
+  pechos_rojos_dolorosos: ['pecho rojo', 'pecho duro y rojo', 'se le endurecio el pecho', 'pecho inflamado', 'pechos rojos', 'pecho rojo y duro'],
+  sangrado_aumenta: ['cada vez le baja mas sangre', 'le volvio a bajar sangre', 'le volvio a bajar mucha sangre', 'le volvio el sangrado'],
+  depresion_grave: ['anda muy triste', 'llora todo el dia', 'no quiere hacer nada'],
+  ideas_suicidas: ['no quiere vivir', 'ya no quiere vivir', 'quiere morirse', 'mejor morirse', 'se quiere colgar', 'se quiere aventar', 'quiere quitarse la vida', 'habla de matarse', 'dice que se va a matar', 'piensa en matarse', 'quiere desaparecer'],
+  // recién nacido
+  no_come_bien: ['no agarra pecho', 'no se pega al pecho', 'no se pega pecho', 'no quiere pecho', 'no come', 'rechaza el pecho', 'mama sin fuerza', 'mama sin ganas', 'no succiona', 'no chupa'],
+  se_siente_frio: ['esta helado', 'esta helada', 'lo siento helado', 'la siento helada'],
+  no_se_mueve: ['no se mueve nada', 'esta como trapo', 'esta flojo'],
+  // cardiovascular
+  dolor_pecho: ['peso en el pecho', 'presion en el pecho', 'punzada en el pecho', 'le oprime el pecho', 'le duele el corazon', 'dolor que se le corre al brazo', 'se le corre al brazo izquierdo'],
+  sudor_frio: ['suda frio', 'sudor frio', 'esta sudando frio', 'sudadera fria'],
+  // trauma / mordeduras / intoxicaciones
+  trauma_grave: ['se cayo del caballo', 'lo tumbo el caballo', 'la tumbo el caballo', 'lo pateo un caballo', 'se pego fuerte en la cabeza', 'se pego duro en la cabeza', 'se dio un golpe fuerte en la cabeza', 'se descalabro', 'se volco', 'volcadura', 'le dieron un balazo', 'balazo', 'lo acuchillaron', 'navajazo', 'lo machucaron'],
+  fractura: ['se le quebro', 'se le ve el hueso', 'se descoyunto', 'hueso salido', 'se le zafo'],
+  quemadura: ['se le cayo agua caliente', 'se echo encima agua caliente', 'se quemo con aceite', 'se quemo con la lumbre', 'se quemo con el comal'],
+  mordedura_serpiente: ['le pico una culebra', 'lo mordio una culebra', 'mordida de culebra', 'picadura de vibora'],
+  mordedura_animal: ['le mordio un perro', 'un perro le mordio', 'lo mordio el perro', 'mordida de perro', 'lo araño un gato', 'mordida de murcielago'],
+  intoxicacion: ['se tomo muchas pastillas', 'se tomo todas las pastillas', 'se tomo un frasco de pastillas', 'sobredosis', 'se tomo el raticida', 'tomo raticida', 'matarratas', 'tomo herbicida', 'tomo insecticida', 'tomo paraquat', 'tomo gasolina', 'tomo petroleo', 'liquido para matar la plaga', 'se tomo el liquido de la plaga'],
+  // urinario
+  ardor_orinar: ['le quema al orinar', 'le arde al hacer pipi', 'chistate', 'orina a cada rato', 'orina seguido'],
+  no_puede_orinar: ['no puede hacer del uno', 'no le sale la orina', 'se le tapo la orina'],
+};
+
 /** Si se detecta la clave de la izquierda, también se marca la de la derecha (más general). */
 const IMPLIES: Partial<Record<SymptomKeyStrict, SymptomKeyStrict[]>> = {
   dolor_cabeza_intenso: ['dolor_cabeza'],
@@ -154,7 +237,55 @@ const HUELE_BODY = new RegExp(`\\bhuele(n)?\\b(?= (?:mucho |muchisimo |bien |har
 export function asrFix(normalized: string): string {
   return normalized.replace(HUELE_BODY, 'duele$1');
 }
-const symptomTokens = (s: string) => asrFix(normalizeText(s)).split(' ').filter((t) => t && !ARTICLES.has(t)).map(phonetic);
+/**
+ * Formas canónicas (ronda 2, docs/eval.md): se aplican IGUAL al texto y a los sinónimos, así que una
+ * sola frase de sinónimo cubre diminutivos ("ojitos", "pancita", "calientito"), variantes de la misma
+ * parte del cuerpo ("barriga", "estómago" = "panza") y conjugaciones ("le duelen" = "le duele",
+ * "mordió/morder/mordida", "se le hinchan/hinchada/inflamada").
+ * Los colores ("amarillito", "moradito", "azulito") NO se canonizan: "amarillo" o "azul" solos
+ * no deben bastar para un signo.
+ */
+const CANON: Record<string, string> = (() => {
+  const m: Record<string, string> = {};
+  const set = (to: string, ...from: string[]) => { for (const f of from) m[f] = to; };
+  // partes del cuerpo (diminutivos y equivalentes)
+  set('ojos', 'ojitos'); set('ojo', 'ojito');
+  set('pecho', 'pechito');
+  set('panza', 'pancita', 'panzita', 'barriga', 'barriguita', 'estomago', 'estomaguito', 'tripita', 'tripitas');
+  set('manos', 'manitas', 'manitos'); set('mano', 'manita', 'manito');
+  set('pies', 'piecitos', 'patitas'); set('pie', 'piecito');
+  set('brazos', 'bracitos'); set('brazo', 'bracito');
+  set('piernas', 'piernitas'); set('pierna', 'piernita');
+  set('cara', 'carita'); set('boca', 'boquita'); set('cabeza', 'cabecita'); set('cuerpo', 'cuerpecito', 'cuerpito');
+  set('dedos', 'deditos'); set('dedo', 'dedito'); set('labios', 'labiecitos', 'labiecito', 'labiesitos');
+  set('nariz', 'naricita'); set('costillas', 'costillitas'); set('mollera', 'mollerita'); set('ombligo', 'ombliguito');
+  set('lengua', 'lenguita'); set('cuello', 'cuellito'); set('muneca', 'munequita'); set('tobillo', 'tobillito');
+  set('palmas', 'palmitas'); set('unas', 'unitas');
+  // estados y cantidades
+  set('caliente', 'calientito', 'calientita', 'calientitos', 'calientitas');
+  set('duro', 'durito'); set('dura', 'durita');
+  set('rapido', 'rapidito', 'rapidita'); set('poco', 'poquito', 'poquita');
+  set('tos', 'tosecita'); set('calentura', 'calenturita');
+  set('ronchas', 'ronchitas'); set('granos', 'granitos'); set('puntos', 'puntitos'); set('pintas', 'pintitas'); set('manchas', 'manchitas');
+  set('agua', 'aguita'); set('sangre', 'sangrita');
+  set('helado', 'heladito'); set('helada', 'heladita'); set('flojo', 'flojito'); set('floja', 'flojita');
+  set('dormido', 'dormidito'); set('dormida', 'dormidita');
+  // verbos (una forma por verbo)
+  set('duele', 'duelen', 'dolia', 'dolian', 'dolio', 'doliendo');
+  set('mordio', 'morder', 'mordida', 'mordido', 'mordidas', 'mordia', 'mordieron', 'muerde', 'muerden', 'mordedura');
+  set('hinchado', 'hinchada', 'hinchados', 'hinchadas', 'hincha', 'hinchan', 'hincho', 'hincharon', 'hinchando', 'hinchazon', 'hinchandose',
+    'inflamado', 'inflamada', 'inflamados', 'inflamadas', 'inflama', 'inflaman', 'inflamo', 'inflamaron');
+  set('agarra', 'agarrar', 'agarro', 'agarraba', 'agarrando');
+  set('mama', 'mamar', 'mamo', 'mamaba', 'mamando');
+  set('come', 'comer', 'comio', 'comia', 'comiendo');
+  set('toma', 'tomar', 'tomo', 'tomaba', 'tomando');
+  set('traga', 'tragar', 'trago');
+  set('sangra', 'sangrar', 'sangrando', 'sangro', 'sangraba');
+  set('quiere', 'quiso', 'queria'); set('puede', 'pudo', 'podia');
+  return m;
+})();
+const canon = (t: string) => CANON[t] ?? t;
+const symptomTokens = (s: string) => asrFix(normalizeText(s)).split(' ').filter((t) => t && !ARTICLES.has(t)).map(canon).map(phonetic);
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Índice de sinónimos (se construye una vez)
@@ -175,8 +306,10 @@ const SYN_INDEX: SynEntry[] = (() => {
   for (const [key, def] of Object.entries(SYMPTOMS) as [SymptomKeyStrict, { synonyms: string[] }][]) {
     for (const s of def.synonyms) add(key, s);
   }
-  for (const [key, list] of Object.entries(EXTRA_SYNONYMS) as [SymptomKeyStrict, string[]][]) {
-    for (const s of list) add(key, s);
+  for (const extra of [EXTRA_SYNONYMS, EXTRA_SYNONYMS_R2]) {
+    for (const [key, list] of Object.entries(extra) as [SymptomKeyStrict, string[]][]) {
+      for (const s of list) add(key, s);
+    }
   }
   // Etiquetas del catálogo (sin paréntesis) y la clave en palabras: sirven para mapear
   // texto "estándar" (p. ej. la salida parafraseada del LLM) además del coloquial.
@@ -201,7 +334,8 @@ const PERSIST_VERBS = new Set(['quita', 'quito', 'baja', 'bajo', 'para', 'paro',
 /** Tras una negación, la palabra "si" de "no sé si" marca incertidumbre. */
 const UNCERTAIN_AFTER_NO = new Set(['se', 'sabe', 'sabemos', 'saben', 'estoy', 'esta', 'recuerdo', 'acuerdo']);
 
-type Polarity = 'pos' | 'neg' | 'unknown';
+/** 'resolved' = lo tuvo y ya se le quitó ("ya no vomita"): no se marca (la fiebre resuelta → fiebre_reciente). */
+type Polarity = 'pos' | 'neg' | 'unknown' | 'resolved';
 
 /**
  * Mira hasta 4 palabras antes del inicio de la coincidencia (sin cruzar fronteras de cláusula)
@@ -235,6 +369,144 @@ function polarityAt(toks: string[], start: number, end: number): Polarity {
     return 'neg';
   }
   return 'pos';
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Ronda 2: huecos, "ya no", eventos y marcos de co-ocurrencia (docs/eval.md)
+// ─────────────────────────────────────────────────────────────────────────────
+
+/** Palabras de relleno que pueden ir DENTRO de una frase de sinónimo sin cambiar su sentido. */
+const FILLERS = new Set(
+  ['mucho', 'mucha', 'muchos', 'muchas', 'muchisimo', 'muchisima', 'bien', 'muy', 'bastante', 'harto', 'harta', 'todo', 'toda', 'todos', 'todas',
+    'su', 'sus', 'mi', 'mis', 'le', 'les', 'se', 'me', 'te', 'lo', 'nos', 'tan', 're', 'medio', 'algo', 'tantito', 'como', 'ya', 'demasiado', 'asi', 'feo', 'horrible', 'otra', 'vez']
+    .map(phonetic),
+);
+/** Verbos modales que pueden ir justo después de un "no" del sinónimo: "no QUIERE agarrar" = "no agarra". */
+const MODAL_AFTER_NO = new Set(['quiere', 'puede', 'ha', 'han', 'he', 'a', 'an'].map(phonetic));
+const MAX_GAP = 2;
+
+/** Fin (exclusivo) de una coincidencia con hasta MAX_GAP palabras de relleno en total; 0 si no hay. */
+function gappedMatchEnd(toks: string[], start: number, syn: string[]): number {
+  let j = start + 1;
+  let gaps = 0;
+  for (let k = 1; k < syn.length; k++) {
+    while (j < toks.length && toks[j] !== syn[k]) {
+      const w = toks[j];
+      const modalOk = syn[k - 1] === 'no' && MODAL_AFTER_NO.has(w);
+      if (w === '|' || gaps >= MAX_GAP || !(FILLERS.has(w) || modalOk)) return 0;
+      gaps++;
+      j++;
+    }
+    if (j >= toks.length) return 0;
+    j++;
+  }
+  return gaps > 0 ? j : 0;
+}
+
+/**
+ * Signos que cuentan aunque ya hayan pasado ("ya se le pasó el ataque" sigue siendo convulsión en esta
+ * enfermedad; un sangrado en el embarazo cuenta aunque ya paró). Para estas claves, "ya no / ya dejó de /
+ * ya se le pasó" NO anula el hallazgo. Una negación simple ("no ha tenido ataques") sí lo niega.
+ */
+const EVENT_KEYS = new Set<SymptomKeyStrict>([
+  'convulsiones', 'desmayo', 'inconsciente', 'cianosis', 'apnea', 'trauma_grave', 'golpe_caida', 'fractura', 'quemadura',
+  'mordedura_serpiente', 'mordedura_animal', 'intoxicacion', 'vomito_sangre', 'heces_negras', 'sangrado_vaginal',
+  'salida_liquido_vaginal', 'ideas_suicidas', 'cara_caida', 'debilidad_un_lado', 'dificultad_hablar', 'perdida_vision_subita',
+  'sangre_heces', 'posparto',
+]);
+const RESOLVE_VERBS = new Set(['quito', 'paso', 'bajo', 'calmo', 'compuso', 'corto', 'sano', 'curo', 'alibio'].map(phonetic));
+
+/** ¿Hay "ya ... se le quitó / pasó / bajó" justo después de la coincidencia (misma cláusula)? */
+function resolvedAfter(toks: string[], end: number): boolean {
+  for (let i = end, n = 0; i < toks.length && n < 5; i++, n++) {
+    const w = toks[i];
+    if (w === '|' || w === 'pero' || w === 'aunque') return false;
+    if (RESOLVE_VERBS.has(w)) {
+      // "no se le quita" = persiste
+      for (let j = Math.max(end, i - 3); j < i; j++) if (toks[j] === 'no') return false;
+      return true;
+    }
+  }
+  return false;
+}
+
+/** ¿"ya dejó de <síntoma>" / "dejó de <síntoma>" justo antes? ("no deja de vomitar" = persiste). */
+function stoppedBefore(toks: string[], start: number): boolean {
+  if (toks[start - 1] !== 'de' || !['dejo', 'deja', 'dejaba'].includes(toks[start - 2])) return false;
+  return toks[start - 3] !== 'no';
+}
+
+/** ¿El "no" que niega está precedido por "ya"? (polarityAt devuelve 'unknown' en ese caso). */
+function yaNoBefore(toks: string[], start: number): boolean {
+  for (let i = start - 1, n = 0; i >= 1 && n < 5; i--, n++) {
+    if (BREAKERS.has(toks[i])) return false;
+    if (toks[i] === 'no') return toks[i - 1] === 'ya';
+  }
+  return false;
+}
+
+/**
+ * Polaridad con la lógica de "ya no" de la ronda 2:
+ *  - "ya no + capacidad" ("ya no quiere agarrar el pecho", "ya no despierta") = signo NUEVO: el sinónimo
+ *    empieza con "no" ("no agarra el pecho"), así que el "ya" de antes no lo niega → 'pos'.
+ *  - "ya no + síntoma" ("ya no vomita", "ya no tiene calentura"), "ya dejó de sangrar", "la calentura ya
+ *    se le quitó" = resuelto → 'resolved' (no se marca; la fiebre resuelta pasa a fiebre_reciente).
+ *  - En EVENT_KEYS lo resuelto sigue contando → 'pos'.
+ */
+function polarityFor(key: SymptomKeyStrict, toks: string[], start: number, end: number): Polarity {
+  const base = polarityAt(toks, start, end);
+  const resolved = (base === 'unknown' && yaNoBefore(toks, start)) || (base === 'pos' && (stoppedBefore(toks, start) || resolvedAfter(toks, end)));
+  if (!resolved) return base;
+  return EVENT_KEYS.has(key) ? 'pos' : 'resolved';
+}
+
+/**
+ * Marcos de co-ocurrencia: dos grupos de palabras en la misma cláusula, a pocas palabras, en cualquier
+ * orden (o A antes de B). Cubren el orden libre del habla ("un perro le mordió" / "lo mordió el perro",
+ * "la muñeca chueca", "la boca se le ve torcida", "hace del baño con sangre"). Si entre A y B hay
+ * una negación ("la popó no trae sangre"), el hallazgo queda negado.
+ */
+interface Frame { key: SymptomKeyStrict; a: string[]; b: string[]; dist: number; order?: 'ab'; guardA?: (toks: string[], i: number) => boolean }
+const FRAMES: Frame[] = ([
+  { key: 'dolor_pecho', a: ['pecho'], b: ['duele', 'dolor', 'aprieta', 'apretado', 'apretando', 'oprime', 'opresion', 'peso', 'presion', 'punzada', 'piquete', 'aplasta', 'aplastan'], dist: 3 },
+  { key: 'hinchazon_cara_manos', a: ['cara', 'manos', 'mano', 'parpados', 'piernas', 'dedos'], b: ['hinchado'], dist: 3 },
+  { key: 'mordedura_animal', a: ['perro', 'perrito', 'perra', 'gato', 'gatito', 'murcielago', 'raton', 'rata', 'mapache', 'tlacuache', 'zorro', 'zorrillo', 'coyote', 'chango', 'mono', 'ardilla', 'tejon', 'puerco', 'cerdo', 'burro', 'caballo', 'animal'], b: ['mordio', 'arano', 'aranazo', 'rasguno'], dist: 4 },
+  { key: 'mordedura_serpiente', a: ['vibora', 'culebra', 'serpiente', 'cascabel', 'nauyaca', 'coralillo'], b: ['mordio', 'pico', 'picadura', 'pica'], dist: 4 },
+  { key: 'fractura', a: ['brazo', 'pierna', 'muneca', 'tobillo', 'dedo', 'mano', 'pie', 'hueso', 'codo', 'rodilla', 'hombro', 'clavicula', 'cadera', 'muslo', 'espinilla', 'antebrazo'], b: ['chueco', 'chueca', 'quebro', 'quebrado', 'quebrada', 'roto', 'rota', 'fracturo', 'fracturado', 'fracturada', 'deforme', 'zafo', 'zafado', 'zafada'], dist: 3 },
+  { key: 'dolor_muscular_articular', a: ['cuerpo', 'huesos', 'musculos', 'coyunturas', 'articulaciones'], b: ['duele', 'dolor', 'cortado', 'molido'], dist: 3 },
+  {
+    key: 'sangre_heces', order: 'ab', dist: 4, b: ['sangre', 'sangrado', 'sangra'],
+    a: ['popo', 'caca', 'heces', 'excremento', 'evacuacion', 'evacuaciones', 'evacua', 'asientos', 'diarrea', 'diarreas', 'obra', 'obrando', 'pupu', 'bano'],
+    // "baño" solo como "hace/hizo del baño"
+    guardA: (t: string[], i: number) => t[i] !== phonetic('bano') || t[i - 1] === 'del',
+  },
+  { key: 'fiebre', order: 'ab', dist: 3, a: ['siente', 'siento', 'sentimos', 'sentia', 'anda', 'amanecio', 'nota', 'noto', 'puso', 'esta'], b: ['caliente', 'hirviendo'] },
+  { key: 'cara_caida', a: ['boca', 'cara'], b: ['torcida', 'torcido', 'chueca', 'chueco', 'caida', 'ladeada', 'jalada', 'colgada'], dist: 3 },
+] as Frame[]).map((f) => ({ ...f, a: f.a.map(phonetic), b: f.b.map(phonetic) }));
+
+const NEG_INSIDE = new Set(['no', 'sin', 'ni', 'nunca']);
+const FRAME_STOP = new Set(['|', 'pero', 'aunque', 'sino']);
+
+function frameHits(toks: string[]): Hit[] {
+  const out: Hit[] = [];
+  for (const fr of FRAMES) {
+    for (let i = 0; i < toks.length; i++) {
+      const isA = fr.a.includes(toks[i]) && (!fr.guardA || fr.guardA(toks, i));
+      const isB = fr.order !== 'ab' && fr.b.includes(toks[i]);
+      if (!isA && !isB) continue;
+      const other = isA ? fr.b : fr.a;
+      for (let j = i + 1, n = 0; j < toks.length && n <= fr.dist; j++, n++) {
+        if (FRAME_STOP.has(toks[j])) break;
+        if (!other.includes(toks[j])) continue;
+        if (!isA && fr.guardA && !fr.guardA(toks, j)) continue;
+        const between = toks.slice(i + 1, j);
+        const pol: Polarity = between.some((w) => NEG_INSIDE.has(w)) ? 'neg' : polarityFor(fr.key, toks, i, j + 1);
+        out.push({ key: fr.key, start: i, end: j + 1, pol });
+        break;
+      }
+    }
+  }
+  return out;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -388,10 +660,21 @@ export function parseNumbers(raw: string): NumericOut {
     }
   }
   const ord = s.match(/\b(primer|primero|segundo|tercer|tercero|cuarto|quinto|sexto|septimo|setimo|octavo|noveno) mes(?: de embarazo| de gestacion)?\b/);
-  if (ord && o.semanas_embarazo === undefined && /embaraz|encinta|esperando|gestacion/.test(s)) {
+  // "va en su octavo mes" / "ya está en su séptimo mes": el mes ordinal con "su" solo se usa para el embarazo
+  // (a un bebé se le dice "de 8 meses").
+  const ordPreg = ord && new RegExp(`\\b(?:va en|esta en|anda en|ya va en|ya esta en|cumple|cumplio|entro a|entro en) (?:su|el) ${ord[1]} mes\\b`).test(s);
+  if (ord && o.semanas_embarazo === undefined && (ordPreg || /embaraz|encinta|esperando|gestacion/.test(s))) {
     o.semanas_embarazo = Math.ceil(ORDINAL_MONTH[ord[1]] * 4.345);
     o.embarazo_por_numero = true;
     s = blank(s, ord.index!, ord[0].length);
+  }
+
+  // Días desde el parto: "tiene 2 semanas de haberse aliviado / de haber dado a luz / de que se alivió"
+  const pp = new RegExp(`${NUM} (dias?|diitas?|semanas?|semanitas?|mes(?:es)?) de (?:haberse aliviado|haber dado a luz|haber parido|que se alivio|que dio a luz|que tuvo (?:a )?(?:su |el |la )?(?:bebe|nino|nina)|parida|aliviada)`).exec(s);
+  if (pp) {
+    const d = unitToDays(parseFloat(pp[1]), pp[2]);
+    if (d !== undefined) o.posparto_dias = d;
+    s = blank(s, pp.index, pp[0].length);
   }
 
   // Edad en días/semanas de nacido (antes de la duración: "tiene 10 dias de nacido")
@@ -523,7 +806,16 @@ function findSymptomHits(toks: string[]): Hit[] {
     for (let i = 0; i + n <= toks.length; i++) {
       let ok = true;
       for (let k = 0; k < n; k++) if (toks[i + k] !== e.toks[k]) { ok = false; break; }
-      if (ok) { hits.push({ key: e.key, start: i, end: i + n, pol: polarityAt(toks, i, i + n) }); found = true; }
+      if (ok) { hits.push({ key: e.key, start: i, end: i + n, pol: polarityFor(e.key, toks, i, i + n) }); found = true; }
+    }
+    // Coincidencia con huecos: 1–2 palabras de relleno dentro de la frase ("le duele TODO el cuerpo",
+    // "se le hinchan MUCHO las manos", "no QUIERE agarrar el pecho").
+    if (!found && n >= 2) {
+      for (let i = 0; i < toks.length; i++) {
+        if (toks[i] !== e.toks[0]) continue;
+        const end = gappedMatchEnd(toks, i, e.toks);
+        if (end > 0) { hits.push({ key: e.key, start: i, end, pol: polarityFor(e.key, toks, i, end) }); found = true; }
+      }
     }
     if (!found && e.compact.length >= 9) {
       let from = 0;
@@ -535,11 +827,12 @@ function findSymptomHits(toks: string[]): Hit[] {
         // debe empezar y terminar en frontera de palabra del texto compacto
         const startsAtWord = at === 0 || charTok[at - 1] !== st;
         const endsAtWord = at + e.compact.length >= charTok.length || charTok[at + e.compact.length] !== en - 1;
-        if (startsAtWord && endsAtWord) hits.push({ key: e.key, start: st, end: en, pol: polarityAt(toks, st, en) });
+        if (startsAtWord && endsAtWord) hits.push({ key: e.key, start: st, end: en, pol: polarityFor(e.key, toks, st, en) });
         from = at + 1;
       }
     }
   }
+  hits.push(...frameHits(toks));
   // Anular coincidencias contenidas en frases de claves que las contradicen
   return hits.filter((h) => {
     const killers = SUPPRESSED_INSIDE[h.key];
@@ -565,6 +858,8 @@ export function keywordExtract(text: string): Findings {
   for (const h of hits) {
     if (h.pol === 'pos') pos.add(h.key);
     else if (h.pol === 'neg') neg.add(h.key);
+    // "ya no tiene calentura" / "la calentura ya se le quitó": fiebre en los últimos días (cuenta para dengue)
+    else if (h.pol === 'resolved' && h.key === 'fiebre') pos.add('fiebre_reciente');
   }
   for (const k of [...pos]) for (const p of IMPLIES[k] ?? []) pos.add(p);
   for (const k of neg) if (!pos.has(k)) f.sintomas[k] = false;
@@ -599,6 +894,8 @@ export function keywordExtract(text: string): Findings {
   const sex = f.embarazada === true || f.sintomas.posparto === true ? 'F' : detectSex(normToks);
   if (sex) f.sexo = sex;
 
+  // "tiene 10 días de haberse aliviado" = posparto aunque no se diga "dio a luz"
+  if (nums.posparto_dias !== undefined && nums.posparto_dias <= 42 && f.sintomas.posparto === undefined && f.embarazada !== true) f.sintomas.posparto = true;
   // "dio a luz hace 3 meses" ya no es puerperio (> 6 semanas)
   if (f.sintomas.posparto === true && nums.posparto_dias !== undefined && nums.posparto_dias > 42) delete f.sintomas.posparto;
 

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { Syndrome, TriageLevel } from '../types';
-import { detectOutbreaks, normalizeComunidad, type SurveillanceCase } from './outbreak';
+import { detectOutbreaks, effectiveLevel, normalizeComunidad, type SurveillanceCase } from './outbreak';
 import { generateSeedCases, isSeedCase } from './seed';
 import { mergeCases } from './merge';
 
@@ -78,6 +78,35 @@ describe('detectOutbreaks', () => {
     expect(a[0].syndrome).toBe('diarrea_sangre');
     expect(Date.parse(a[0].first_at)).toBeLessThan(Date.parse(a[0].last_at));
     expect(a[0].case_ids).toHaveLength(2);
+  });
+});
+
+describe('decisión humana (decision.final_level)', () => {
+  const dec = (x: SurveillanceCase, final_level: TriageLevel): SurveillanceCase => ({ ...x, decision: { final_level } });
+
+  it('effectiveLevel usa la decisión de la promotora si existe y es válida', () => {
+    const x = c(1, 'A', 'trauma', 'aqui');
+    expect(effectiveLevel(x)).toBe('aqui');
+    expect(effectiveLevel(dec(x, 'urgencia'))).toBe('urgencia');
+    expect(effectiveLevel({ ...x, decision: { final_level: 'grave' } })).toBe('aqui');
+    expect(effectiveLevel({ ...x, decision: null })).toBe('aqui');
+  });
+
+  it('cuenta como urgencia lo que la promotora subió a urgencia', () => {
+    const a = detectOutbreaks(
+      [dec(c(1, 'A', 'trauma', 'aqui'), 'urgencia'), dec(c(2, 'A', 'cardiovascular', 'centro_hoy'), 'urgencia'), c(3, 'A', 'respiratorio', 'urgencia')],
+      NOW,
+    );
+    expect(a).toHaveLength(1);
+    expect(a[0]).toMatchObject({ kind: 'urgencias', count: 3 });
+  });
+
+  it('no cuenta como urgencia lo que la promotora bajó', () => {
+    const a = detectOutbreaks(
+      [dec(c(1, 'A', 'trauma', 'urgencia'), 'centro_hoy'), c(2, 'A', 'cardiovascular', 'urgencia'), c(3, 'A', 'respiratorio', 'urgencia')],
+      NOW,
+    );
+    expect(a).toEqual([]);
   });
 });
 

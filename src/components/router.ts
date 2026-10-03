@@ -1,14 +1,14 @@
 import { useEffect, useState } from 'react';
 
-export type Route = 'capture' | 'preguntas' | 'resultado' | 'historial' | 'tablero' | 'config';
+export type Route = 'capture' | 'preguntas' | 'resultado' | 'historial' | 'tablero' | 'config' | 'acerca';
 
 const MAP: Record<string, Route> = {
   '': 'capture', '/': 'capture', '/preguntas': 'preguntas', '/resultado': 'resultado',
-  '/historial': 'historial', '/tablero': 'tablero', '/config': 'config',
+  '/historial': 'historial', '/tablero': 'tablero', '/config': 'config', '/acerca': 'acerca',
 };
 export const PATHS: Record<Route, string> = {
   capture: '#/', preguntas: '#/preguntas', resultado: '#/resultado',
-  historial: '#/historial', tablero: '#/tablero', config: '#/config',
+  historial: '#/historial', tablero: '#/tablero', config: '#/config', acerca: '#/acerca',
 };
 
 function parse(): Route {

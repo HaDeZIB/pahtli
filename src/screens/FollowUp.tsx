@@ -5,8 +5,7 @@ import { t } from '../i18n/strings';
 import { BreathCounter } from '../components/BreathCounter';
 import { Button, Card, TopBar } from '../components/ui';
 import { go } from '../components/router';
-
-const MAX_QUESTIONS = 4;
+import { MAX_FOLLOWUP_QUESTIONS as MAX_QUESTIONS } from '../triage/uncertainty';
 const NUMERIC_TOP = new Set(['edad_meses', 'semanas_embarazo', 'duracion_dias', 'temperatura_c', 'resp_por_min']);
 const BOOL_TOP = new Set(['embarazada']);
 
@@ -45,9 +44,18 @@ export default function FollowUp() {
     const f = applyAnswer(findings, q, value);
     const r = retriage(f);
     const nextAsked = [...asked, q.campo];
-    setSession({ ...session, findings: f, result: r, asked: nextAsked });
+    // "No sé" (undefined) queda registrado: alimenta el aviso "No estoy segura" del resultado.
+    const answers = [...(session.answers ?? []).filter((a) => a.campo !== q.campo), { campo: q.campo, known: value !== undefined, pregunta: q.pregunta.es }];
+    setSession({ ...session, findings: f, result: r, asked: nextAsked, answers });
     const remaining = r.preguntas.filter((x) => !nextAsked.includes(x.campo));
     if (!remaining.length || nextAsked.length >= MAX_QUESTIONS) go('resultado', true);
+  };
+
+  // "Saltar": queda registrado para que el resultado avise "No estoy segura" (preguntas sin responder).
+  const skip = () => {
+    const answers = [...(session.answers ?? []).filter((a) => a.campo !== q.campo), { campo: q.campo, known: false, skipped: true, pregunta: q.pregunta.es }];
+    setSession({ ...session, answers });
+    go('resultado', true);
   };
 
   const submitNumber = () => {
@@ -79,9 +87,10 @@ export default function FollowUp() {
 
           <div className="mt-5">
             {q.tipo === 'si_no' && q.campo !== 'sexo' && (
-              <div className="grid grid-cols-2 gap-3">
-                <Button className="h-20 text-[24px]" onClick={() => answer(true)}>{t('yes', lang)}</Button>
-                <Button variant="dark" className="h-20 text-[24px]" onClick={() => answer(false)}>{t('no', lang)}</Button>
+              <div className="grid grid-cols-3 gap-3">
+                <Button className="h-20 px-2 text-[24px]" onClick={() => answer(true)}>{t('yes', lang)}</Button>
+                <Button variant="dark" className="h-20 px-2 text-[24px]" onClick={() => answer(false)}>{t('no', lang)}</Button>
+                <Button variant="secondary" className="h-20 px-2 text-[20px]" onClick={() => answer(undefined)}>{t('dont_know', lang)}</Button>
               </div>
             )}
 
@@ -122,10 +131,13 @@ export default function FollowUp() {
           </div>
         </Card>
 
-        <div className="mt-4 grid grid-cols-2 gap-3">
-          <Button variant="secondary" onClick={() => answer(undefined)}>{t('dont_know', lang)}</Button>
-          <Button variant="ghost" onClick={() => go('resultado', true)}>{t('skip', lang)}</Button>
+        <div className={`mt-4 grid gap-3 ${q.tipo === 'si_no' && q.campo !== 'sexo' ? 'grid-cols-1' : 'grid-cols-2'}`}>
+          {!(q.tipo === 'si_no' && q.campo !== 'sexo') && (
+            <Button variant="secondary" onClick={() => answer(undefined)}>{t('dont_know', lang)}</Button>
+          )}
+          <Button variant="ghost" onClick={skip}>{t('skip', lang)}</Button>
         </div>
+        <p className="mt-3 text-center text-[13px] text-muted">“{t('dont_know', lang)}” y “{t('skip', lang)}” están bien: Pahtli te avisará que no está segura.</p>
       </div>
     </div>
   );

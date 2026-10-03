@@ -10,6 +10,8 @@ import type { Syndrome, TriageLevel } from '../types';
  * Regla: >= N casos del mismo síndrome en la misma comunidad dentro de una
  * ventana de 72 h (N = 3; 2 para diarrea con sangre y febril hemorrágico).
  * Además: >= 3 urgencias en la misma comunidad en la ventana, sin importar síndrome.
+ * El nivel que cuenta es el FINAL: el que decidió la promotora (decision.final_level)
+ * si existe; si no, el sugerido por el motor de reglas.
  */
 
 /** Lo mínimo que necesita el detector (CaseRecord lo cumple). */
@@ -19,6 +21,16 @@ export interface SurveillanceCase {
   comunidad: string;
   sindrome?: Syndrome;
   result: { level: TriageLevel };
+  /** Decisión humana (opcional): la promotora puede aceptar o cambiar el nivel. */
+  decision?: { final_level?: string | null } | null;
+}
+
+const VALID_LEVELS: readonly TriageLevel[] = ['aqui', 'centro_hoy', 'urgencia'];
+
+/** Nivel final de un caso: la decisión de la promotora manda sobre la sugerencia. */
+export function effectiveLevel(c: { result: { level: TriageLevel }; decision?: { final_level?: string | null } | null }): TriageLevel {
+  const f = c.decision?.final_level;
+  return f && (VALID_LEVELS as readonly string[]).includes(f) ? (f as TriageLevel) : c.result?.level;
 }
 
 export interface OutbreakOptions {
@@ -162,7 +174,7 @@ export function detectOutbreaks(
   // Racimo de urgencias por comunidad
   const byCom = new Map<string, typeof inWindow>();
   for (const c of inWindow) {
-    if (c.result?.level !== 'urgencia') continue;
+    if (effectiveLevel(c) !== 'urgencia') continue;
     if (!byCom.has(c.key)) byCom.set(c.key, []);
     byCom.get(c.key)!.push(c);
   }

@@ -8,7 +8,10 @@ import { findingsSummary } from '../components/findingsView';
 import { CASES_CHANGED, notifyCasesChanged } from '../components/storage';
 import { useOnline } from '../components/StatusBar';
 import { Button, Card, LevelChip, TopBar } from '../components/ui';
-import { Cloud, CloudUp, Pin } from '../components/Icons';
+import { Cloud, CloudUp, Download, Pin } from '../components/Icons';
+import { downloadDhis2 } from '../export/dhis2';
+import { overrideReasonLabel } from '../i18n/strings';
+import { SYNDROME_LABELS } from '../surveillance/outbreak';
 
 const fmt = new Intl.DateTimeFormat('es-MX', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' });
 
@@ -78,24 +81,42 @@ export default function History() {
             return (
               <li key={c.case_id}>
                 <Card className="p-4">
-                  <div className="flex items-center gap-2">
-                    <LevelChip level={c.result.level} />
+                  <div className="flex flex-wrap items-center gap-2">
+                    {c.decision?.overridden ? (
+                      <>
+                        <span className="text-[13px] font-semibold text-muted line-through decoration-2">{t(`level_${c.result.level}_short`, lang)}</span>
+                        <LevelChip level={c.decision.final_level} />
+                      </>
+                    ) : <LevelChip level={c.decision?.final_level ?? c.result.level} />}
+                    {c.uncertain && <span className="rounded-full bg-slate-200 px-2 py-0.5 text-[12px] font-bold text-slate-800">⚪ {t('history_uncertain', lang)}</span>}
                     <span className="ml-auto flex items-center gap-1 text-[13px] font-semibold text-muted">
                       {c.synced ? <><Cloud size={16} className="text-brand" />{t('history_synced', lang)}</> : <><CloudUp size={16} className="text-clay" />{t('history_pending', lang)}</>}
                     </span>
                   </div>
                   <p className="mt-2 text-[15px] font-semibold leading-snug">{summary.join(' · ') || c.transcript}</p>
-                  <p className="mt-1 flex items-center gap-1 text-[13px] text-muted">
-                    <span>{fmt.format(new Date(c.created_at))}</span>
-                    <span>·</span>
-                    <Pin size={13} /><span className="truncate">{c.comunidad}</span>
-                    {c.sindrome && c.sindrome !== 'otro' && <><span>·</span><span className="truncate">{c.sindrome.replace(/_/g, ' ')}</span></>}
+                  {c.decision?.overridden && (
+                    <p className="mt-1 text-[13px] text-muted">{t('history_overridden', lang)}{c.decision.reason ? `: ${overrideReasonLabel(c.decision.reason)}` : ''}</p>
+                  )}
+                  <p className="mt-1 flex flex-wrap items-center gap-x-1.5 gap-y-0.5 text-[13px] text-muted">
+                    <span className="whitespace-nowrap">{fmt.format(new Date(c.created_at))}</span>
+                    <span aria-hidden="true">·</span>
+                    <span className="inline-flex min-w-0 items-center gap-1"><Pin size={13} className="shrink-0" /><span className="break-words">{c.comunidad}</span></span>
+                    {c.sindrome && c.sindrome !== 'otro' && <><span aria-hidden="true">·</span><span className="whitespace-nowrap">{SYNDROME_LABELS[c.sindrome] ?? c.sindrome}</span></>}
                   </p>
                 </Card>
               </li>
             );
           })}
         </ul>
+
+        {!!cases?.length && (
+          <div className="mt-6">
+            <Button variant="secondary" className="w-full" onClick={() => downloadDhis2(cases)}>
+              <Download size={20} />{t('history_export', lang)}
+            </Button>
+            <p className="mt-1.5 text-center text-[13px] text-muted">{t('history_export_hint', lang)}</p>
+          </div>
+        )}
       </div>
     </div>
   );

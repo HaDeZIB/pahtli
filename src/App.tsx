@@ -1,5 +1,8 @@
-import { lazy, Suspense, type ComponentType } from 'react';
+import { lazy, Suspense, useEffect, type ComponentType } from 'react';
 import { AppProvider } from './components/AppContext';
+import { LockGate } from './components/LockScreen';
+import { notifyCasesChanged } from './components/storage';
+import { purgeExpired } from './privacy/retention';
 import { StatusBar } from './components/StatusBar';
 import { BottomNav, ErrorBoundary } from './components/ui';
 import { useRoute } from './components/router';
@@ -17,7 +20,17 @@ const Dashboard = lazy(() =>
   }),
 );
 
+// "Acerca de la IA" se carga aparte (no pesa en la captura).
+const About = lazy(() => import('./screens/About'));
+
 function Shell() {
+  // Retención: al abrir, borrar del celular los casos YA enviados con más de N días (por defecto 30).
+  useEffect(() => {
+    purgeExpired()
+      .then((n) => { if (n > 0) { console.info(`[privacidad] ${n} casos enviados borrados del celular`); notifyCasesChanged(); } })
+      .catch((e) => console.error('[privacidad] purge', e));
+  }, []);
+
   const route = useRoute();
   const fullScreen = route === 'resultado' || route === 'preguntas';
 
@@ -27,6 +40,13 @@ function Shell() {
     case 'resultado': screen = <Result />; break;
     case 'historial': screen = <History />; break;
     case 'config': screen = <Config />; break;
+    case 'acerca':
+      screen = (
+        <Suspense fallback={<div className="p-8 text-center text-muted">Cargando…</div>}>
+          <About />
+        </Suspense>
+      );
+      break;
     case 'tablero':
       screen = (
         <Suspense fallback={<div className="p-8 text-center text-muted">Cargando tablero…</div>}>
@@ -53,7 +73,9 @@ function Shell() {
 export default function App() {
   return (
     <AppProvider>
-      <Shell />
+      <LockGate>
+        <Shell />
+      </LockGate>
     </AppProvider>
   );
 }

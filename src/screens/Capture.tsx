@@ -160,7 +160,7 @@ export default function Capture() {
       const t1 = performance.now();
       const result = triage(extraction.findings, extraction.model_level_hint);
       const triageMs = performance.now() - t1;
-      setSession({ transcript: text, findings: extraction.findings, extraction, result, asked: [], triageMs });
+      setSession({ transcript: text, findings: extraction.findings, extraction, result, asked: [], answers: [], triageMs });
       go(result.preguntas.length ? 'preguntas' : 'resultado');
     } catch (e) {
       console.error('[evaluate]', e);

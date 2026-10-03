@@ -86,8 +86,9 @@ test('triaje completo sin internet y sincronización al volver la señal', async
   // Referencia offline (catálogo CLUES precacheado): hospital más cercano.
   await expect(page.getByTestId('referral')).toContainText('Hospital más cercano');
 
-  // 5) Guardar caso → queda en la cola local.
-  await page.getByRole('button', { name: 'Guardar caso' }).click();
+  // 5) La promotora confirma la sugerencia ("Pahtli sugiere. Tú decides.") → queda en la cola local.
+  await expect(page.getByTestId('decision')).toContainText('Pahtli sugiere. Tú decides.');
+  await page.getByRole('button', { name: 'Estoy de acuerdo · Guardar caso' }).click();
   await expect(page.getByRole('button', { name: 'Caso guardado' })).toBeVisible();
   await page.getByRole('button', { name: 'Nuevo paciente' }).click();
   await expect(page.getByRole('button', { name: '1 caso por enviar' })).toBeVisible();
@@ -113,9 +114,112 @@ test('triaje completo sin internet y sincronización al volver la señal', async
   expect(sent).toHaveLength(1);
   expect(sent[0]).toMatchObject({ level: 'urgencia', comunidad: 'San Miguel Tzinacapan', syndrome: 'respiratorio' });
   expect(sent[0].rule_ids).toContain('IMCI-RESP-03');
+  expect(sent[0]).toMatchObject({ decision: { final_level: 'urgencia', overridden: false } });
   // Privacidad: el texto libre no sale del celular.
   expect(JSON.stringify(sent)).not.toContain('calentura');
   expect(sent[0]).not.toHaveProperty('transcript');
+
+  expect(errors).toEqual([]);
+});
+
+/** Lee los casos guardados en IndexedDB (Dexie, base "pahtli", tabla "cases") sin depender del código de la app. */
+async function storedCases(page: Page): Promise<Record<string, unknown>[]> {
+  return page.evaluate(() => new Promise<Record<string, unknown>[]>((resolve, reject) => {
+    const open = indexedDB.open('pahtli');
+    open.onerror = () => reject(open.error);
+    open.onsuccess = () => {
+      const req = open.result.transaction('cases', 'readonly').objectStore('cases').getAll();
+      req.onsuccess = () => { resolve(req.result as Record<string, unknown>[]); open.result.close(); };
+      req.onerror = () => reject(req.error);
+    };
+  }));
+}
+
+test('"No sé" → aviso "No estoy segura", la promotora decide antes de guardar y se ve la referencia', async ({ page, context }) => {
+  const errors: string[] = [];
+  page.on('pageerror', (e) => errors.push(e.message));
+  const syncBodies: { cases: Record<string, unknown>[] }[] = [];
+  await context.route('**/api/sync', async (route) => {
+    const body = route.request().postDataJSON() as { cases: Record<string, unknown>[] };
+    syncBodies.push(body);
+    await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ stored: false, demo: true, accepted: body.cases.map((c) => c.case_id), rejected: [] }) });
+  });
+
+  await page.goto('/#/config');
+  await page.getByLabel('Comunidad').fill('San Miguel Tzinacapan');
+  await page.getByRole('button', { name: 'Guardar', exact: true }).click();
+  await expect(page.getByRole('button', { name: 'Guardado' })).toBeVisible();
+
+  // Caso sin signos de alarma: el motor pregunta. A la primera pregunta Sí/No se responde "No sé".
+  await page.goto('/#/');
+  await page.getByRole('tab', { name: 'Escribir' }).click();
+  await page.locator('#transcript').fill('Niña de 5 años con calentura desde ayer, dice su mamá que comió poquito.');
+  await page.getByRole('main').getByRole('button', { name: 'Evaluar', exact: true }).click();
+  await page.waitForURL(/#\/preguntas/);
+  await page.getByRole('button', { name: 'No sé', exact: true }).click();
+  // Las demás preguntas (si las hay) se contestan "No".
+  for (let i = 0; i < 4 && page.url().includes('#/preguntas'); i++) {
+    await page.getByRole('button', { name: 'No', exact: true }).click();
+    await page.waitForTimeout(150);
+  }
+  await page.waitForURL(/#\/resultado/);
+
+  // Fail-safe: estado gris "No estoy segura", con el motivo, y el nivel de las reglas sigue visible.
+  await expect(page.getByTestId('result-uncertain')).toBeVisible();
+  await expect(page.getByRole('heading', { level: 1 })).toHaveText(/no estoy segura/i);
+  const unc = page.getByTestId('uncertainty');
+  await expect(unc).toContainText('No estoy segura — consulta al personal de salud');
+  await expect(unc).toContainText('“No sé”');
+  await expect(page.getByText('Con los datos que hay, las reglas dicen:')).toBeVisible();
+
+  // Referencia: aunque las reglas digan "aquí", si no está segura muestra el centro de salud más cercano.
+  const referral = page.getByTestId('referral');
+  await expect(referral).toContainText('Centro de salud más cercano para consultar');
+  await expect(referral).toContainText('en línea recta');
+
+  // La promotora decide: no se guarda nada hasta que confirma o cambia el nivel.
+  expect(await storedCases(page)).toHaveLength(0);
+  const decision = page.getByTestId('decision');
+  await expect(decision).toContainText('Pahtli sugiere. Tú decides.');
+  await decision.getByRole('button', { name: 'Cambiar nivel' }).click();
+  await decision.getByRole('radio', { name: 'Centro hoy' }).click();
+  await decision.getByRole('button', { name: 'Guardar con mi decisión' }).click();
+  await expect(decision.getByRole('alert')).toHaveText('Elige un motivo.');
+  expect(await storedCases(page)).toHaveLength(0);
+  await decision.getByLabel('¿Por qué? (obligatorio)').selectOption('indicacion_personal');
+  await decision.getByLabel('Nota (opcional, sin nombres del paciente)').fill('Rosa, casa junto a la iglesia');
+  await decision.getByRole('button', { name: 'Guardar con mi decisión' }).click();
+  await expect(decision.getByRole('button', { name: 'Caso guardado' })).toBeVisible();
+  await expect(decision).toContainText('Tu decisión');
+
+  const saved = await storedCases(page);
+  expect(saved).toHaveLength(1);
+  expect(saved[0]).toMatchObject({
+    uncertain: true,
+    result: { level: 'aqui' },
+    decision: { final_level: 'centro_hoy', overridden: true, reason: 'indicacion_personal', note: 'Rosa, casa junto a la iglesia' },
+  });
+  expect(saved[0].uncertainty_codes).toContain('answered_unknown');
+
+  // Historial: nivel cambiado + etiqueta "No segura". Al enviar, la nota y el texto libre se quedan en el celular.
+  await page.getByRole('button', { name: 'Nuevo paciente' }).click();
+  await page.goto('/#/historial');
+  await expect(page.getByText('No segura')).toBeVisible();
+  await expect(page.getByText('Nivel cambiado por la promotora', { exact: false })).toBeVisible();
+  await page.getByRole('button', { name: 'Enviar ahora' }).click();
+  await expect.poll(() => syncBodies.flatMap((b) => b.cases).length).toBe(1);
+  const sent = syncBodies.flatMap((b) => b.cases)[0];
+  expect(sent).toMatchObject({
+    level: 'aqui',
+    decision: { final_level: 'centro_hoy', overridden: true, reason: 'indicacion_personal' },
+    uncertain: true,
+  });
+  expect(sent.uncertainty_reasons).toContain('answered_unknown');
+  const wire = JSON.stringify(sent);
+  expect(wire).not.toContain('Rosa');
+  expect(wire).not.toContain('calentura');
+  expect(wire).not.toContain('No sé');
+  expect(sent.lat).toBe(Math.round((sent.lat as number) * 100) / 100);
 
   expect(errors).toEqual([]);
 });

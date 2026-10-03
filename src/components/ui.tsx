@@ -100,7 +100,7 @@ export function BottomNav({ current }: { current: Route }) {
     <nav className="safe-bottom fixed inset-x-0 bottom-0 z-30 border-t border-line bg-white/95 backdrop-blur">
       <div className="mx-auto grid max-w-xl grid-cols-4">
         {NAV.map(({ route, key, Icon }) => {
-          const active = current === route;
+          const active = current === route || (route === 'config' && current === 'acerca');
           return (
             <button
               key={route}

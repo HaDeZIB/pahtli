@@ -1,24 +1,31 @@
 # Resultados de la evaluación de Pahtli
 
-> Generado por `npm run eval` el 2026-10-03T20:26:47.875Z. Pipeline: texto → `keywordExtract` → `triage` (Node, sin LLM).
-> Viñetas sintéticas escritas por el equipo, **pendientes de validación clínica por la Dra. Ines**. El split `test` se escribió primero y no se usó para ajustar nada.
+> Generado por `npm run eval` el 2026-10-03T21:03:23.052Z. Pipeline: texto → `keywordExtract` → `triage` (Node, sin LLM) + fail-safe `assessUncertainty`.
+> Viñetas sintéticas escritas por el equipo, **pendientes de validación clínica por la Dra. Ines**.
+> `dev` se usó para ajustar. `test_v1` (held-out original) ya se vio y se usó en la ronda 2: ahora es solo regresión. **`test_v2` es el held-out vigente**: se escribió y congeló antes de los cambios de la ronda 2.
 
 ## Métricas
 
-| Métrica | dev | test | total |
-|---|---:|---:|---:|
-| Casos | 60 | 30 | 90 |
-| Exactitud (nivel exacto) | 98.3% (59/60) | 76.7% (23/30) | 91.1% (82/90) |
-| **Sub-triaje de urgencias** (urgencia → menor) | **0.0%** (0/22) | **18.2%** (2/11) | **6.1%** (2/33) |
-| …de ellas, sin pregunta de seguimiento que lo rescate | 0.0% (0/22) | 9.1% (1/11) | 3.0% (1/33) |
-| Sub-triaje total (cualquier nivel → menor) | 0.0% (0/60) | 23.3% (7/30) | 7.8% (7/90) |
-| Sobre-triaje total | 1.7% (1/60) | 0.0% (0/30) | 1.1% (1/90) |
-| Sensibilidad de referencia (centro/urgencia ≠ aquí) | 100.0% (42/42) | 66.7% (14/21) | 88.9% (56/63) |
-| Reglas esperadas que dispararon (todas) | 98.3% (59/60) | 73.3% (22/30) | 90.0% (81/90) |
-| Recall / precisión `aqui` | 100.0% / 100.0% | 100.0% / 56.3% | 100.0% / 79.4% |
-| Recall / precisión `centro_hoy` | 95.0% / 100.0% | 50.0% / 100.0% | 80.0% / 100.0% |
-| Recall / precisión `urgencia` | 100.0% / 95.7% | 81.8% / 100.0% | 93.9% / 96.9% |
-| Latencia extracción+triaje (media / p95, ms) | 0.37 / 1.72 | 0.25 / 0.45 | 0.33 / 0.62 |
+| Métrica | dev | test_v1 | test_v2 | total |
+|---|---:|---:|---:|---:|
+| Casos | 60 | 30 | 40 | 130 |
+| Exactitud (nivel exacto) | 98.3% (59/60), IC95 91–100 % | 100.0% (30/30), IC95 89–100 % | 92.5% (37/40), IC95 80–97 % | 96.9% (126/130), IC95 92–99 % |
+| **Sub-triaje de urgencias** (urgencia → menor) | **0.0%** (0/22), IC95 0–15 % | **0.0%** (0/11), IC95 0–26 % | **18.8%** (3/16), IC95 7–43 % | **6.1%** (3/49), IC95 2–17 % |
+| …de ellas, sin pregunta de seguimiento que pida el dato faltante | 0/22 | 0/11 | 2/16 | 2/49 |
+| …de ellas, **en silencio** (sin pregunta y sin aviso "no estoy segura") | 0/22 | 0/11 | 1/16 | 1/49 |
+| Sub-triaje total (cualquier nivel → menor) | 0.0% (0/60) | 0.0% (0/30) | 7.5% (3/40) | 2.3% (3/130) |
+| Sobre-triaje total | 1.7% (1/60) | 0.0% (0/30) | 0.0% (0/40) | 0.8% (1/130) |
+| Sensibilidad de referencia (centro/urgencia ≠ aquí) | 100.0% (42/42), IC95 92–100 % | 100.0% (21/21), IC95 85–100 % | 96.7% (29/30), IC95 83–99 % | 98.9% (92/93), IC95 94–100 % |
+| Reglas esperadas que dispararon (todas) | 100.0% (60/60) | 100.0% (30/30) | 92.5% (37/40) | 97.7% (127/130) |
+| Recall / precisión `aqui` | 100.0% / 100.0% | 100.0% / 100.0% | 100.0% / 90.9% | 100.0% / 97.4% |
+| Recall / precisión `centro_hoy` | 95.0% / 100.0% | 100.0% / 100.0% | 100.0% / 87.5% | 97.7% / 95.6% |
+| Recall / precisión `urgencia` | 100.0% / 95.7% | 100.0% / 100.0% | 81.3% / 100.0% | 93.9% / 97.9% |
+| Síntomas anotados extraídos bien (afirmados · negados) | — | — | 94.6% (70/74) · 63/67 · 7/7 | 94.6% (70/74) · 63/67 · 7/7 |
+| Nivel con hallazgos anotados (extracción perfecta) | — | — | 100.0% (36/36) | 100.0% (36/36) |
+| Casos `expected_uncertain`: aviso "no estoy segura" · pregunta algo · pregunta el dato esperado | 2/2 · 2/2 · 1/2 | 2/2 · 2/2 · 2/2 | 4/4 · 3/4 · 2/4 | 8/8 · 7/8 · 5/8 |
+| Aviso "no estoy segura" en casos sin falta de datos (ruido) — si salta las preguntas | 29/58 | 11/28 | 20/36 | 60/122 |
+| …ruido si contesta las preguntas como en la app (hasta 4; Sí/No según lo anotado o "No") | 11/58 | 4/28 | 9/36 | 24/122 |
+| Latencia extracción+triaje (media / p95, ms) | 0.55 / 1.96 | 0.41 / 0.64 | 0.41 / 1.04 | 0.47 / 1.04 |
 
 ### Matriz de confusión — dev
 
@@ -28,56 +35,74 @@
 | **centro hoy** | 0 | **19** | 1 |
 | **urgencia** | 0 | 0 | **22** |
 
-### Matriz de confusión — test
+### Matriz de confusión — test_v1
 
 | esperado \ predicho | aquí | centro hoy | urgencia |
 |---|---:|---:|---:|
 | **aquí** | **9** | 0 | 0 |
-| **centro hoy** | 5 | **5** | 0 |
-| **urgencia** | 2 | 0 | **9** |
+| **centro hoy** | 0 | **10** | 0 |
+| **urgencia** | 0 | 0 | **11** |
+
+### Matriz de confusión — test_v2
+
+| esperado \ predicho | aquí | centro hoy | urgencia |
+|---|---:|---:|---:|
+| **aquí** | **10** | 0 | 0 |
+| **centro hoy** | 0 | **14** | 0 |
+| **urgencia** | 1 | 2 | **13** |
 
 ### Matriz de confusión — total
 
 | esperado \ predicho | aquí | centro hoy | urgencia |
 |---|---:|---:|---:|
-| **aquí** | **27** | 0 | 0 |
-| **centro hoy** | 5 | **24** | 1 |
-| **urgencia** | 2 | 0 | **31** |
+| **aquí** | **37** | 0 | 0 |
+| **centro hoy** | 0 | **43** | 1 |
+| **urgencia** | 1 | 2 | **46** |
 
 ## Extracción por campo (contra valores de referencia anotados en `expected_findings`)
 
-| Campo | dev | test | total |
-|---|---:|---:|---:|
-| `duracion_dias` | 100.0% (2/2) | 100.0% (2/2) | 100.0% (4/4) |
-| `edad_meses` | 100.0% (53/53) | 100.0% (26/26) | 100.0% (79/79) |
-| `embarazada` | 100.0% (7/7) | 100.0% (4/4) | 100.0% (11/11) |
-| `resp_por_min` | 100.0% (4/4) | 100.0% (3/3) | 100.0% (7/7) |
-| `semanas_embarazo` | 100.0% (2/2) | 100.0% (1/1) | 100.0% (3/3) |
-| `temperatura_c` | 100.0% (4/4) | — | 100.0% (4/4) |
+| Campo | dev | test_v1 | test_v2 | total |
+|---|---:|---:|---:|---:|
+| `duracion_dias` | 100.0% (2/2) | 100.0% (2/2) | 100.0% (3/3) | 100.0% (7/7) |
+| `edad_meses` | 100.0% (53/53) | 100.0% (26/26) | 100.0% (31/31) | 100.0% (110/110) |
+| `embarazada` | 100.0% (7/7) | 100.0% (4/4) | 100.0% (6/6) | 100.0% (17/17) |
+| `resp_por_min` | 100.0% (4/4) | 100.0% (3/3) | 100.0% (3/3) | 100.0% (10/10) |
+| `semanas_embarazo` | 100.0% (2/2) | 100.0% (1/1) | 100.0% (4/4) | 100.0% (7/7) |
+| `temperatura_c` | 100.0% (4/4) | — | 100.0% (1/1) | 100.0% (5/5) |
+
+Síntomas anotados no extraídos (o con polaridad equivocada):
+
+| Caso | Split | Síntoma | Esperado | Extraído |
+|---|---|---|---|---|
+| T2-V02 | test_v2 | `tiraje` | true | — |
+| T2-V09 | test_v2 | `intoxicacion` | true | — |
+| T2-V13 | test_v2 | `dificultad_respirar` | true | false |
+| T2-C02 | test_v2 | `bebe_con_avidez` | true | — |
 
 ## Fallos de nivel
 
-- **T02** (test) esperado `urgencia`, predicho `aqui` — SUB-TRIAJE (extracción incompleta): no disparó IMCI-YI-01 [no_come_bien=?, no_puede_beber=?, edad_meses=0.7]
-  - Texto: "Es un bebito de tres semanas de nacido, la mamá dice que desde la mañana ya no quiere agarrar el pecho y lo siente calientito."
-  - Reglas disparadas: IMCI-NOSIGNS-01 · la app NO pregunta el dato faltante
-- **T04** (test) esperado `urgencia`, predicho `aqui` — SUB-TRIAJE (extracción incompleta): no disparó CDC-HEART-01 [dolor_pecho=?, edad_meses=696]
-  - Texto: "Un señor de 58 años dice que siente como un peso en el pecho que se le corre al brazo izquierdo, y está sudando frío."
-  - Reglas disparadas: IMCI-NOSIGNS-01 · preguntas de seguimiento: dolor_pecho, llenado_capilar_lento · **la app pregunta el dato faltante**
-- **T14** (test) esperado `centro_hoy`, predicho `aqui` — SUB-TRIAJE (extracción incompleta): no disparó IMCI-DIAR-05 [sangre_heces=?, edad_meses=24]
-  - Texto: "La niña de 2 años hace del baño con sangre desde ayer, pero sí toma agua y está despierta."
-  - Reglas disparadas: IMCI-NOSIGNS-01 · la app NO pregunta el dato faltante
-- **T15** (test) esperado `centro_hoy`, predicho `aqui` — SUB-TRIAJE (extracción incompleta): no disparó IITT-Y-BITE-01 [mordedura_animal=?]
-  - Texto: "Un perro le mordió la pierna a un niño de 9 años, no le sale mucha sangre."
-  - Reglas disparadas: IMCI-NOSIGNS-01 · la app NO pregunta el dato faltante
-- **T17** (test) esperado `centro_hoy`, predicho `aqui` — SUB-TRIAJE (extracción incompleta): no disparó WHO-PCPNC-EMB-02 [embarazada=true, posparto=?, hinchazon_cara_manos=?]
-  - Texto: "Señora de 25 años embarazada de seis meses, se le hinchan mucho las manos y la cara."
-  - Reglas disparadas: IMCI-NOSIGNS-01 · preguntas de seguimiento: sangrado_vaginal, dolor_cabeza_intenso · la app NO pregunta el dato faltante
-- **T18** (test) esperado `centro_hoy`, predicho `aqui` — SUB-TRIAJE (extracción incompleta): no disparó IITT-Y-TRAUMA-01 [fractura=?, quemadura=?]
-  - Texto: "El señor de 40 años se tropezó en el camino y se cayó, tiene la muñeca chueca y bien hinchada."
-  - Reglas disparadas: IMCI-NOSIGNS-01 · la app NO pregunta el dato faltante
-- **T19** (test) esperado `centro_hoy`, predicho `aqui` — SUB-TRIAJE (extracción incompleta): no disparó PAHO-DEN-03 [fiebre=true, fiebre_reciente=?, nauseas=?, vomito=?, vomito_persistente=?, sarpullido=?, dolor_cabeza=?, dolor_detras_ojos=true, dolor_muscular_articular=?, petequias=?]
-  - Texto: "Muchacha de 20 años con calentura desde hace dos días, le duele detrás de los ojos y le duele todo el cuerpo, no tiene ningún sangrado."
-  - Reglas disparadas: IMCI-NOSIGNS-01 · preguntas de seguimiento: embarazada, vomita_todo · la app NO pregunta el dato faltante
+- **T2-V02** (test_v2) esperado `urgencia`, predicho `aqui` — SUB-TRIAJE (extracción incompleta): no disparó IMCI-RESP-03 [tiraje=?]
+  - Texto: "Oiga, el niño de Lupita tiene dos años, trae tos y calentura desde hace tres días, y ahorita que le levanté la camisa se le mete bien la piel entre las costillas cuando jala aire."
+  - Reglas disparadas: IMCI-NOSIGNS-01 · preguntas de seguimiento: resp_por_min, tiraje · **la app pregunta el dato faltante** · aviso "no estoy segura" (questions_pending)
+- **T2-V09** (test_v2) esperado `urgencia`, predicho `centro_hoy` — SUB-TRIAJE (extracción incompleta): no disparó IITT-R-POISON-01 [intoxicacion=?]
+  - Texto: "La señora de 40 años se tomó un frasco entero de pastillas de su mamá, la encontraron muy dormida en su cuarto."
+  - Reglas disparadas: IITT-Y-WEAK-01 · preguntas de seguimiento: rigidez_nuca, dolor_cabeza · la app NO pregunta el dato faltante · aviso "no estoy segura" (questions_pending)
+- **T2-V13** (test_v2) esperado `urgencia`, predicho `centro_hoy` — SUB-TRIAJE (negación errónea): no disparó IITT-R-RESP-01 [dificultad_respirar=false, edad_meses=96]
+  - Texto: "Mi sobrino de 8 años es asmático y ahorita no puede ni hablar de lo que le cuesta respirar, le chilla el pecho."
+  - Reglas disparadas: IITT-Y-WHEEZE-01 · la app NO pregunta el dato faltante
 - **D35** (dev) esperado `centro_hoy`, predicho `urgencia` — SOBRE-TRIAJE: disparó IITT-R-NEURO-01 [letargico=?, confusion=?, rigidez_nuca=?, dolor_cabeza=true, fiebre=true, temperatura_c=?, edad_meses=456]. Frases detectadas: "dolor de cabesa fuerte"→dolor_cabeza_intenso, "dolor de cabesa"→dolor_cabeza, "con calentura"→fiebre, "calentura"→fiebre, "ronchas"→sarpullido
   - Texto: "Señora de 38 años con calentura de tres días, dolor de cabeza fuerte, ronchas y náusea."
   - Reglas disparadas: IITT-R-NEURO-01, PAHO-DEN-03
+
+## Casos con datos insuficientes (`expected_uncertain`)
+
+| Caso | Split | Nivel esperado → predicho | Aviso "no estoy segura" | Preguntas | ¿Pide el dato esperado? |
+|---|---|---|---|---|---|
+| D22 | dev | centro_hoy → centro_hoy | sí (questions_pending) | tiraje, estridor | no |
+| D23 | dev | centro_hoy → centro_hoy | sí (questions_pending) | tiraje, lejos_unidad | sí |
+| T12 | test_v1 | centro_hoy → centro_hoy | sí (questions_pending) | lejos_unidad, estridor | sí |
+| T13 | test_v1 | centro_hoy → centro_hoy | sí (questions_pending) | tiraje, lejos_unidad | sí |
+| T2-C01 | test_v2 | centro_hoy → centro_hoy | sí (questions_pending) | lejos_unidad, estridor | sí |
+| T2-C13 | test_v2 | centro_hoy → centro_hoy | sí (questions_pending, pregnancy_few) | sangrado_vaginal, dolor_cabeza_intenso | sí |
+| T2-C14 | test_v2 | centro_hoy → centro_hoy | sí (age_missing, questions_pending) | tiraje, estridor | no |
+| T2-A10 | test_v2 | aqui → aqui | sí (no_findings, young_infant_few) | — | no |
