@@ -6,7 +6,7 @@
 
 *Pahtli* is Náhuatl for "medicine, remedy" (Molina 1571, via the [Online Nahuatl Dictionary](https://nahuatl.wired-humanities.org/content/patli)).
 
-**Live demo:** LIVE_DEMO_URL · **Status:** hackathon prototype. Clinical rules are pending review by a licensed physician. It is **not** a medical device and does not diagnose or prescribe.
+**Live demo:** https://pahtli.vercel.app · **Status:** hackathon prototype. Clinical rules are pending review by a licensed physician. It is **not** a medical device and does not diagnose or prescribe.
 
 ---
 
