@@ -305,3 +305,31 @@ pahtli/
 4. **¿Puedes conseguir que Ines u otro médico revise las reglas** aunque sean 20 minutos?
 5. **¿Autorizas usar un workflow multi-agente** para construir los frentes en paralelo?
 6. **¿Nombre final?** Pahtli u otro.
+
+---
+
+## 14. ACTUALIZACIÓN — Concept Note del World Bank (leído 3-oct)
+
+La final la juzga un **panel del World Bank** (shortlist 5–6 oct, ganador por sector viaja a **Seúl, 21 oct**). Su rúbrica es distinta a la de Hack-Nation:
+
+| Criterio WB | Peso | Qué hacemos |
+|---|---|---|
+| Small AI fidelity (funciona end-to-end dentro de las restricciones) | 25% | Offline total, MB del modelo publicados, demo en modo avión |
+| Relevancia para el desarrollo e impacto | 20% | Problema real de atención primaria rural en México con datos citados |
+| Data grounding | 15% | `docs/data.md`: fuentes, año, licencia, tamaño y **qué NO cubren los datos** (se califica) |
+| Evidencia de que funciona | 15% | Eval con split separado + pruebas en iPhone real |
+| Value proposition de la IA (¿lo haría un SMS o una hoja de cálculo?) | 15% | Voz coloquial → hallazgos estructurados. Un formulario o SMS no entiende "se le hunde el pecho" |
+| Escalabilidad / replicabilidad | 10% | Reglas por país como datos; exportar al formato DHIS2; otros idiomas |
+| **IA responsable: PASA / NO PASA** | gate | **Fail-safe obligatorio: "No estoy seguro, consulta a una persona"**, humano decide, privacidad |
+
+### Cambios al producto
+1. **Cuarto resultado: "⚪ No hay datos suficientes, consulta al personal de salud"** cuando faltan datos críticos o hay baja confianza (extractor LLM vs keywords en desacuerdo, transcripción ambigua). Esto lo pide explícitamente el pass/fail.
+2. **La promotora decide:** puede aceptar o cambiar el nivel con un motivo, y queda registrado. La IA informa, no actúa.
+3. **Referencia offline al centro más cercano** con el catálogo oficial CLUES (Secretaría de Salud): "Centro de Salud X, 8 km". Para urgencias, el hospital más cercano.
+4. **Privacidad:** dónde viven los datos, quién los lee y qué pasa si se pierde o se comparte el celular: PIN de la app y borrado de casos ya sincronizados.
+5. **Exportar casos en formato DHIS2** (tracker/event) para mostrar encaje institucional.
+6. **Pantalla "Acerca de la IA"** en la app: modelo, MB, qué hace y qué no, límites.
+
+### Cambios a la entrega
+- Video del World Bank: **2 a 5 min** (distinto a los 3 videos de 60 s de Hack-Nation). Debe incluir el **problem statement** con su plantilla: *"Because of this tool, [user] will [action] by [when] that they would otherwise [not do / do late / do worse]; we know because [evidence]."* También: capacidades de IA y por qué no basta algo más simple, guardrails, demo del recorrido completo, dónde entra la herramienta en el día de la promotora, stack técnico, y **"what localizing AI development means to you"**.
+- Idioma local: hay que nombrarlo (español de México y náhuatl en la interfaz) y esperar la pregunta "¿cómo le iría en un idioma con menos soporte?". La respuesta está en `docs/data.md` §C.

@@ -1,1 +1,80 @@
 @import "tailwindcss";
+
+@theme {
+  --color-brand: #1f6f4a;
+  --color-brand-dark: #154d33;
+  --color-brand-soft: #e3f0e8;
+  --color-cream: #fbf8f3;
+  --color-sand: #f3ede3;
+  --color-ink: #1c1917;
+  --color-muted: #57534e;
+  --color-line: #e5ded2;
+  --color-clay: #b4532a;
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+  --animate-ring: ring 1.6s cubic-bezier(0.2, 0.6, 0.3, 1) infinite;
+  --animate-pop: pop 0.25s ease-out;
+  --animate-rise: rise 0.35s ease-out both;
+
+  @keyframes ring {
+    0% { transform: scale(1); opacity: 0.55; }
+    100% { transform: scale(1.75); opacity: 0; }
+  }
+  @keyframes pop {
+    0% { transform: scale(0.92); }
+    60% { transform: scale(1.04); }
+    100% { transform: scale(1); }
+  }
+  @keyframes rise {
+    from { transform: translateY(8px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+}
+
+@layer base {
+:root {
+  color-scheme: light;
+  -webkit-text-size-adjust: 100%;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html, body, #root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--color-cream);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  font-size: 17px;
+  line-height: 1.45;
+  overscroll-behavior-y: none;
+}
+
+button, input, textarea, select {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* iOS: evitar zoom al enfocar campos (>=16px) */
+input, textarea, select { font-size: max(16px, 1em); }
+
+:focus-visible {
+  outline: 3px solid #2563eb;
+  outline-offset: 2px;
+}
+
+}
+
+.safe-top { padding-top: env(safe-area-inset-top); }
+.safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+}

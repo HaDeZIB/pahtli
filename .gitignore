@@ -22,3 +22,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Tests / deploy
+test-results
+playwright-report
+.vercel
