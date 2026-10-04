@@ -6,8 +6,8 @@ import { createHash, timingSafeEqual } from 'node:crypto';
  *
  * Upsert idempotente por case_id en Supabase. Seguridad (ver docs/sync.md §2):
  *  - Cabecera `x-pahtli-device` = token de inscripción compartido del despliegue
- *    (env PAHTLI_SYNC_TOKEN). Si la variable NO está configurada, el servidor valida
- *    pero NO guarda nada y responde demo:true (modo demostración).
+ *    (env PAHTLI_SYNC_TOKEN, opcional: si existe se exige). Sin SUPABASE_SERVICE_ROLE_KEY
+ *    el servidor valida pero NO guarda nada y responde demo:true (modo demostración).
  *    En producción esto sería una llave por dispositivo emitida al inscribirlo.
  *  - Esquema estricto: campos desconocidos => caso rechazado; valores numéricos acotados.
  *  - Máximo 200 casos por lote, máximo 256 KB por petición.
@@ -15,6 +15,9 @@ import { createHash, timingSafeEqual } from 'node:crypto';
  *
  * Autocontenido a propósito (sin imports relativos) para el bundler de Vercel.
  */
+
+/** URL pública del proyecto Supabase (no es secreta; la llave sí, y va solo en env). */
+const DEFAULT_SUPABASE_URL = 'https://txkcfeqytaemfjxfcxor.supabase.co';
 
 const LEVELS = ['aqui', 'centro_hoy', 'urgencia'] as const;
 const SYNDROMES = [
@@ -257,9 +260,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const len = Number(header(req, 'content-length') ?? 0);
   if (Number.isFinite(len) && len > MAX_BODY_BYTES) return res.status(413).json({ error: 'Petición demasiado grande' });
 
-  // Token de inscripción. Sin PAHTLI_SYNC_TOKEN el despliegue es de demostración: no guarda.
+  // Token de inscripción compartido (opcional). Si está configurado se exige; en una PWA
+  // ese token viaja en el bundle, así que NO es autenticación real: producción = llave por dispositivo.
   const token = process.env.PAHTLI_SYNC_TOKEN;
-  const demoMode = !token;
   if (token && !safeEqual(header(req, 'x-pahtli-device'), token)) {
     return res.status(401).json({ error: 'Dispositivo no inscrito (x-pahtli-device inválido)' });
   }
@@ -278,9 +281,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const { rows, rejected } = v;
   const accepted = rows.map((r) => r.case_id);
 
-  const url = process.env.SUPABASE_URL;
+  const url = process.env.SUPABASE_URL || DEFAULT_SUPABASE_URL;
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  if (demoMode || !url || !key) {
+  if (!url || !key) {
     return res.status(200).json({ stored: false, demo: true, accepted, rejected });
   }
   if (!rows.length) return res.status(200).json({ stored: true, demo: false, accepted, rejected });

@@ -105,7 +105,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const days = Math.min(Math.max(parseInt(String(req.query?.days ?? '14'), 10) || 14, 1), 90);
   const since = new Date(Date.now() - days * 86_400_000).toISOString();
 
-  const url = process.env.SUPABASE_URL;
+  const url = process.env.SUPABASE_URL || 'https://txkcfeqytaemfjxfcxor.supabase.co';
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
   const empty = mode === 'records' ? { cases: [] } : { buckets: [] };
   if (!url || !key) return res.status(200).json({ mode, ...empty, days, source: 'none' });

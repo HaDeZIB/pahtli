@@ -66,9 +66,8 @@ describe('POST /api/sync', () => {
     expect((r.body as { accepted: string[] }).accepted).toHaveLength(5);
   });
 
-  it('sin token no guarda aunque Supabase esté configurado', async () => {
-    vi.stubEnv('SUPABASE_URL', 'https://ejemplo.supabase.co');
-    vi.stubEnv('SUPABASE_SERVICE_ROLE_KEY', 'service-role-de-prueba');
+  it('sin SUPABASE_SERVICE_ROLE_KEY no guarda (demo)', async () => {
+    vi.stubEnv('SUPABASE_SERVICE_ROLE_KEY', '');
     const r = await call(syncHandler, { body: payload });
     expect(r.body).toMatchObject({ stored: false, demo: true });
   });

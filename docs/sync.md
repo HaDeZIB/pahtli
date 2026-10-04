@@ -27,7 +27,7 @@
 | Variable | Si falta |
 |---|---|
 | `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` | No hay base de datos: `/api/sync` responde `demo:true`, `/api/cases` listas vacías. |
-| `PAHTLI_SYNC_TOKEN` | **Modo demo**: `/api/sync` valida pero **no guarda nada** (aunque Supabase esté configurado) y responde `demo:true`. Así un despliegue sin token no acepta escrituras de cualquiera. |
+| `PAHTLI_SYNC_TOKEN` | Opcional. Si existe, `/api/sync` exige `x-pahtli-device`. Sin `SUPABASE_SERVICE_ROLE_KEY` el servidor valida pero no guarda (`demo:true`). Decisión del hackathon: un token compartido en una PWA viaja en el bundle público, así que no es autenticación real; el piloto acepta escrituras validadas por esquema y la versión de producción usaría una llave por celular. |
 | `PAHTLI_DASHBOARD_KEY` | `/api/cases` solo devuelve conteos por día × comunidad × síndrome × nivel final. Si está configurada, sin `x-pahtli-key` correcta responde `401` sin datos. |
 
 ### `POST /api/sync`
