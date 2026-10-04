@@ -1,6 +1,6 @@
 import type { Findings, FiredRule, FollowUpQuestion, TriageLevel, TriageResult } from '../types';
 import { LEVEL_RANK } from '../types';
-import { NUMERIC_FIELDS, SYMPTOMS, isSymptomKey, preguntaPorEdad } from './findings';
+import { NUMERIC_FIELDS, PREGUNTAS, SYMPTOMS, isSymptomKey, preguntaPorEdad } from './findings';
 import {
   ALL_RULES, NO_DANGER_DIARRHEA, NO_DANGER_NEUTRAL_ACCION, NO_DANGER_NEUTRAL_DIARRHEA_ACCION, NO_DANGER_OLDER_DIARRHEA,
   NO_DANGER_OLDER_RULE, NO_DANGER_RULE, olderNoDangerAccion,
@@ -84,7 +84,8 @@ const TRIALS: Record<string, unknown[]> = {
   duracion_dias: [30],
   semanas_embarazo: [30, 34],
   embarazada: [true],
-  sexo: ['F'],
+  // Las reglas que leen `sexo` pueden pedir hombre (ardor al orinar, NHS-UTI-01) o mujer: se prueban los dos.
+  sexo: ['F', 'M'],
 };
 
 function withValue(f: Findings, field: FieldName, v: unknown): Findings {
@@ -131,9 +132,13 @@ function askable(field: FieldName, f: Findings): boolean {
 
 /** Orden de preferencia entre preguntas del mismo nivel (más útiles primero). */
 const FIELD_PRIORITY = [
+  // Ronda 3: la pregunta que resume los signos de cada molestia común va primero dentro de su nivel.
+  'alacran_sintomas', 'arana_peligrosa', 'no_obra_ni_gases', 'dolor_al_moverse', 'cauda_equina', 'no_traga_saliva',
+  'hinchazon_labios_lengua', 'objeto_clavado', 'herida_profunda', 'quemadura_grave',
   'edad_meses', 'tiraje', 'lejos_unidad', 'resp_por_min', 'embarazada', 'sangrado_vaginal', 'dolor_cabeza_intenso', 'vision_borrosa',
   'movimientos_fetales_disminuidos', 'convulsiones', 'no_puede_beber', 'vomita_todo', 'letargico', 'estridor',
   'cianosis', 'ojos_hundidos', 'pliegue_muy_lento', 'rigidez_nuca', 'sangrado_mucosas', 'dolor_abdominal_intenso',
+  'sexo',
 ];
 const prio = (field: string) => {
   const i = FIELD_PRIORITY.indexOf(field);
@@ -151,6 +156,21 @@ function buildQuestion(field: FieldName, rule: Rule, f: Findings): FollowUpQuest
   const tipo: FollowUpQuestion['tipo'] = field === 'resp_por_min' ? 'contar_respiraciones' : NUMERIC.has(field) ? 'numero' : 'si_no';
   const es = preguntaPorEdad(field, f.edad_meses) ?? (isSymptomKey(field) ? `¿${SYMPTOMS[field].es}?` : `¿${field}?`);
   return { campo: field, tipo, pregunta: { es, nah: '' }, porque: rule.explicacion.es };
+}
+
+/**
+ * Sexo antes que embarazo (reporte de uso real, 4-oct-2026: a "nombre de 21 años" —"hombre" mal transcrito— la app le
+ * preguntó si estaba embarazado). Si el sexo no se sabe, antes de una pregunta de embarazo o puerperio se pregunta
+ * "¿Es hombre o mujer?". La GPC IMSS-031 (apendicitis, p. 4) pide descartar embarazo en "Toda paciente en edad
+ * fértil", es decir, en mujeres. Si responde "Hombre", el motor ya no pregunta embarazo (pregnancyPossible).
+ * Si responde "No sé", la pregunta de embarazo sigue en la lista (va justo después): no se pierde.
+ */
+export const SEX_WHY = 'Para saber si hay que preguntar por embarazo: solo se pregunta a mujeres de 10 a 49 años.';
+function needsSexFirst(field: FieldName, f: Findings): boolean {
+  return PREGNANCY_FIELDS.has(field) && f.sexo === undefined && f.embarazada !== true && !has(f, 'posparto');
+}
+function sexQuestion(): FollowUpQuestion {
+  return { campo: 'sexo', tipo: 'si_no', pregunta: { es: PREGUNTAS.sexo, nah: '' }, porque: SEX_WHY };
 }
 
 /** Pregunta de revisión de signos de peligro (src/triage/screening.ts): una sola, Sí/No, lista según la edad. */
@@ -172,7 +192,7 @@ export function followUpQuestions(f: Findings, currentLevel: TriageLevel, max = 
     // Si no puede haber embarazo (hombre, o edad fuera de 10–49 años), una regla que lo exige no motiva preguntas.
     const missing = needs.filter((n) => !isKnown(f, n) && !((n === 'embarazada' || n === 'posparto') && !pregnancyPossible(f)));
     if (missing.length === 0) return;
-    const evidence = needs.some((n) => isPositive(f, n)) || (r.context ?? []).some((k) => f.sintomas[k] === true);
+    const evidence = (r.trigger ?? needs).some((n) => isPositive(f, n)) || (r.context ?? []).some((k) => f.sintomas[k] === true);
     if (!evidence) return;
     if (!canFire(r, f, missing)) return;
     const necessary = missing.filter((m) => !canFire(r, f, missing.filter((x) => x !== m)));
@@ -193,7 +213,7 @@ export function followUpQuestions(f: Findings, currentLevel: TriageLevel, max = 
   // y el lactante menor de 2 meses no usa esta revisión (tiene sus propias reglas).
   // La revisión es una compuerta, no un dato clínico faltante: va ADEMÁS de las `max` preguntas clínicas.
   const screen = needsScreening(f, currentLevel);
-  const limit = max + (screen ? 1 : 0);
+  let limit = max + (screen ? 1 : 0);
   if (screen) {
     const age = cands.find((c) => c.field === 'edad_meses');
     if (age) push(buildQuestion('edad_meses', age.rule, f));
@@ -205,6 +225,11 @@ export function followUpQuestions(f: Findings, currentLevel: TriageLevel, max = 
   for (const c of cands) {
     if (out.length >= limit) break;
     if (seen.has(c.field)) continue;
+    // Sexo antes que embarazo: es una compuerta (como la revisión), no cuenta entre las `max` preguntas clínicas.
+    if (needsSexFirst(c.field, f) && !seen.has('sexo')) {
+      push(sexQuestion());
+      limit++;
+    }
     push(buildQuestion(c.field, c.rule, f));
   }
   return out.slice(0, limit);

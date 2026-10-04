@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-04T08:02:49.856Z",
+  "generated_at": "2026-10-04T21:57:55.526Z",
   "pipeline": "keywordExtract -> triage (no LLM) + assessUncertainty",
   "hidden_failures": [],
   "metrics": {
@@ -103,8 +103,8 @@
       },
       "latency_ms": {
         "mean": 0.58,
-        "p95": 2.05,
-        "max": 4.33
+        "p95": 1.91,
+        "max": 4.4
       },
       "ci": {
         "accuracy": [
@@ -140,12 +140,20 @@
         "asks_expected": 1
       },
       "flagged_without_need": {
-        "count": 31,
+        "count": 33,
         "of": 58
       },
       "flagged_without_need_answered": {
-        "count": 11,
+        "count": 9,
         "of": 58
+      },
+      "forbidden_questions": {
+        "count": 0,
+        "of": 0
+      },
+      "sexo": {
+        "ok": 0,
+        "of": 0
       }
     },
     "test_v1": {
@@ -242,9 +250,9 @@
         }
       },
       "latency_ms": {
-        "mean": 0.38,
-        "p95": 0.62,
-        "max": 0.74
+        "mean": 0.49,
+        "p95": 0.71,
+        "max": 0.76
       },
       "ci": {
         "accuracy": [
@@ -284,8 +292,16 @@
         "of": 28
       },
       "flagged_without_need_answered": {
-        "count": 4,
+        "count": 3,
         "of": 28
+      },
+      "forbidden_questions": {
+        "count": 0,
+        "of": 0
+      },
+      "sexo": {
+        "ok": 0,
+        "of": 0
       }
     },
     "test_v2": {
@@ -387,9 +403,9 @@
         }
       },
       "latency_ms": {
-        "mean": 0.39,
-        "p95": 0.67,
-        "max": 0.88
+        "mean": 0.46,
+        "p95": 0.64,
+        "max": 0.81
       },
       "ci": {
         "accuracy": [
@@ -429,8 +445,16 @@
         "of": 36
       },
       "flagged_without_need_answered": {
-        "count": 9,
+        "count": 7,
         "of": 36
+      },
+      "forbidden_questions": {
+        "count": 0,
+        "of": 0
+      },
+      "sexo": {
+        "ok": 0,
+        "of": 0
       },
       "gold_accuracy": {
         "correct": 36,
@@ -438,81 +462,219 @@
         "rate": 1
       }
     },
-    "total": {
-      "n": 130,
-      "accuracy": 0.977,
-      "correct": 127,
+    "test_v3": {
+      "n": 80,
+      "accuracy": 0.8,
+      "correct": 64,
       "confusion": {
         "aqui": {
-          "aqui": 37,
+          "aqui": 31,
           "centro_hoy": 0,
-          "urgencia": 0
+          "urgencia": 1
         },
         "centro_hoy": {
-          "aqui": 0,
-          "centro_hoy": 44,
-          "urgencia": 0
+          "aqui": 6,
+          "centro_hoy": 19,
+          "urgencia": 3
         },
         "urgencia": {
-          "aqui": 1,
-          "centro_hoy": 2,
-          "urgencia": 46
+          "aqui": 2,
+          "centro_hoy": 4,
+          "urgencia": 14
         }
       },
       "under_triage": {
-        "count": 3,
-        "rate": 0.023
+        "count": 12,
+        "rate": 0.15
       },
       "over_triage": {
-        "count": 0,
-        "rate": 0
+        "count": 4,
+        "rate": 0.05
       },
       "urgencia_under_triage": {
-        "count": 3,
-        "of": 49,
-        "rate": 0.061
+        "count": 6,
+        "of": 20,
+        "rate": 0.3
       },
       "urgencia_under_no_followup": {
-        "count": 2,
-        "of": 49,
-        "rate": 0.041
+        "count": 6,
+        "of": 20,
+        "rate": 0.3
       },
       "referral_sensitivity": {
-        "hits": 92,
-        "of": 93,
-        "rate": 0.989
+        "hits": 40,
+        "of": 48,
+        "rate": 0.833
       },
       "rule_recall": {
-        "hits": 127,
-        "of": 130,
-        "rate": 0.977
+        "hits": 52,
+        "of": 62,
+        "rate": 0.839
       },
       "per_level": {
         "aqui": {
-          "n": 37,
-          "recall": 1,
-          "precision": 0.974
+          "n": 32,
+          "recall": 0.969,
+          "precision": 0.795
         },
         "centro_hoy": {
-          "n": 44,
-          "recall": 1,
-          "precision": 0.957
+          "n": 28,
+          "recall": 0.679,
+          "precision": 0.826
         },
         "urgencia": {
-          "n": 49,
-          "recall": 0.939,
-          "precision": 1
+          "n": 20,
+          "recall": 0.7,
+          "precision": 0.778
         }
       },
       "fields": {
         "edad_meses": {
-          "ok": 110,
-          "of": 110,
+          "ok": 77,
+          "of": 77,
           "rate": 1
         },
         "embarazada": {
-          "ok": 17,
-          "of": 17,
+          "ok": 1,
+          "of": 1,
+          "rate": 1
+        },
+        "temperatura_c": {
+          "ok": 2,
+          "of": 2,
+          "rate": 1
+        }
+      },
+      "latency_ms": {
+        "mean": 0.45,
+        "p95": 0.64,
+        "max": 0.7
+      },
+      "ci": {
+        "accuracy": [
+          0.7,
+          0.873
+        ],
+        "urgencia_under_triage": [
+          0.145,
+          0.519
+        ],
+        "referral_sensitivity": [
+          0.704,
+          0.913
+        ]
+      },
+      "urgencia_under_silent": {
+        "count": 0,
+        "of": 20
+      },
+      "symptoms": {
+        "ok": 0,
+        "of": 0,
+        "rate": 0,
+        "pos_ok": 0,
+        "pos_of": 0,
+        "neg_ok": 0,
+        "neg_of": 0
+      },
+      "uncertain_cases": {
+        "of": 7,
+        "flagged": 5,
+        "asks_any": 5,
+        "asks_expected": 5
+      },
+      "flagged_without_need": {
+        "count": 53,
+        "of": 73
+      },
+      "flagged_without_need_answered": {
+        "count": 5,
+        "of": 73
+      },
+      "forbidden_questions": {
+        "count": 0,
+        "of": 54
+      },
+      "sexo": {
+        "ok": 78,
+        "of": 80
+      }
+    },
+    "total": {
+      "n": 210,
+      "accuracy": 0.91,
+      "correct": 191,
+      "confusion": {
+        "aqui": {
+          "aqui": 68,
+          "centro_hoy": 0,
+          "urgencia": 1
+        },
+        "centro_hoy": {
+          "aqui": 6,
+          "centro_hoy": 63,
+          "urgencia": 3
+        },
+        "urgencia": {
+          "aqui": 3,
+          "centro_hoy": 6,
+          "urgencia": 60
+        }
+      },
+      "under_triage": {
+        "count": 15,
+        "rate": 0.071
+      },
+      "over_triage": {
+        "count": 4,
+        "rate": 0.019
+      },
+      "urgencia_under_triage": {
+        "count": 9,
+        "of": 69,
+        "rate": 0.13
+      },
+      "urgencia_under_no_followup": {
+        "count": 8,
+        "of": 69,
+        "rate": 0.116
+      },
+      "referral_sensitivity": {
+        "hits": 132,
+        "of": 141,
+        "rate": 0.936
+      },
+      "rule_recall": {
+        "hits": 179,
+        "of": 192,
+        "rate": 0.932
+      },
+      "per_level": {
+        "aqui": {
+          "n": 69,
+          "recall": 0.986,
+          "precision": 0.883
+        },
+        "centro_hoy": {
+          "n": 72,
+          "recall": 0.875,
+          "precision": 0.913
+        },
+        "urgencia": {
+          "n": 69,
+          "recall": 0.87,
+          "precision": 0.938
+        }
+      },
+      "fields": {
+        "edad_meses": {
+          "ok": 187,
+          "of": 187,
+          "rate": 1
+        },
+        "embarazada": {
+          "ok": 18,
+          "of": 18,
           "rate": 1
         },
         "semanas_embarazo": {
@@ -531,33 +693,33 @@
           "rate": 1
         },
         "temperatura_c": {
-          "ok": 5,
-          "of": 5,
+          "ok": 7,
+          "of": 7,
           "rate": 1
         }
       },
       "latency_ms": {
-        "mean": 0.48,
-        "p95": 0.9,
-        "max": 4.33
+        "mean": 0.5,
+        "p95": 0.7,
+        "max": 4.4
       },
       "ci": {
         "accuracy": [
-          0.934,
-          0.992
+          0.863,
+          0.941
         ],
         "urgencia_under_triage": [
-          0.021,
-          0.165
+          0.07,
+          0.23
         ],
         "referral_sensitivity": [
-          0.942,
-          0.998
+          0.883,
+          0.966
         ]
       },
       "urgencia_under_silent": {
         "count": 1,
-        "of": 49
+        "of": 69
       },
       "symptoms": {
         "ok": 70,
@@ -569,18 +731,26 @@
         "neg_of": 7
       },
       "uncertain_cases": {
-        "of": 8,
-        "flagged": 8,
-        "asks_any": 7,
-        "asks_expected": 5
+        "of": 15,
+        "flagged": 13,
+        "asks_any": 12,
+        "asks_expected": 10
       },
       "flagged_without_need": {
-        "count": 65,
-        "of": 122
+        "count": 120,
+        "of": 195
       },
       "flagged_without_need_answered": {
         "count": 24,
-        "of": 122
+        "of": 195
+      },
+      "forbidden_questions": {
+        "count": 0,
+        "of": 54
+      },
+      "sexo": {
+        "ok": 78,
+        "of": 80
       },
       "gold_accuracy": {
         "correct": 36,
@@ -631,10 +801,12 @@
       "expected_uncertain": false,
       "asks_expected": false,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [
         "demo"
       ],
-      "latency_ms": 4.33
+      "latency_ms": 4.4
     },
     {
       "id": "D02",
@@ -676,10 +848,12 @@
       "expected_uncertain": false,
       "asks_expected": false,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [
         "regional:chamaco"
       ],
-      "latency_ms": 3.19
+      "latency_ms": 2.85
     },
     {
       "id": "D03",
@@ -721,8 +895,10 @@
       "expected_uncertain": false,
       "asks_expected": false,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [],
-      "latency_ms": 1.02
+      "latency_ms": 0.84
     },
     {
       "id": "D04",
@@ -772,11 +948,13 @@
       "expected_uncertain": false,
       "asks_expected": false,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [
         "pregnancy",
         "indirect"
       ],
-      "latency_ms": 0.63
+      "latency_ms": 0.36
     },
     {
       "id": "D05",
@@ -818,10 +996,12 @@
       "expected_uncertain": false,
       "asks_expected": false,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [
         "pregnancy"
       ],
-      "latency_ms": 0.34
+      "latency_ms": 0.33
     },
     {
       "id": "D06",
@@ -869,10 +1049,12 @@
       "expected_uncertain": false,
       "asks_expected": false,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [
         "pregnancy"
       ],
-      "latency_ms": 0.4
+      "latency_ms": 0.39
     },
     {
       "id": "D07",
@@ -919,10 +1101,12 @@
       "expected_uncertain": false,
       "asks_expected": false,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [
         "pregnancy"
       ],
-      "latency_ms": 0.4
+      "latency_ms": 0.5
     },
     {
       "id": "D08",
@@ -965,10 +1149,12 @@
       "expected_uncertain": false,
       "asks_expected": false,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [
         "young_infant"
       ],
-      "latency_ms": 0.58
+      "latency_ms": 0.84
     },
     {
       "id": "D09",
@@ -1013,11 +1199,13 @@
       "expected_uncertain": false,
       "asks_expected": false,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [
         "young_infant",
         "threshold"
       ],
-      "latency_ms": 2.05
+      "latency_ms": 1.91
     },
     {
       "id": "D10",
@@ -1060,10 +1248,12 @@
       "expected_uncertain": false,
       "asks_expected": false,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [
         "young_infant"
       ],
-      "latency_ms": 0.35
+      "latency_ms": 0.33
     },
     {
       "id": "D11",
@@ -1103,10 +1293,12 @@
       "expected_uncertain": false,
       "asks_expected": false,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [
         "adult"
       ],
-      "latency_ms": 0.39
+      "latency_ms": 0.42
     },
     {
       "id": "D12",
@@ -1147,8 +1339,10 @@
       "expected_uncertain": false,
       "asks_expected": false,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [],
-      "latency_ms": 0.31
+      "latency_ms": 0.3
     },
     {
       "id": "D13",
@@ -1200,10 +1394,12 @@
       "expected_uncertain": false,
       "asks_expected": false,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [
         "dengue"
       ],
-      "latency_ms": 0.98
+      "latency_ms": 0.49
     },
     {
       "id": "D14",
@@ -1245,10 +1441,12 @@
       "expected_uncertain": false,
       "asks_expected": false,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [
         "adversarial:buried"
       ],
-      "latency_ms": 0.62
+      "latency_ms": 0.7
     },
     {
       "id": "D15",
@@ -1284,10 +1482,12 @@
       "expected_uncertain": false,
       "asks_expected": false,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [
         "postpartum"
       ],
-      "latency_ms": 0.65
+      "latency_ms": 0.56
     },
     {
       "id": "D16",
@@ -1329,10 +1529,12 @@
       "expected_uncertain": false,
       "asks_expected": false,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [
         "trauma"
       ],
-      "latency_ms": 0.24
+      "latency_ms": 0.31
     },
     {
       "id": "D17",
@@ -1374,8 +1576,10 @@
       "expected_uncertain": false,
       "asks_expected": false,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [],
-      "latency_ms": 0.35
+      "latency_ms": 0.3
     },
     {
       "id": "D18",
@@ -1415,8 +1619,10 @@
       "expected_uncertain": false,
       "asks_expected": false,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [],
-      "latency_ms": 0.43
+      "latency_ms": 0.21
     },
     {
       "id": "D19",
@@ -1457,10 +1663,12 @@
       "expected_uncertain": false,
       "asks_expected": false,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [
         "indirect"
       ],
-      "latency_ms": 0.35
+      "latency_ms": 0.4
     },
     {
       "id": "D20",
@@ -1501,8 +1709,10 @@
       "expected_uncertain": false,
       "asks_expected": false,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [],
-      "latency_ms": 0.21
+      "latency_ms": 0.27
     },
     {
       "id": "D21",
@@ -1549,11 +1759,13 @@
       "expected_uncertain": false,
       "asks_expected": false,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [
         "young_infant",
         "threshold:age"
       ],
-      "latency_ms": 0.24
+      "latency_ms": 0.26
     },
     {
       "id": "D22",
@@ -1600,10 +1812,12 @@
       "expected_uncertain": true,
       "asks_expected": false,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [
         "respiratory"
       ],
-      "latency_ms": 0.55
+      "latency_ms": 0.68
     },
     {
       "id": "D23",
@@ -1654,10 +1868,12 @@
       "expected_uncertain": true,
       "asks_expected": true,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [
         "threshold:exact"
       ],
-      "latency_ms": 0.9
+      "latency_ms": 0.65
     },
     {
       "id": "D24",
@@ -1705,10 +1921,12 @@
       "expected_uncertain": false,
       "asks_expected": false,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [
         "diarrhea"
       ],
-      "latency_ms": 0.49
+      "latency_ms": 0.57
     },
     {
       "id": "D25",
@@ -1760,10 +1978,12 @@
       "expected_uncertain": false,
       "asks_expected": false,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [
         "duration"
       ],
-      "latency_ms": 0.53
+      "latency_ms": 0.44
     },
     {
       "id": "D26",
@@ -1799,8 +2019,8 @@
         }
       ],
       "preguntas": [
-        "vomita_todo",
-        "letargico"
+        "no_traga_saliva",
+        "hinchazon_labios_lengua"
       ],
       "followup_asks_missing": false,
       "uncertain": true,
@@ -1811,8 +2031,10 @@
       "expected_uncertain": false,
       "asks_expected": false,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [],
-      "latency_ms": 0.51
+      "latency_ms": 0.59
     },
     {
       "id": "D27",
@@ -1853,10 +2075,12 @@
       "expected_uncertain": false,
       "asks_expected": false,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [
         "adult"
       ],
-      "latency_ms": 0.3
+      "latency_ms": 0.35
     },
     {
       "id": "D28",
@@ -1901,10 +2125,12 @@
       "expected_uncertain": false,
       "asks_expected": false,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [
         "adult"
       ],
-      "latency_ms": 0.33
+      "latency_ms": 0.52
     },
     {
       "id": "D29",
@@ -1950,10 +2176,12 @@
       "expected_uncertain": false,
       "asks_expected": false,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [
         "regional:silba"
       ],
-      "latency_ms": 0.31
+      "latency_ms": 0.43
     },
     {
       "id": "D30",
@@ -1987,10 +2215,12 @@
       "expected_uncertain": false,
       "asks_expected": false,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [
         "missing:age"
       ],
-      "latency_ms": 0.27
+      "latency_ms": 0.46
     },
     {
       "id": "D31",
@@ -2009,7 +2239,8 @@
       "unexpected_higher_rule_ids": [],
       "findings": {
         "sintomas": {
-          "dolor_intenso": true
+          "dolor_intenso": true,
+          "dolor_espalda_baja": true
         },
         "edad_meses": 660,
         "duracion_dias": 1,
@@ -2023,18 +2254,25 @@
           "ok": true
         }
       ],
-      "preguntas": [],
+      "preguntas": [
+        "cauda_equina",
+        "no_puede_orinar"
+      ],
       "followup_asks_missing": false,
-      "uncertain": false,
-      "uncertainty_codes": [],
+      "uncertain": true,
+      "uncertainty_codes": [
+        "questions_pending"
+      ],
       "uncertain_if_answered": false,
       "expected_uncertain": false,
       "asks_expected": false,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [
         "adult"
       ],
-      "latency_ms": 0.31
+      "latency_ms": 0.41
     },
     {
       "id": "D32",
@@ -2088,10 +2326,12 @@
       "expected_uncertain": false,
       "asks_expected": false,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [
         "pregnancy"
       ],
-      "latency_ms": 0.34
+      "latency_ms": 0.41
     },
     {
       "id": "D33",
@@ -2133,10 +2373,12 @@
       "expected_uncertain": false,
       "asks_expected": false,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [
         "young_infant"
       ],
-      "latency_ms": 0.21
+      "latency_ms": 0.26
     },
     {
       "id": "D34",
@@ -2181,10 +2423,12 @@
       "expected_uncertain": false,
       "asks_expected": false,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [
         "young_infant"
       ],
-      "latency_ms": 0.2
+      "latency_ms": 0.26
     },
     {
       "id": "D35",
@@ -2220,8 +2464,8 @@
         }
       ],
       "preguntas": [
-        "embarazada",
-        "vomita_todo"
+        "no_traga_saliva",
+        "hinchazon_labios_lengua"
       ],
       "followup_asks_missing": false,
       "uncertain": true,
@@ -2232,10 +2476,12 @@
       "expected_uncertain": false,
       "asks_expected": false,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [
         "dengue"
       ],
-      "latency_ms": 0.42
+      "latency_ms": 0.5
     },
     {
       "id": "D36",
@@ -2275,10 +2521,12 @@
       "expected_uncertain": false,
       "asks_expected": false,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [
         "regional:paliducho"
       ],
-      "latency_ms": 0.21
+      "latency_ms": 0.26
     },
     {
       "id": "D37",
@@ -2310,18 +2558,25 @@
           "ok": true
         }
       ],
-      "preguntas": [],
+      "preguntas": [
+        "quemadura_grave",
+        "quemadura_quimica_electrica"
+      ],
       "followup_asks_missing": false,
-      "uncertain": false,
-      "uncertainty_codes": [],
+      "uncertain": true,
+      "uncertainty_codes": [
+        "questions_pending"
+      ],
       "uncertain_if_answered": false,
       "expected_uncertain": false,
       "asks_expected": false,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [
         "trauma"
       ],
-      "latency_ms": 0.24
+      "latency_ms": 0.29
     },
     {
       "id": "D38",
@@ -2362,10 +2617,12 @@
       "expected_uncertain": false,
       "asks_expected": false,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [
         "adversarial:negated_danger"
       ],
-      "latency_ms": 0.39
+      "latency_ms": 0.41
     },
     {
       "id": "D39",
@@ -2418,10 +2675,12 @@
       "expected_uncertain": false,
       "asks_expected": false,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [
         "threshold"
       ],
-      "latency_ms": 0.33
+      "latency_ms": 0.36
     },
     {
       "id": "D40",
@@ -2459,11 +2718,13 @@
       "expected_uncertain": false,
       "asks_expected": false,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [
         "regional:se_alivió",
         "postpartum"
       ],
-      "latency_ms": 0.46
+      "latency_ms": 0.51
     },
     {
       "id": "D41",
@@ -2497,8 +2758,8 @@
         }
       ],
       "preguntas": [
-        "fiebre",
-        "fiebre_reciente"
+        "no_obra_ni_gases",
+        "fiebre"
       ],
       "followup_asks_missing": false,
       "uncertain": true,
@@ -2509,10 +2770,12 @@
       "expected_uncertain": false,
       "asks_expected": false,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [
         "young_infant"
       ],
-      "latency_ms": 0.3
+      "latency_ms": 0.41
     },
     {
       "id": "D42",
@@ -2558,11 +2821,13 @@
       "expected_uncertain": false,
       "asks_expected": false,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [
         "young_infant",
         "threshold:age"
       ],
-      "latency_ms": 0.27
+      "latency_ms": 0.35
     },
     {
       "id": "D43",
@@ -2618,10 +2883,12 @@
       "expected_uncertain": false,
       "asks_expected": false,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [
         "threshold"
       ],
-      "latency_ms": 0.61
+      "latency_ms": 0.64
     },
     {
       "id": "D44",
@@ -2677,10 +2944,12 @@
       "expected_uncertain": false,
       "asks_expected": false,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [
         "adversarial:negation"
       ],
-      "latency_ms": 0.83
+      "latency_ms": 0.6
     },
     {
       "id": "D45",
@@ -2698,7 +2967,9 @@
       "missing_rule_ids": [],
       "unexpected_higher_rule_ids": [],
       "findings": {
-        "sintomas": {},
+        "sintomas": {
+          "dolor_muela": true
+        },
         "edad_meses": 480,
         "duracion_dias": 1,
         "sexo": "M"
@@ -2712,23 +2983,26 @@
         }
       ],
       "preguntas": [
-        "signo_peligro_general"
+        "signo_peligro_general",
+        "no_traga_saliva",
+        "hinchazon_cuello_ojo"
       ],
       "followup_asks_missing": false,
       "uncertain": true,
       "uncertainty_codes": [
-        "no_findings",
         "danger_signs_unchecked",
         "questions_pending"
       ],
-      "uncertain_if_answered": true,
+      "uncertain_if_answered": false,
       "expected_uncertain": false,
       "asks_expected": false,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [
         "mild"
       ],
-      "latency_ms": 0.46
+      "latency_ms": 0.3
     },
     {
       "id": "D46",
@@ -2783,10 +3057,12 @@
       "expected_uncertain": false,
       "asks_expected": false,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [
         "adversarial:negation"
       ],
-      "latency_ms": 0.6
+      "latency_ms": 0.64
     },
     {
       "id": "D47",
@@ -2836,10 +3112,12 @@
       "expected_uncertain": false,
       "asks_expected": false,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [
         "adversarial:negated_danger"
       ],
-      "latency_ms": 0.37
+      "latency_ms": 0.48
     },
     {
       "id": "D48",
@@ -2884,10 +3162,12 @@
       "expected_uncertain": false,
       "asks_expected": false,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [
         "adversarial:negation"
       ],
-      "latency_ms": 0.29
+      "latency_ms": 0.51
     },
     {
       "id": "D49",
@@ -2934,10 +3214,12 @@
       "expected_uncertain": false,
       "asks_expected": false,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [
         "adversarial:ya_no"
       ],
-      "latency_ms": 0.5
+      "latency_ms": 0.59
     },
     {
       "id": "D50",
@@ -2987,11 +3269,13 @@
       "expected_uncertain": false,
       "asks_expected": false,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [
         "adversarial:negated_danger",
         "pregnancy"
       ],
-      "latency_ms": 0.59
+      "latency_ms": 0.72
     },
     {
       "id": "D51",
@@ -3036,10 +3320,12 @@
       "expected_uncertain": false,
       "asks_expected": false,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [
         "mild"
       ],
-      "latency_ms": 0.39
+      "latency_ms": 0.5
     },
     {
       "id": "D52",
@@ -3085,10 +3371,12 @@
       "expected_uncertain": false,
       "asks_expected": false,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [
         "mild"
       ],
-      "latency_ms": 0.33
+      "latency_ms": 0.43
     },
     {
       "id": "D53",
@@ -3106,7 +3394,9 @@
       "missing_rule_ids": [],
       "unexpected_higher_rule_ids": [],
       "findings": {
-        "sintomas": {},
+        "sintomas": {
+          "comezon": true
+        },
         "edad_meses": 48,
         "sexo": "M"
       },
@@ -3119,23 +3409,26 @@
         }
       ],
       "preguntas": [
-        "signo_peligro_general"
+        "signo_peligro_general",
+        "no_traga_saliva",
+        "hinchazon_labios_lengua"
       ],
       "followup_asks_missing": false,
       "uncertain": true,
       "uncertainty_codes": [
-        "no_findings",
         "danger_signs_unchecked",
         "questions_pending"
       ],
-      "uncertain_if_answered": true,
+      "uncertain_if_answered": false,
       "expected_uncertain": false,
       "asks_expected": false,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [
         "mild"
       ],
-      "latency_ms": 0.22
+      "latency_ms": 0.31
     },
     {
       "id": "D54",
@@ -3191,10 +3484,12 @@
       "expected_uncertain": false,
       "asks_expected": false,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [
         "mild"
       ],
-      "latency_ms": 0.62
+      "latency_ms": 0.67
     },
     {
       "id": "D55",
@@ -3243,10 +3538,12 @@
       "expected_uncertain": false,
       "asks_expected": false,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [
         "adversarial:negated_danger"
       ],
-      "latency_ms": 0.55
+      "latency_ms": 0.57
     },
     {
       "id": "D56",
@@ -3289,6 +3586,8 @@
       "expected_uncertain": false,
       "asks_expected": false,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [
         "mild"
       ],
@@ -3342,10 +3641,12 @@
       "expected_uncertain": false,
       "asks_expected": false,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [
         "adversarial:negated_danger"
       ],
-      "latency_ms": 0.44
+      "latency_ms": 0.56
     },
     {
       "id": "D58",
@@ -3395,10 +3696,12 @@
       "expected_uncertain": false,
       "asks_expected": false,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [
         "adversarial:ya_se_quito"
       ],
-      "latency_ms": 1
+      "latency_ms": 0.53
     },
     {
       "id": "D59",
@@ -3442,10 +3745,12 @@
       "expected_uncertain": false,
       "asks_expected": false,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [
         "mild"
       ],
-      "latency_ms": 0.47
+      "latency_ms": 0.28
     },
     {
       "id": "D60",
@@ -3489,10 +3794,12 @@
       "expected_uncertain": false,
       "asks_expected": false,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [
         "mild"
       ],
-      "latency_ms": 0.28
+      "latency_ms": 0.29
     },
     {
       "id": "T01",
@@ -3534,10 +3841,12 @@
       "expected_uncertain": false,
       "asks_expected": false,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [
         "regional:ataque"
       ],
-      "latency_ms": 0.38
+      "latency_ms": 0.48
     },
     {
       "id": "T02",
@@ -3583,10 +3892,12 @@
       "expected_uncertain": false,
       "asks_expected": false,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [
         "young_infant"
       ],
-      "latency_ms": 0.35
+      "latency_ms": 0.42
     },
     {
       "id": "T03",
@@ -3633,10 +3944,12 @@
       "expected_uncertain": false,
       "asks_expected": false,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [
         "pregnancy"
       ],
-      "latency_ms": 0.34
+      "latency_ms": 0.42
     },
     {
       "id": "T04",
@@ -3677,10 +3990,12 @@
       "expected_uncertain": false,
       "asks_expected": false,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [
         "adult"
       ],
-      "latency_ms": 0.34
+      "latency_ms": 0.66
     },
     {
       "id": "T05",
@@ -3701,7 +4016,8 @@
         "sintomas": {
           "mordedura_serpiente": true,
           "hinchazon_cara_manos": true
-        }
+        },
+        "sexo": "M"
       },
       "field_checks": [],
       "preguntas": [],
@@ -3712,11 +4028,13 @@
       "expected_uncertain": false,
       "asks_expected": false,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [
         "regional:picó",
         "missing:age"
       ],
-      "latency_ms": 0.29
+      "latency_ms": 0.37
     },
     {
       "id": "T06",
@@ -3758,10 +4076,12 @@
       "expected_uncertain": false,
       "asks_expected": false,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [
         "respiratory"
       ],
-      "latency_ms": 0.32
+      "latency_ms": 0.39
     },
     {
       "id": "T07",
@@ -3804,10 +4124,12 @@
       "expected_uncertain": false,
       "asks_expected": false,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [
         "adversarial:buried"
       ],
-      "latency_ms": 0.47
+      "latency_ms": 0.49
     },
     {
       "id": "T08",
@@ -3848,11 +4170,13 @@
       "expected_uncertain": false,
       "asks_expected": false,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [
         "adult",
         "indirect"
       ],
-      "latency_ms": 0.31
+      "latency_ms": 0.36
     },
     {
       "id": "T09",
@@ -3875,7 +4199,8 @@
           "dificultad_hablar": true
         },
         "edad_meses": 792,
-        "duracion_dias": 0.04
+        "duracion_dias": 0.04,
+        "sexo": "F"
       },
       "field_checks": [
         {
@@ -3893,11 +4218,13 @@
       "expected_uncertain": false,
       "asks_expected": false,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [
         "adult",
         "regional:chueca"
       ],
-      "latency_ms": 0.36
+      "latency_ms": 0.41
     },
     {
       "id": "T10",
@@ -3944,10 +4271,12 @@
       "expected_uncertain": false,
       "asks_expected": false,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [
         "pregnancy"
       ],
-      "latency_ms": 0.31
+      "latency_ms": 0.4
     },
     {
       "id": "T11",
@@ -3993,10 +4322,12 @@
       "expected_uncertain": false,
       "asks_expected": false,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [
         "diarrhea"
       ],
-      "latency_ms": 0.36
+      "latency_ms": 0.45
     },
     {
       "id": "T12",
@@ -4049,11 +4380,13 @@
       "expected_uncertain": true,
       "asks_expected": true,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [
         "threshold",
         "adversarial:negated_danger"
       ],
-      "latency_ms": 0.74
+      "latency_ms": 0.54
     },
     {
       "id": "T13",
@@ -4105,10 +4438,12 @@
       "expected_uncertain": true,
       "asks_expected": true,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [
         "threshold:exact"
       ],
-      "latency_ms": 0.32
+      "latency_ms": 0.54
     },
     {
       "id": "T14",
@@ -4149,10 +4484,12 @@
       "expected_uncertain": false,
       "asks_expected": false,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [
         "indirect"
       ],
-      "latency_ms": 0.3
+      "latency_ms": 0.37
     },
     {
       "id": "T15",
@@ -4194,10 +4531,12 @@
       "expected_uncertain": false,
       "asks_expected": false,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [
         "adversarial:negated_danger"
       ],
-      "latency_ms": 0.28
+      "latency_ms": 0.63
     },
     {
       "id": "T16",
@@ -4249,10 +4588,12 @@
       "expected_uncertain": false,
       "asks_expected": false,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [
         "duration"
       ],
-      "latency_ms": 0.37
+      "latency_ms": 0.51
     },
     {
       "id": "T17",
@@ -4306,10 +4647,12 @@
       "expected_uncertain": false,
       "asks_expected": false,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [
         "pregnancy"
       ],
-      "latency_ms": 0.37
+      "latency_ms": 0.46
     },
     {
       "id": "T18",
@@ -4350,10 +4693,12 @@
       "expected_uncertain": false,
       "asks_expected": false,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [
         "trauma"
       ],
-      "latency_ms": 0.3
+      "latency_ms": 0.4
     },
     {
       "id": "T19",
@@ -4402,11 +4747,13 @@
       "expected_uncertain": false,
       "asks_expected": false,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [
         "dengue",
         "adversarial:negated_danger"
       ],
-      "latency_ms": 0.62
+      "latency_ms": 0.71
     },
     {
       "id": "T20",
@@ -4445,11 +4792,13 @@
       "expected_uncertain": false,
       "asks_expected": false,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [
         "regional:se_alivió",
         "postpartum"
       ],
-      "latency_ms": 0.49
+      "latency_ms": 0.56
     },
     {
       "id": "T21",
@@ -4501,10 +4850,12 @@
       "expected_uncertain": false,
       "asks_expected": false,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [
         "duration"
       ],
-      "latency_ms": 0.35
+      "latency_ms": 0.45
     },
     {
       "id": "T22",
@@ -4553,10 +4904,12 @@
       "expected_uncertain": false,
       "asks_expected": false,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [
         "mild"
       ],
-      "latency_ms": 0.33
+      "latency_ms": 0.45
     },
     {
       "id": "T23",
@@ -4575,7 +4928,8 @@
       "unexpected_higher_rule_ids": [],
       "findings": {
         "sintomas": {
-          "fiebre": false
+          "fiebre": false,
+          "dolor_garganta": true
         },
         "edad_meses": 540,
         "duracion_dias": 2,
@@ -4590,7 +4944,9 @@
         }
       ],
       "preguntas": [
-        "signo_peligro_general"
+        "signo_peligro_general",
+        "no_puede_beber",
+        "babeo"
       ],
       "followup_asks_missing": false,
       "uncertain": true,
@@ -4602,11 +4958,13 @@
       "expected_uncertain": false,
       "asks_expected": false,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [
         "mild",
         "adversarial:negation"
       ],
-      "latency_ms": 0.27
+      "latency_ms": 0.39
     },
     {
       "id": "T24",
@@ -4654,10 +5012,12 @@
       "expected_uncertain": false,
       "asks_expected": false,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [
         "adversarial:ya_se_quito"
       ],
-      "latency_ms": 0.44
+      "latency_ms": 0.61
     },
     {
       "id": "T25",
@@ -4706,10 +5066,12 @@
       "expected_uncertain": false,
       "asks_expected": false,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [
         "adversarial:negation"
       ],
-      "latency_ms": 0.49
+      "latency_ms": 0.76
     },
     {
       "id": "T26",
@@ -4728,7 +5090,8 @@
       "unexpected_higher_rule_ids": [],
       "findings": {
         "sintomas": {
-          "fiebre": false
+          "fiebre": false,
+          "comezon": true
         },
         "edad_meses": 84,
         "duracion_dias": 7,
@@ -4743,7 +5106,9 @@
         }
       ],
       "preguntas": [
-        "signo_peligro_general"
+        "signo_peligro_general",
+        "no_traga_saliva",
+        "hinchazon_labios_lengua"
       ],
       "followup_asks_missing": false,
       "uncertain": true,
@@ -4755,10 +5120,12 @@
       "expected_uncertain": false,
       "asks_expected": false,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [
         "mild"
       ],
-      "latency_ms": 0.3
+      "latency_ms": 0.4
     },
     {
       "id": "T27",
@@ -4813,10 +5180,12 @@
       "expected_uncertain": false,
       "asks_expected": false,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [
         "adversarial:negation"
       ],
-      "latency_ms": 0.53
+      "latency_ms": 0.61
     },
     {
       "id": "T28",
@@ -4872,11 +5241,13 @@
       "expected_uncertain": false,
       "asks_expected": false,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [
         "threshold",
         "adversarial:negated_danger"
       ],
-      "latency_ms": 0.54
+      "latency_ms": 0.63
     },
     {
       "id": "T29",
@@ -4894,7 +5265,9 @@
       "missing_rule_ids": [],
       "unexpected_higher_rule_ids": [],
       "findings": {
-        "sintomas": {},
+        "sintomas": {
+          "herida": true
+        },
         "edad_meses": 180,
         "sexo": "M"
       },
@@ -4907,23 +5280,26 @@
         }
       ],
       "preguntas": [
-        "signo_peligro_general"
+        "signo_peligro_general",
+        "objeto_clavado",
+        "herida_profunda"
       ],
       "followup_asks_missing": false,
       "uncertain": true,
       "uncertainty_codes": [
-        "no_findings",
         "danger_signs_unchecked",
         "questions_pending"
       ],
-      "uncertain_if_answered": true,
+      "uncertain_if_answered": false,
       "expected_uncertain": false,
       "asks_expected": false,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [
         "adversarial:ya_no"
       ],
-      "latency_ms": 0.29
+      "latency_ms": 0.41
     },
     {
       "id": "T30",
@@ -4971,10 +5347,12 @@
       "expected_uncertain": false,
       "asks_expected": false,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [
         "adversarial:negation"
       ],
-      "latency_ms": 0.38
+      "latency_ms": 0.49
     },
     {
       "id": "T2-V01",
@@ -5032,13 +5410,15 @@
           "ok": true
         }
       ],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "gold_level": "urgencia",
       "tags": [
         "ya_no:capacidad",
         "recien_nacido",
         "coloquial"
       ],
-      "latency_ms": 0.35
+      "latency_ms": 0.45
     },
     {
       "id": "T2-V02",
@@ -5107,12 +5487,14 @@
           "ok": false
         }
       ],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "gold_level": "urgencia",
       "tags": [
         "relleno",
         "coloquial"
       ],
-      "latency_ms": 0.67,
+      "latency_ms": 0.81,
       "reason": "SUB-TRIAJE (extracción incompleta): no disparó IMCI-RESP-03 [tiraje=?]"
     },
     {
@@ -5170,12 +5552,14 @@
           "ok": true
         }
       ],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "gold_level": "urgencia",
       "tags": [
         "relleno",
         "embarazo_implicito"
       ],
-      "latency_ms": 0.41
+      "latency_ms": 0.51
     },
     {
       "id": "T2-V04",
@@ -5199,6 +5583,7 @@
           "sangrado_aumenta": true,
           "sangrado_abundante": true,
           "posparto": true,
+          "mareo": true,
           "sangrado": true
         },
         "sexo": "F"
@@ -5225,12 +5610,14 @@
           "ok": true
         }
       ],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "gold_level": "urgencia",
       "tags": [
         "posparto",
         "coloquial"
       ],
-      "latency_ms": 0.33
+      "latency_ms": 0.48
     },
     {
       "id": "T2-V05",
@@ -5291,11 +5678,13 @@
           "ok": true
         }
       ],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "gold_level": "urgencia",
       "tags": [
         "adulto"
       ],
-      "latency_ms": 0.34
+      "latency_ms": 0.45
     },
     {
       "id": "T2-V06",
@@ -5356,12 +5745,14 @@
           "ok": true
         }
       ],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "gold_level": "urgencia",
       "tags": [
         "relleno",
         "adulto"
       ],
-      "latency_ms": 0.4
+      "latency_ms": 0.64
     },
     {
       "id": "T2-V07",
@@ -5439,12 +5830,14 @@
           "ok": true
         }
       ],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "gold_level": "urgencia",
       "tags": [
         "ya_no:capacidad",
         "regional:obrar"
       ],
-      "latency_ms": 0.34
+      "latency_ms": 0.41
     },
     {
       "id": "T2-V08",
@@ -5507,12 +5900,14 @@
           "ok": true
         }
       ],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "gold_level": "urgencia",
       "tags": [
         "coloquial",
         "diminutivos"
       ],
-      "latency_ms": 0.37
+      "latency_ms": 0.43
     },
     {
       "id": "T2-V09",
@@ -5571,11 +5966,13 @@
           "ok": true
         }
       ],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "gold_level": "urgencia",
       "tags": [
         "adulto"
       ],
-      "latency_ms": 0.33,
+      "latency_ms": 0.43,
       "reason": "SUB-TRIAJE (extracción incompleta): no disparó IITT-R-POISON-01 [intoxicacion=?]"
     },
     {
@@ -5632,13 +6029,15 @@
           "ok": true
         }
       ],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "gold_level": "urgencia",
       "tags": [
         "umbral",
         "recien_nacido",
         "numeros_en_palabras"
       ],
-      "latency_ms": 0.32
+      "latency_ms": 0.4
     },
     {
       "id": "T2-V11",
@@ -5702,12 +6101,14 @@
           "ok": true
         }
       ],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "gold_level": "urgencia",
       "tags": [
         "embarazo",
         "coloquial"
       ],
-      "latency_ms": 0.27
+      "latency_ms": 0.37
     },
     {
       "id": "T2-V12",
@@ -5772,13 +6173,15 @@
           "ok": true
         }
       ],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "gold_level": "urgencia",
       "tags": [
         "ya_no:resuelto",
         "dengue",
         "relleno"
       ],
-      "latency_ms": 0.35
+      "latency_ms": 0.51
     },
     {
       "id": "T2-V13",
@@ -5800,9 +6203,11 @@
       "findings": {
         "sintomas": {
           "dificultad_respirar": false,
-          "sibilancias": true
+          "sibilancias": true,
+          "enfermedad_cronica": true
         },
-        "edad_meses": 96
+        "edad_meses": 96,
+        "sexo": "M"
       },
       "field_checks": [
         {
@@ -5833,11 +6238,13 @@
           "ok": true
         }
       ],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "gold_level": "urgencia",
       "tags": [
         "relleno"
       ],
-      "latency_ms": 0.36,
+      "latency_ms": 0.47,
       "reason": "SUB-TRIAJE (negación errónea): no disparó IITT-R-RESP-01 [dificultad_respirar=false, edad_meses=96]"
     },
     {
@@ -5886,12 +6293,14 @@
           "ok": true
         }
       ],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "gold_level": "urgencia",
       "tags": [
         "ya_no:capacidad",
         "salud_mental"
       ],
-      "latency_ms": 0.31
+      "latency_ms": 0.41
     },
     {
       "id": "T2-V15",
@@ -5906,7 +6315,9 @@
       ],
       "fired_rule_ids": [
         "CDC-STROKE-01",
-        "IITT-R-TRAUMA-01"
+        "IITT-R-TRAUMA-01",
+        "NHS-HEAD-01",
+        "NHS-HEAD-02"
       ],
       "missing_rule_ids": [],
       "unexpected_higher_rule_ids": [],
@@ -5915,7 +6326,8 @@
           "trauma_grave": true,
           "confusion": true,
           "vomito": true,
-          "golpe_caida": true
+          "golpe_caida": true,
+          "golpe_cabeza": true
         },
         "edad_meses": 600,
         "sexo": "M"
@@ -5955,12 +6367,14 @@
           "ok": true
         }
       ],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "gold_level": "urgencia",
       "tags": [
         "trauma",
         "coloquial"
       ],
-      "latency_ms": 0.37
+      "latency_ms": 0.51
     },
     {
       "id": "T2-V16",
@@ -6002,11 +6416,13 @@
           "ok": true
         }
       ],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "gold_level": "urgencia",
       "tags": [
         "edad_desconocida"
       ],
-      "latency_ms": 0.27
+      "latency_ms": 0.31
     },
     {
       "id": "T2-C01",
@@ -6079,12 +6495,14 @@
           "ok": true
         }
       ],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "gold_level": "centro_hoy",
       "tags": [
         "negacion",
         "numeros_en_palabras"
       ],
-      "latency_ms": 0.42
+      "latency_ms": 0.57
     },
     {
       "id": "T2-C02",
@@ -6156,12 +6574,14 @@
           "ok": false
         }
       ],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "gold_level": "centro_hoy",
       "tags": [
         "coloquial",
         "diminutivos"
       ],
-      "latency_ms": 0.39
+      "latency_ms": 0.49
     },
     {
       "id": "T2-C03",
@@ -6221,11 +6641,13 @@
           "ok": true
         }
       ],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "gold_level": "centro_hoy",
       "tags": [
         "relleno"
       ],
-      "latency_ms": 0.31
+      "latency_ms": 0.38
     },
     {
       "id": "T2-C04",
@@ -6272,11 +6694,13 @@
           "ok": true
         }
       ],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "gold_level": "centro_hoy",
       "tags": [
         "orden_de_palabras"
       ],
-      "latency_ms": 0.25
+      "latency_ms": 0.29
     },
     {
       "id": "T2-C05",
@@ -6324,12 +6748,14 @@
           "ok": true
         }
       ],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "gold_level": "centro_hoy",
       "tags": [
         "trauma",
         "ya_no:capacidad"
       ],
-      "latency_ms": 0.32
+      "latency_ms": 0.42
     },
     {
       "id": "T2-C06",
@@ -6389,12 +6815,14 @@
           "ok": true
         }
       ],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "gold_level": "centro_hoy",
       "tags": [
         "embarazo",
         "regional:hacer_del_uno"
       ],
-      "latency_ms": 0.34
+      "latency_ms": 0.44
     },
     {
       "id": "T2-C07",
@@ -6452,13 +6880,15 @@
           "ok": true
         }
       ],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "gold_level": "centro_hoy",
       "tags": [
         "posparto",
         "relleno",
         "ambiguo:pecho"
       ],
-      "latency_ms": 0.42
+      "latency_ms": 0.51
     },
     {
       "id": "T2-C08",
@@ -6517,11 +6947,13 @@
           "ok": true
         }
       ],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "gold_level": "centro_hoy",
       "tags": [
         "duracion"
       ],
-      "latency_ms": 0.41
+      "latency_ms": 0.46
     },
     {
       "id": "T2-C09",
@@ -6563,8 +6995,8 @@
         }
       ],
       "preguntas": [
-        "vomita_todo",
-        "letargico"
+        "no_traga_saliva",
+        "hinchazon_labios_lengua"
       ],
       "followup_asks_missing": false,
       "uncertain": true,
@@ -6594,12 +7026,14 @@
           "ok": true
         }
       ],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "gold_level": "centro_hoy",
       "tags": [
         "dengue",
         "diminutivos"
       ],
-      "latency_ms": 0.45
+      "latency_ms": 0.56
     },
     {
       "id": "T2-C10",
@@ -6651,12 +7085,14 @@
           "ok": true
         }
       ],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "gold_level": "centro_hoy",
       "tags": [
         "recien_nacido",
         "diminutivos"
       ],
-      "latency_ms": 0.31
+      "latency_ms": 0.39
     },
     {
       "id": "T2-C11",
@@ -6708,11 +7144,13 @@
           "ok": true
         }
       ],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "gold_level": "centro_hoy",
       "tags": [
         "adulto"
       ],
-      "latency_ms": 0.3
+      "latency_ms": 0.38
     },
     {
       "id": "T2-C12",
@@ -6772,11 +7210,13 @@
           "ok": true
         }
       ],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "gold_level": "centro_hoy",
       "tags": [
         "numeros"
       ],
-      "latency_ms": 0.37
+      "latency_ms": 0.58
     },
     {
       "id": "T2-C13",
@@ -6836,12 +7276,14 @@
           "ok": true
         }
       ],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "gold_level": "centro_hoy",
       "tags": [
         "relleno",
         "embarazo"
       ],
-      "latency_ms": 0.52
+      "latency_ms": 0.56
     },
     {
       "id": "T2-C14",
@@ -6893,11 +7335,13 @@
           "ok": true
         }
       ],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "gold_level": "centro_hoy",
       "tags": [
         "edad_desconocida"
       ],
-      "latency_ms": 0.88
+      "latency_ms": 0.41
     },
     {
       "id": "T2-A01",
@@ -6973,11 +7417,13 @@
           "ok": true
         }
       ],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "gold_level": "aqui",
       "tags": [
         "negacion"
       ],
-      "latency_ms": 0.53
+      "latency_ms": 0.5
     },
     {
       "id": "T2-A02",
@@ -7039,11 +7485,13 @@
           "ok": true
         }
       ],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "gold_level": "aqui",
       "tags": [
         "negacion"
       ],
-      "latency_ms": 0.52
+      "latency_ms": 0.54
     },
     {
       "id": "T2-A03",
@@ -7091,10 +7539,12 @@
       "expected_uncertain": false,
       "asks_expected": false,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [
         "ya_no:resuelto"
       ],
-      "latency_ms": 0.47
+      "latency_ms": 0.51
     },
     {
       "id": "T2-A04",
@@ -7114,6 +7564,7 @@
       "findings": {
         "sintomas": {
           "fiebre": false,
+          "dolor_garganta": true,
           "tos": true
         },
         "edad_meses": 240,
@@ -7131,7 +7582,7 @@
       "preguntas": [
         "signo_peligro_general",
         "tiraje",
-        "estridor"
+        "no_puede_beber"
       ],
       "followup_asks_missing": false,
       "uncertain": true,
@@ -7156,11 +7607,13 @@
           "ok": true
         }
       ],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "gold_level": "aqui",
       "tags": [
         "negacion"
       ],
-      "latency_ms": 0.35
+      "latency_ms": 0.43
     },
     {
       "id": "T2-A05",
@@ -7178,7 +7631,9 @@
       "missing_rule_ids": [],
       "unexpected_higher_rule_ids": [],
       "findings": {
-        "sintomas": {},
+        "sintomas": {
+          "dolor_espalda_baja": true
+        },
         "edad_meses": 576,
         "sexo": "M"
       },
@@ -7191,19 +7646,22 @@
         }
       ],
       "preguntas": [
-        "signo_peligro_general"
+        "signo_peligro_general",
+        "cauda_equina",
+        "no_puede_orinar"
       ],
       "followup_asks_missing": false,
       "uncertain": true,
       "uncertainty_codes": [
-        "no_findings",
         "danger_signs_unchecked",
         "questions_pending"
       ],
-      "uncertain_if_answered": true,
+      "uncertain_if_answered": false,
       "expected_uncertain": false,
       "asks_expected": false,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [
         "adulto"
       ],
@@ -7241,8 +7699,8 @@
       ],
       "preguntas": [
         "signo_peligro_general",
-        "fiebre_reciente",
-        "oliguria"
+        "no_traga_saliva",
+        "hinchazon_labios_lengua"
       ],
       "followup_asks_missing": false,
       "uncertain": true,
@@ -7267,11 +7725,13 @@
           "ok": true
         }
       ],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "gold_level": "aqui",
       "tags": [
         "negacion"
       ],
-      "latency_ms": 0.41
+      "latency_ms": 0.4
     },
     {
       "id": "T2-A07",
@@ -7334,12 +7794,14 @@
           "ok": true
         }
       ],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "gold_level": "aqui",
       "tags": [
         "negacion",
         "embarazo"
       ],
-      "latency_ms": 0.51
+      "latency_ms": 0.53
     },
     {
       "id": "T2-A08",
@@ -7357,7 +7819,9 @@
       "missing_rule_ids": [],
       "unexpected_higher_rule_ids": [],
       "findings": {
-        "sintomas": {},
+        "sintomas": {
+          "herida": true
+        },
         "edad_meses": 60,
         "sexo": "M"
       },
@@ -7370,23 +7834,26 @@
         }
       ],
       "preguntas": [
-        "signo_peligro_general"
+        "signo_peligro_general",
+        "objeto_clavado",
+        "herida_profunda"
       ],
       "followup_asks_missing": false,
       "uncertain": true,
       "uncertainty_codes": [
-        "no_findings",
         "danger_signs_unchecked",
         "questions_pending"
       ],
-      "uncertain_if_answered": true,
+      "uncertain_if_answered": false,
       "expected_uncertain": false,
       "asks_expected": false,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [
         "ya_no:resuelto"
       ],
-      "latency_ms": 0.33
+      "latency_ms": 0.36
     },
     {
       "id": "T2-A09",
@@ -7454,12 +7921,14 @@
           "ok": true
         }
       ],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "gold_level": "aqui",
       "tags": [
         "umbral",
         "negacion"
       ],
-      "latency_ms": 0.43
+      "latency_ms": 0.47
     },
     {
       "id": "T2-A10",
@@ -7500,11 +7969,4164 @@
       "expected_uncertain": true,
       "asks_expected": false,
       "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
       "tags": [
         "incertidumbre",
         "recien_nacido"
       ],
+      "latency_ms": 0.42
+    },
+    {
+      "id": "T3-01",
+      "split": "test_v3",
+      "text": "Señor de 45 años, trae la panza muy inflamada y dura, lleva tres días sin obrar y ya ni echa gases, y ahorita vomitó dos veces.",
+      "expected_level": "urgencia",
+      "predicted_level": "centro_hoy",
+      "outcome": "under",
+      "expected_rule_ids": [],
+      "fired_rule_ids": [
+        "NHS-BLOAT-01"
+      ],
+      "missing_rule_ids": [],
+      "unexpected_higher_rule_ids": [],
+      "findings": {
+        "sintomas": {
+          "gases": false,
+          "distension_abdominal": true,
+          "vomito": true
+        },
+        "edad_meses": 540,
+        "duracion_dias": 3,
+        "sexo": "M"
+      },
+      "field_checks": [
+        {
+          "field": "edad_meses",
+          "expected": 540,
+          "got": 540,
+          "ok": true
+        }
+      ],
+      "preguntas": [
+        "no_obra_ni_gases",
+        "no_puede_beber"
+      ],
+      "followup_asks_missing": false,
+      "uncertain": true,
+      "uncertainty_codes": [
+        "questions_pending"
+      ],
+      "uncertain_if_answered": false,
+      "expected_uncertain": false,
+      "asks_expected": false,
+      "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": true,
+      "sexo_ok": true,
+      "tags": [
+        "oculto",
+        "sin_regla"
+      ],
+      "latency_ms": 0.59,
+      "reason": "SUB-TRIAJE (extracción incompleta): no disparó (ninguna regla esperada listada)"
+    },
+    {
+      "id": "T3-02",
+      "split": "test_v3",
+      "text": "Muchacha de 23 años con dolor muy fuerte abajo de la panza, del lado izquierdo; la regla se le atrasó como seis semanas y está manchando poquito.",
+      "expected_level": "urgencia",
+      "predicted_level": "centro_hoy",
+      "outcome": "under",
+      "expected_rule_ids": [],
+      "fired_rule_ids": [
+        "IITT-Y-PAIN-01"
+      ],
+      "missing_rule_ids": [],
+      "unexpected_higher_rule_ids": [],
+      "findings": {
+        "sintomas": {
+          "dolor_intenso": true,
+          "sangrado_vaginal": true
+        },
+        "edad_meses": 276,
+        "sexo": "F"
+      },
+      "field_checks": [
+        {
+          "field": "edad_meses",
+          "expected": 276,
+          "got": 276,
+          "ok": true
+        }
+      ],
+      "preguntas": [
+        "embarazada"
+      ],
+      "followup_asks_missing": false,
+      "uncertain": true,
+      "uncertainty_codes": [
+        "questions_pending"
+      ],
+      "uncertain_if_answered": false,
+      "expected_uncertain": true,
+      "asks_expected": true,
+      "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
+      "sexo_ok": true,
+      "tags": [
+        "oculto",
+        "sin_regla",
+        "posible_embarazo"
+      ],
+      "latency_ms": 0.47,
+      "reason": "SUB-TRIAJE (extracción incompleta): no disparó (ninguna regla esperada listada)"
+    },
+    {
+      "id": "T3-03",
+      "split": "test_v3",
+      "text": "Doña Chela, como de 50 años, dice que de repente le dio un dolor de cabeza horrible, el peor de su vida, mientras lavaba.",
+      "expected_level": "urgencia",
+      "predicted_level": "aqui",
+      "outcome": "under",
+      "expected_rule_ids": [
+        "CDC-STROKE-01"
+      ],
+      "fired_rule_ids": [
+        "IITT-NOSIGNS-01"
+      ],
+      "missing_rule_ids": [
+        "CDC-STROKE-01"
+      ],
+      "unexpected_higher_rule_ids": [],
+      "findings": {
+        "sintomas": {
+          "dolor_cabeza": true
+        },
+        "edad_meses": 600,
+        "sexo": "F"
+      },
+      "field_checks": [
+        {
+          "field": "edad_meses",
+          "expected": 600,
+          "got": 600,
+          "ok": true
+        }
+      ],
+      "preguntas": [
+        "signo_peligro_general",
+        "letargico",
+        "rigidez_nuca"
+      ],
+      "followup_asks_missing": false,
+      "uncertain": true,
+      "uncertainty_codes": [
+        "danger_signs_unchecked",
+        "questions_pending"
+      ],
+      "uncertain_if_answered": false,
+      "expected_uncertain": false,
+      "asks_expected": false,
+      "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": true,
+      "sexo_ok": true,
+      "tags": [
+        "oculto"
+      ],
+      "latency_ms": 0.53,
+      "reason": "SUB-TRIAJE (extracción incompleta): no disparó CDC-STROKE-01 [cara_caida=?, debilidad_un_lado=?, dificultad_hablar=?, confusion=?, perdida_equilibrio=?, dolor_cabeza_subito=?, perdida_vision_subita=?]"
+    },
+    {
+      "id": "T3-04",
+      "split": "test_v3",
+      "text": "Mi familiar de 60 años anda con la presión alta desde hace años; hoy amaneció con la boca chueca y no puede mover bien el brazo derecho.",
+      "expected_level": "urgencia",
+      "predicted_level": "urgencia",
+      "outcome": "ok",
+      "expected_rule_ids": [
+        "CDC-STROKE-01"
+      ],
+      "fired_rule_ids": [
+        "CDC-STROKE-01"
+      ],
+      "missing_rule_ids": [],
+      "unexpected_higher_rule_ids": [],
+      "findings": {
+        "sintomas": {
+          "debilidad_un_lado": true,
+          "hipertension": true,
+          "cara_caida": true
+        },
+        "edad_meses": 720
+      },
+      "field_checks": [
+        {
+          "field": "edad_meses",
+          "expected": 720,
+          "got": 720,
+          "ok": true
+        }
+      ],
+      "preguntas": [],
+      "followup_asks_missing": false,
+      "uncertain": false,
+      "uncertainty_codes": [],
+      "uncertain_if_answered": false,
+      "expected_uncertain": false,
+      "asks_expected": false,
+      "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": true,
+      "sexo_ok": true,
+      "tags": [
+        "sexo_ambiguo"
+      ],
+      "latency_ms": 0.43
+    },
+    {
+      "id": "T3-05",
+      "split": "test_v3",
+      "text": "Don Ramiro, de 67 años, tiene agruras desde la tarde, pero ahora dice que siente como una presión en el pecho que se le va al brazo y está sudando frío.",
+      "expected_level": "urgencia",
+      "predicted_level": "urgencia",
+      "outcome": "ok",
+      "expected_rule_ids": [
+        "CDC-HEART-01"
+      ],
+      "fired_rule_ids": [
+        "CDC-HEART-01"
+      ],
+      "missing_rule_ids": [],
+      "unexpected_higher_rule_ids": [],
+      "findings": {
+        "sintomas": {
+          "sudor_frio": true,
+          "dolor_pecho": true,
+          "agruras": true
+        },
+        "edad_meses": 804,
+        "sexo": "M"
+      },
+      "field_checks": [
+        {
+          "field": "edad_meses",
+          "expected": 804,
+          "got": 804,
+          "ok": true
+        }
+      ],
+      "preguntas": [],
+      "followup_asks_missing": false,
+      "uncertain": false,
+      "uncertainty_codes": [],
+      "uncertain_if_answered": false,
+      "expected_uncertain": false,
+      "asks_expected": false,
+      "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": true,
+      "sexo_ok": true,
+      "tags": [
+        "oculto"
+      ],
+      "latency_ms": 0.49
+    },
+    {
+      "id": "T3-06",
+      "split": "test_v3",
+      "text": "Señora diabética de 58 años; la encontraron sudando, temblando y no contesta bien lo que le preguntan, está como confundida.",
+      "expected_level": "urgencia",
+      "predicted_level": "urgencia",
+      "outcome": "ok",
+      "expected_rule_ids": [
+        "CDC-STROKE-01"
+      ],
+      "fired_rule_ids": [
+        "CDC-STROKE-01"
+      ],
+      "missing_rule_ids": [],
+      "unexpected_higher_rule_ids": [],
+      "findings": {
+        "sintomas": {
+          "confusion": true,
+          "diabetes": true
+        },
+        "edad_meses": 696,
+        "sexo": "F"
+      },
+      "field_checks": [
+        {
+          "field": "edad_meses",
+          "expected": 696,
+          "got": 696,
+          "ok": true
+        }
+      ],
+      "preguntas": [],
+      "followup_asks_missing": false,
+      "uncertain": false,
+      "uncertainty_codes": [],
+      "uncertain_if_answered": false,
+      "expected_uncertain": false,
+      "asks_expected": false,
+      "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": true,
+      "sexo_ok": true,
+      "tags": [
+        "oculto"
+      ],
+      "latency_ms": 0.41
+    },
+    {
+      "id": "T3-07",
+      "split": "test_v3",
+      "text": "El niño de 3 años, le picó un alacrán en el pie hace como media hora; llora mucho.",
+      "expected_level": "urgencia",
+      "predicted_level": "urgencia",
+      "outcome": "ok",
+      "expected_rule_ids": [],
+      "fired_rule_ids": [
+        "SSA-ALAC-01",
+        "SSA-ALAC-04"
+      ],
+      "missing_rule_ids": [],
+      "unexpected_higher_rule_ids": [],
+      "findings": {
+        "sintomas": {
+          "picadura_alacran": true
+        },
+        "edad_meses": 36,
+        "duracion_dias": 0.02,
+        "sexo": "M"
+      },
+      "field_checks": [
+        {
+          "field": "edad_meses",
+          "expected": 36,
+          "got": 36,
+          "ok": true
+        }
+      ],
+      "preguntas": [],
+      "followup_asks_missing": false,
+      "uncertain": false,
+      "uncertainty_codes": [],
+      "uncertain_if_answered": false,
+      "expected_uncertain": false,
+      "asks_expected": false,
+      "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": true,
+      "sexo_ok": true,
+      "tags": [
+        "sin_regla"
+      ],
+      "latency_ms": 0.32
+    },
+    {
+      "id": "T3-08",
+      "split": "test_v3",
+      "text": "A un señor de 35 le picó un alacrán en la mano; ahora babea mucho, dice que siente algo atorado en la garganta y los ojos se le mueven raro.",
+      "expected_level": "urgencia",
+      "predicted_level": "urgencia",
+      "outcome": "ok",
+      "expected_rule_ids": [],
+      "fired_rule_ids": [
+        "SSA-ALAC-02",
+        "SSA-ALAC-04"
+      ],
+      "missing_rule_ids": [],
+      "unexpected_higher_rule_ids": [],
+      "findings": {
+        "sintomas": {
+          "alacran_sintomas": true,
+          "picadura_alacran": true,
+          "babeo": true
+        },
+        "edad_meses": 420,
+        "sexo": "M"
+      },
+      "field_checks": [
+        {
+          "field": "edad_meses",
+          "expected": 420,
+          "got": 420,
+          "ok": true
+        }
+      ],
+      "preguntas": [],
+      "followup_asks_missing": false,
+      "uncertain": false,
+      "uncertainty_codes": [],
+      "uncertain_if_answered": false,
+      "expected_uncertain": false,
+      "asks_expected": false,
+      "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": true,
+      "sexo_ok": true,
+      "tags": [
+        "sin_regla"
+      ],
+      "latency_ms": 0.49
+    },
+    {
+      "id": "T3-09",
+      "split": "test_v3",
+      "text": "Al abuelito de 80 años, que toma pastilla para adelgazar la sangre, se cayó en el baño y se pegó en la cabeza; ahorita está despierto y platica.",
+      "expected_level": "urgencia",
+      "predicted_level": "aqui",
+      "outcome": "under",
+      "expected_rule_ids": [
+        "IITT-R-TRAUMA-01"
+      ],
+      "fired_rule_ids": [
+        "IITT-NOSIGNS-01"
+      ],
+      "missing_rule_ids": [
+        "IITT-R-TRAUMA-01"
+      ],
+      "unexpected_higher_rule_ids": [],
+      "findings": {
+        "sintomas": {
+          "golpe_cabeza": true,
+          "golpe_caida": true
+        },
+        "edad_meses": 960,
+        "sexo": "M"
+      },
+      "field_checks": [
+        {
+          "field": "edad_meses",
+          "expected": 960,
+          "got": 960,
+          "ok": true
+        }
+      ],
+      "preguntas": [
+        "signo_peligro_general",
+        "vision_borrosa",
+        "letargico"
+      ],
+      "followup_asks_missing": false,
+      "uncertain": true,
+      "uncertainty_codes": [
+        "danger_signs_unchecked",
+        "questions_pending"
+      ],
+      "uncertain_if_answered": false,
+      "expected_uncertain": false,
+      "asks_expected": false,
+      "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": true,
+      "sexo_ok": true,
+      "tags": [
+        "oculto",
+        "adulto_mayor"
+      ],
+      "latency_ms": 0.52,
+      "reason": "SUB-TRIAJE (extracción incompleta): no disparó IITT-R-TRAUMA-01 [trauma_grave=?]"
+    },
+    {
+      "id": "T3-10",
+      "split": "test_v3",
+      "text": "La niña de un año se jaló la olla y se quemó el bracito con agua hirviendo; ya le salieron ampollas.",
+      "expected_level": "urgencia",
+      "predicted_level": "urgencia",
+      "outcome": "ok",
+      "expected_rule_ids": [
+        "IITT-R-TRAUMA-01"
+      ],
+      "fired_rule_ids": [
+        "IITT-R-BURN-01",
+        "IITT-Y-TRAUMA-01"
+      ],
+      "missing_rule_ids": [
+        "IITT-R-TRAUMA-01"
+      ],
+      "unexpected_higher_rule_ids": [],
+      "findings": {
+        "sintomas": {
+          "quemadura": true
+        },
+        "edad_meses": 12,
+        "sexo": "F"
+      },
+      "field_checks": [
+        {
+          "field": "edad_meses",
+          "expected": 12,
+          "got": 12,
+          "ok": true
+        }
+      ],
+      "preguntas": [],
+      "followup_asks_missing": false,
+      "uncertain": false,
+      "uncertainty_codes": [],
+      "uncertain_if_answered": false,
+      "expected_uncertain": false,
+      "asks_expected": false,
+      "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": true,
+      "sexo_ok": true,
+      "tags": [],
+      "latency_ms": 0.34
+    },
+    {
+      "id": "T3-11",
+      "split": "test_v3",
+      "text": "Le salieron ronchas por todo el cuerpo después de comer camarón, se le hinchó la cara y dice que se le cierra la garganta y respira con trabajo. Es una muchacha de 19.",
+      "expected_level": "urgencia",
+      "predicted_level": "urgencia",
+      "outcome": "ok",
+      "expected_rule_ids": [
+        "IITT-R-RESP-01"
+      ],
+      "fired_rule_ids": [
+        "IITT-R-RESP-01",
+        "NHS-ANAPH-01"
+      ],
+      "missing_rule_ids": [],
+      "unexpected_higher_rule_ids": [],
+      "findings": {
+        "sintomas": {
+          "no_traga_saliva": true,
+          "dificultad_respirar": true,
+          "sarpullido": true,
+          "hinchazon_cara_manos": true
+        },
+        "edad_meses": 228,
+        "sexo": "F"
+      },
+      "field_checks": [
+        {
+          "field": "edad_meses",
+          "expected": 228,
+          "got": 228,
+          "ok": true
+        }
+      ],
+      "preguntas": [],
+      "followup_asks_missing": false,
+      "uncertain": false,
+      "uncertainty_codes": [],
+      "uncertain_if_answered": false,
+      "expected_uncertain": false,
+      "asks_expected": false,
+      "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
+      "sexo_ok": true,
+      "tags": [],
+      "latency_ms": 0.55
+    },
+    {
+      "id": "T3-12",
+      "split": "test_v3",
+      "text": "Doña Lupe, de 78 años, tiene diarrea desde antier; ya casi no despierta, tiene los ojos bien hundidos y ya no puede tomar agua.",
+      "expected_level": "urgencia",
+      "predicted_level": "urgencia",
+      "outcome": "ok",
+      "expected_rule_ids": [
+        "IMCI-DIAR-01"
+      ],
+      "fired_rule_ids": [
+        "GEN-UNC-01",
+        "IMCI-DIAR-01",
+        "IITT-Y-CIRC-01"
+      ],
+      "missing_rule_ids": [],
+      "unexpected_higher_rule_ids": [],
+      "findings": {
+        "sintomas": {
+          "no_puede_beber": true,
+          "inconsciente": true,
+          "ojos_hundidos": true,
+          "diarrea": true
+        },
+        "edad_meses": 936,
+        "duracion_dias": 2,
+        "sexo": "F"
+      },
+      "field_checks": [
+        {
+          "field": "edad_meses",
+          "expected": 936,
+          "got": 936,
+          "ok": true
+        }
+      ],
+      "preguntas": [],
+      "followup_asks_missing": false,
+      "uncertain": false,
+      "uncertainty_codes": [],
+      "uncertain_if_answered": false,
+      "expected_uncertain": false,
+      "asks_expected": false,
+      "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": true,
+      "sexo_ok": true,
+      "tags": [
+        "adulto_mayor"
+      ],
+      "latency_ms": 0.44
+    },
+    {
+      "id": "T3-13",
+      "split": "test_v3",
+      "text": "Señor de 55 años con dolor de panza muy fuerte desde la mañana; no se le quita con nada.",
+      "expected_level": "urgencia",
+      "predicted_level": "urgencia",
+      "outcome": "ok",
+      "expected_rule_ids": [
+        "IITT-R-ABD-01"
+      ],
+      "fired_rule_ids": [
+        "IITT-R-ABD-01",
+        "IITT-Y-PAIN-01"
+      ],
+      "missing_rule_ids": [],
+      "unexpected_higher_rule_ids": [],
+      "findings": {
+        "sintomas": {
+          "dolor_abdominal_intenso": true,
+          "dolor_abdominal": true
+        },
+        "edad_meses": 660,
+        "duracion_dias": 0.2,
+        "sexo": "M"
+      },
+      "field_checks": [
+        {
+          "field": "edad_meses",
+          "expected": 660,
+          "got": 660,
+          "ok": true
+        }
+      ],
+      "preguntas": [],
+      "followup_asks_missing": false,
+      "uncertain": false,
+      "uncertainty_codes": [],
+      "uncertain_if_answered": false,
+      "expected_uncertain": false,
+      "asks_expected": false,
+      "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": true,
+      "sexo_ok": true,
+      "tags": [],
+      "latency_ms": 0.35
+    },
+    {
+      "id": "T3-14",
+      "split": "test_v3",
+      "text": "Mi vecino de 70 años tiene tos y calentura desde hace tres días, y hoy amaneció confundido, no reconoce a su hija.",
+      "expected_level": "urgencia",
+      "predicted_level": "urgencia",
+      "outcome": "ok",
+      "expected_rule_ids": [
+        "IITT-R-NEURO-01"
+      ],
+      "fired_rule_ids": [
+        "IITT-R-NEURO-01",
+        "CDC-STROKE-01"
+      ],
+      "missing_rule_ids": [],
+      "unexpected_higher_rule_ids": [],
+      "findings": {
+        "sintomas": {
+          "confusion": true,
+          "fiebre": true,
+          "tos": true
+        },
+        "edad_meses": 840,
+        "duracion_dias": 3,
+        "sexo": "F"
+      },
+      "field_checks": [
+        {
+          "field": "edad_meses",
+          "expected": 840,
+          "got": 840,
+          "ok": true
+        }
+      ],
+      "preguntas": [],
+      "followup_asks_missing": false,
+      "uncertain": false,
+      "uncertainty_codes": [],
+      "uncertain_if_answered": false,
+      "expected_uncertain": false,
+      "asks_expected": false,
+      "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": true,
+      "sexo_ok": false,
+      "tags": [
+        "oculto",
+        "adulto_mayor"
+      ],
+      "latency_ms": 0.41
+    },
+    {
+      "id": "T3-15",
+      "split": "test_v3",
+      "text": "Muchacho de 20 años; dice la mamá que anda muy triste desde que lo dejó la novia, y ayer le dijo que ya no quiere vivir, que se va a tomar el veneno de las plantas.",
+      "expected_level": "urgencia",
+      "predicted_level": "urgencia",
+      "outcome": "ok",
+      "expected_rule_ids": [
+        "MHGAP-SUI-01"
+      ],
+      "fired_rule_ids": [
+        "IITT-R-POISON-01",
+        "MHGAP-SUI-01"
+      ],
+      "missing_rule_ids": [],
+      "unexpected_higher_rule_ids": [],
+      "findings": {
+        "sintomas": {
+          "ideas_suicidas": true,
+          "depresion_grave": true,
+          "intoxicacion": true
+        },
+        "edad_meses": 240,
+        "sexo": "M"
+      },
+      "field_checks": [
+        {
+          "field": "edad_meses",
+          "expected": 240,
+          "got": 240,
+          "ok": true
+        }
+      ],
+      "preguntas": [],
+      "followup_asks_missing": false,
+      "uncertain": false,
+      "uncertainty_codes": [],
+      "uncertain_if_answered": false,
+      "expected_uncertain": false,
+      "asks_expected": false,
+      "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": true,
+      "sexo_ok": true,
+      "tags": [
+        "salud_mental"
+      ],
+      "latency_ms": 0.55
+    },
+    {
+      "id": "T3-16",
+      "split": "test_v3",
+      "text": "La señora de 42 años dice que son los nervios, pero siente el pecho apretado y le falta el aire desde hace una hora.",
+      "expected_level": "urgencia",
+      "predicted_level": "urgencia",
+      "outcome": "ok",
+      "expected_rule_ids": [
+        "CDC-HEART-01",
+        "IITT-R-RESP-01"
+      ],
+      "fired_rule_ids": [
+        "IITT-R-RESP-01",
+        "CDC-HEART-01"
+      ],
+      "missing_rule_ids": [],
+      "unexpected_higher_rule_ids": [],
+      "findings": {
+        "sintomas": {
+          "dificultad_respirar": true,
+          "nervios_ansiedad": true,
+          "dolor_pecho": true
+        },
+        "edad_meses": 504,
+        "duracion_dias": 0.04,
+        "sexo": "F"
+      },
+      "field_checks": [
+        {
+          "field": "edad_meses",
+          "expected": 504,
+          "got": 504,
+          "ok": true
+        }
+      ],
+      "preguntas": [],
+      "followup_asks_missing": false,
+      "uncertain": false,
+      "uncertainty_codes": [],
+      "uncertain_if_answered": false,
+      "expected_uncertain": false,
+      "asks_expected": false,
+      "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
+      "sexo_ok": true,
+      "tags": [
+        "oculto",
+        "salud_mental"
+      ],
+      "latency_ms": 0.34
+    },
+    {
+      "id": "T3-17",
+      "split": "test_v3",
+      "text": "El niño de 10 años tiene un dolor muy fuerte en un testículo desde hace dos horas; empezó de repente y vomitó.",
+      "expected_level": "urgencia",
+      "predicted_level": "centro_hoy",
+      "outcome": "under",
+      "expected_rule_ids": [],
+      "fired_rule_ids": [
+        "IITT-Y-PAIN-01"
+      ],
+      "missing_rule_ids": [],
+      "unexpected_higher_rule_ids": [],
+      "findings": {
+        "sintomas": {
+          "dolor_intenso": true,
+          "vomito": true
+        },
+        "edad_meses": 120,
+        "duracion_dias": 0.08,
+        "sexo": "M"
+      },
+      "field_checks": [
+        {
+          "field": "edad_meses",
+          "expected": 120,
+          "got": 120,
+          "ok": true
+        }
+      ],
+      "preguntas": [
+        "no_puede_beber",
+        "letargico"
+      ],
+      "followup_asks_missing": false,
+      "uncertain": true,
+      "uncertainty_codes": [
+        "questions_pending"
+      ],
+      "uncertain_if_answered": false,
+      "expected_uncertain": false,
+      "asks_expected": false,
+      "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": true,
+      "sexo_ok": true,
+      "tags": [
+        "sin_regla",
+        "solo_hombres"
+      ],
+      "latency_ms": 0.45,
+      "reason": "SUB-TRIAJE (extracción incompleta): no disparó (ninguna regla esperada listada)"
+    },
+    {
+      "id": "T3-18",
+      "split": "test_v3",
+      "text": "Niño de 7 años, le duele la panza muy fuerte del lado derecho desde ayer; ahorita tiene la panza dura, no deja que se la toquen y ya vomitó.",
+      "expected_level": "urgencia",
+      "predicted_level": "centro_hoy",
+      "outcome": "under",
+      "expected_rule_ids": [],
+      "fired_rule_ids": [
+        "IITT-Y-PAIN-01"
+      ],
+      "missing_rule_ids": [],
+      "unexpected_higher_rule_ids": [],
+      "findings": {
+        "sintomas": {
+          "dolor_abdominal_intenso": true,
+          "dolor_abdominal": true,
+          "arana_sintomas": true,
+          "vomito": true
+        },
+        "edad_meses": 84,
+        "duracion_dias": 1,
+        "sexo": "M"
+      },
+      "field_checks": [
+        {
+          "field": "edad_meses",
+          "expected": 84,
+          "got": 84,
+          "ok": true
+        }
+      ],
+      "preguntas": [
+        "no_puede_beber",
+        "letargico"
+      ],
+      "followup_asks_missing": false,
+      "uncertain": true,
+      "uncertainty_codes": [
+        "questions_pending"
+      ],
+      "uncertain_if_answered": false,
+      "expected_uncertain": false,
+      "asks_expected": false,
+      "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": true,
+      "sexo_ok": true,
+      "tags": [
+        "oculto",
+        "sin_regla"
+      ],
+      "latency_ms": 0.59,
+      "reason": "SUB-TRIAJE (extracción incompleta): no disparó (ninguna regla esperada listada)"
+    },
+    {
+      "id": "T3-19",
+      "split": "test_v3",
+      "text": "La muchacha de 15 años tiene calentura, un dolor de cabeza muy fuerte y no puede doblar el cuello.",
+      "expected_level": "urgencia",
+      "predicted_level": "urgencia",
+      "outcome": "ok",
+      "expected_rule_ids": [
+        "IMCI-FEV-01",
+        "IITT-R-NEURO-01"
+      ],
+      "fired_rule_ids": [
+        "IMCI-FEV-01",
+        "IITT-R-NEURO-01"
+      ],
+      "missing_rule_ids": [],
+      "unexpected_higher_rule_ids": [],
+      "findings": {
+        "sintomas": {
+          "dolor_cabeza_intenso": true,
+          "rigidez_nuca": true,
+          "fiebre": true,
+          "dolor_cabeza": true
+        },
+        "edad_meses": 180,
+        "sexo": "F"
+      },
+      "field_checks": [
+        {
+          "field": "edad_meses",
+          "expected": 180,
+          "got": 180,
+          "ok": true
+        }
+      ],
+      "preguntas": [],
+      "followup_asks_missing": false,
+      "uncertain": false,
+      "uncertainty_codes": [],
+      "uncertain_if_answered": false,
+      "expected_uncertain": false,
+      "asks_expected": false,
+      "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
+      "sexo_ok": true,
+      "tags": [
+        "adolescente"
+      ],
+      "latency_ms": 0.31
+    },
+    {
+      "id": "T3-20",
+      "split": "test_v3",
+      "text": "Chavo de 17 años: lo pateó un caballo en la panza hace una hora; le duele mucho y está pálido y sudando frío.",
+      "expected_level": "urgencia",
+      "predicted_level": "urgencia",
+      "outcome": "ok",
+      "expected_rule_ids": [],
+      "fired_rule_ids": [
+        "IITT-R-TRAUMA-01"
+      ],
+      "missing_rule_ids": [],
+      "unexpected_higher_rule_ids": [],
+      "findings": {
+        "sintomas": {
+          "trauma_grave": true,
+          "sudor_frio": true,
+          "palidez": true
+        },
+        "edad_meses": 204,
+        "duracion_dias": 0.04,
+        "sexo": "M"
+      },
+      "field_checks": [
+        {
+          "field": "edad_meses",
+          "expected": 204,
+          "got": 204,
+          "ok": true
+        }
+      ],
+      "preguntas": [],
+      "followup_asks_missing": false,
+      "uncertain": false,
+      "uncertainty_codes": [],
+      "uncertain_if_answered": false,
+      "expected_uncertain": false,
+      "asks_expected": false,
+      "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": true,
+      "sexo_ok": true,
+      "tags": [
+        "oculto",
+        "sin_regla",
+        "adolescente"
+      ],
       "latency_ms": 0.36
+    },
+    {
+      "id": "T3-21",
+      "split": "test_v3",
+      "text": "Señora de 38 años con ardor al orinar desde hace tres días; ahora tiene calentura y le duele la cintura del lado derecho.",
+      "expected_level": "centro_hoy",
+      "predicted_level": "centro_hoy",
+      "outcome": "ok",
+      "expected_rule_ids": [],
+      "fired_rule_ids": [
+        "IMSS077-PIELO-01",
+        "IMSS045-FIEBRE-01"
+      ],
+      "missing_rule_ids": [],
+      "unexpected_higher_rule_ids": [],
+      "findings": {
+        "sintomas": {
+          "fiebre": true,
+          "dolor_espalda_baja": true,
+          "ardor_orinar": true
+        },
+        "edad_meses": 456,
+        "duracion_dias": 3,
+        "sexo": "F"
+      },
+      "field_checks": [
+        {
+          "field": "edad_meses",
+          "expected": 456,
+          "got": 456,
+          "ok": true
+        }
+      ],
+      "preguntas": [
+        "cauda_equina",
+        "embarazada"
+      ],
+      "followup_asks_missing": false,
+      "uncertain": true,
+      "uncertainty_codes": [
+        "questions_pending"
+      ],
+      "uncertain_if_answered": false,
+      "expected_uncertain": true,
+      "asks_expected": true,
+      "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
+      "sexo_ok": true,
+      "tags": [
+        "sin_regla"
+      ],
+      "latency_ms": 0.55
+    },
+    {
+      "id": "T3-22",
+      "split": "test_v3",
+      "text": "Un señor de 62 años no ha podido orinar desde la mañana; siente ganas y nomás le salen unas gotitas.",
+      "expected_level": "centro_hoy",
+      "predicted_level": "centro_hoy",
+      "outcome": "ok",
+      "expected_rule_ids": [
+        "IITT-Y-URINE-01"
+      ],
+      "fired_rule_ids": [
+        "IITT-Y-URINE-01"
+      ],
+      "missing_rule_ids": [],
+      "unexpected_higher_rule_ids": [],
+      "findings": {
+        "sintomas": {
+          "no_puede_orinar": true
+        },
+        "edad_meses": 744,
+        "duracion_dias": 0.2,
+        "sexo": "M"
+      },
+      "field_checks": [
+        {
+          "field": "edad_meses",
+          "expected": 744,
+          "got": 744,
+          "ok": true
+        }
+      ],
+      "preguntas": [],
+      "followup_asks_missing": false,
+      "uncertain": false,
+      "uncertainty_codes": [],
+      "uncertain_if_answered": false,
+      "expected_uncertain": false,
+      "asks_expected": false,
+      "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": true,
+      "sexo_ok": true,
+      "tags": [
+        "solo_hombres",
+        "adulto_mayor"
+      ],
+      "latency_ms": 0.36
+    },
+    {
+      "id": "T3-23",
+      "split": "test_v3",
+      "text": "Chamaco de 4 años con dolor de oído desde ayer; llora, se jala la oreja y tiene un poco de calentura.",
+      "expected_level": "centro_hoy",
+      "predicted_level": "centro_hoy",
+      "outcome": "ok",
+      "expected_rule_ids": [],
+      "fired_rule_ids": [
+        "IMCI-EAR-02"
+      ],
+      "missing_rule_ids": [],
+      "unexpected_higher_rule_ids": [],
+      "findings": {
+        "sintomas": {
+          "dolor_oido": true,
+          "fiebre": true
+        },
+        "edad_meses": 48,
+        "duracion_dias": 1,
+        "sexo": "M"
+      },
+      "field_checks": [
+        {
+          "field": "edad_meses",
+          "expected": 48,
+          "got": 48,
+          "ok": true
+        }
+      ],
+      "preguntas": [
+        "vomita_todo",
+        "letargico"
+      ],
+      "followup_asks_missing": false,
+      "uncertain": true,
+      "uncertainty_codes": [
+        "questions_pending"
+      ],
+      "uncertain_if_answered": false,
+      "expected_uncertain": false,
+      "asks_expected": false,
+      "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": true,
+      "sexo_ok": true,
+      "tags": [
+        "sin_regla"
+      ],
+      "latency_ms": 0.49
+    },
+    {
+      "id": "T3-24",
+      "split": "test_v3",
+      "text": "Señor de 50 años con dolor de muela desde hace tres días, y ya se le hinchó el cachete.",
+      "expected_level": "centro_hoy",
+      "predicted_level": "centro_hoy",
+      "outcome": "ok",
+      "expected_rule_ids": [],
+      "fired_rule_ids": [
+        "IITT-Y-NECK-01"
+      ],
+      "missing_rule_ids": [],
+      "unexpected_higher_rule_ids": [],
+      "findings": {
+        "sintomas": {
+          "hinchazon_boca_cuello": true,
+          "dolor_muela": true
+        },
+        "edad_meses": 600,
+        "duracion_dias": 3,
+        "sexo": "M"
+      },
+      "field_checks": [
+        {
+          "field": "edad_meses",
+          "expected": 600,
+          "got": 600,
+          "ok": true
+        }
+      ],
+      "preguntas": [
+        "no_traga_saliva",
+        "no_puede_beber"
+      ],
+      "followup_asks_missing": false,
+      "uncertain": true,
+      "uncertainty_codes": [
+        "questions_pending"
+      ],
+      "uncertain_if_answered": false,
+      "expected_uncertain": false,
+      "asks_expected": false,
+      "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": true,
+      "sexo_ok": true,
+      "tags": [
+        "sin_regla"
+      ],
+      "latency_ms": 0.39
+    },
+    {
+      "id": "T3-25",
+      "split": "test_v3",
+      "text": "Muchacho de 25 con dolor de garganta muy fuerte; casi no puede abrir la boca, tiene el cuello hinchado de un lado y la voz como de papa.",
+      "expected_level": "centro_hoy",
+      "predicted_level": "centro_hoy",
+      "outcome": "ok",
+      "expected_rule_ids": [],
+      "fired_rule_ids": [
+        "IITT-Y-NECK-01"
+      ],
+      "missing_rule_ids": [],
+      "unexpected_higher_rule_ids": [],
+      "findings": {
+        "sintomas": {
+          "dolor_garganta": true,
+          "hinchazon_boca_cuello": true,
+          "hinchazon_cuello_ojo": true
+        },
+        "edad_meses": 300,
+        "sexo": "M"
+      },
+      "field_checks": [
+        {
+          "field": "edad_meses",
+          "expected": 300,
+          "got": 300,
+          "ok": true
+        }
+      ],
+      "preguntas": [
+        "no_puede_beber",
+        "babeo"
+      ],
+      "followup_asks_missing": false,
+      "uncertain": true,
+      "uncertainty_codes": [
+        "questions_pending"
+      ],
+      "uncertain_if_answered": false,
+      "expected_uncertain": false,
+      "asks_expected": false,
+      "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": true,
+      "sexo_ok": true,
+      "tags": [
+        "sin_regla"
+      ],
+      "latency_ms": 0.46
+    },
+    {
+      "id": "T3-26",
+      "split": "test_v3",
+      "text": "A la señora de 45 la mordió un perro de la calle en la pantorrilla; ya no le sangra.",
+      "expected_level": "centro_hoy",
+      "predicted_level": "centro_hoy",
+      "outcome": "ok",
+      "expected_rule_ids": [
+        "IITT-Y-BITE-01"
+      ],
+      "fired_rule_ids": [
+        "IITT-Y-BITE-01"
+      ],
+      "missing_rule_ids": [],
+      "unexpected_higher_rule_ids": [],
+      "findings": {
+        "sintomas": {
+          "mordedura_animal": true
+        },
+        "edad_meses": 540,
+        "sexo": "F"
+      },
+      "field_checks": [
+        {
+          "field": "edad_meses",
+          "expected": 540,
+          "got": 540,
+          "ok": true
+        }
+      ],
+      "preguntas": [],
+      "followup_asks_missing": false,
+      "uncertain": false,
+      "uncertainty_codes": [],
+      "uncertain_if_answered": false,
+      "expected_uncertain": false,
+      "asks_expected": false,
+      "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
+      "sexo_ok": true,
+      "tags": [],
+      "latency_ms": 0.31
+    },
+    {
+      "id": "T3-27",
+      "split": "test_v3",
+      "text": "El niño de 9 años pisó un clavo oxidado en el corral; le entró en la planta del pie.",
+      "expected_level": "centro_hoy",
+      "predicted_level": "centro_hoy",
+      "outcome": "ok",
+      "expected_rule_ids": [],
+      "fired_rule_ids": [
+        "NHS-WOUND-02"
+      ],
+      "missing_rule_ids": [],
+      "unexpected_higher_rule_ids": [],
+      "findings": {
+        "sintomas": {
+          "herida_sucia": true,
+          "herida": true
+        },
+        "edad_meses": 108,
+        "sexo": "M"
+      },
+      "field_checks": [
+        {
+          "field": "edad_meses",
+          "expected": 108,
+          "got": 108,
+          "ok": true
+        }
+      ],
+      "preguntas": [
+        "objeto_clavado",
+        "herida_profunda"
+      ],
+      "followup_asks_missing": false,
+      "uncertain": true,
+      "uncertainty_codes": [
+        "questions_pending"
+      ],
+      "uncertain_if_answered": false,
+      "expected_uncertain": false,
+      "asks_expected": false,
+      "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": true,
+      "sexo_ok": true,
+      "tags": [
+        "sin_regla"
+      ],
+      "latency_ms": 0.34
+    },
+    {
+      "id": "T3-28",
+      "split": "test_v3",
+      "text": "Se cortó la mano con un vidrio; la herida está abierta y honda, como de dos dedos de largo, ya no sangra.",
+      "expected_level": "centro_hoy",
+      "predicted_level": "aqui",
+      "outcome": "under",
+      "expected_rule_ids": [],
+      "fired_rule_ids": [
+        "IMCI-NOSIGNS-01"
+      ],
+      "missing_rule_ids": [],
+      "unexpected_higher_rule_ids": [],
+      "findings": {
+        "sintomas": {
+          "herida": true
+        }
+      },
+      "field_checks": [],
+      "preguntas": [
+        "signo_peligro_general",
+        "objeto_clavado",
+        "herida_profunda"
+      ],
+      "followup_asks_missing": false,
+      "uncertain": true,
+      "uncertainty_codes": [
+        "age_missing",
+        "danger_signs_unchecked",
+        "questions_pending"
+      ],
+      "uncertain_if_answered": true,
+      "expected_uncertain": false,
+      "asks_expected": false,
+      "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
+      "sexo_ok": true,
+      "tags": [
+        "sin_regla",
+        "sexo_ambiguo"
+      ],
+      "latency_ms": 0.56,
+      "reason": "SUB-TRIAJE (extracción incompleta): no disparó (ninguna regla esperada listada)"
+    },
+    {
+      "id": "T3-29",
+      "split": "test_v3",
+      "text": "Señora de 33 años: se quemó el brazo con aceite al cocinar y le salieron ampollas en un pedazo como de una moneda grande.",
+      "expected_level": "centro_hoy",
+      "predicted_level": "centro_hoy",
+      "outcome": "ok",
+      "expected_rule_ids": [
+        "IITT-Y-TRAUMA-01"
+      ],
+      "fired_rule_ids": [
+        "IITT-Y-TRAUMA-01"
+      ],
+      "missing_rule_ids": [],
+      "unexpected_higher_rule_ids": [],
+      "findings": {
+        "sintomas": {
+          "quemadura": true
+        },
+        "edad_meses": 396,
+        "sexo": "F"
+      },
+      "field_checks": [
+        {
+          "field": "edad_meses",
+          "expected": 396,
+          "got": 396,
+          "ok": true
+        }
+      ],
+      "preguntas": [
+        "quemadura_grave",
+        "quemadura_quimica_electrica"
+      ],
+      "followup_asks_missing": false,
+      "uncertain": true,
+      "uncertainty_codes": [
+        "questions_pending"
+      ],
+      "uncertain_if_answered": false,
+      "expected_uncertain": false,
+      "asks_expected": false,
+      "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
+      "sexo_ok": true,
+      "tags": [
+        "fuentes_discrepan"
+      ],
+      "latency_ms": 0.41
+    },
+    {
+      "id": "T3-30",
+      "split": "test_v3",
+      "text": "Doña Juana, de 74, se cayó en el patio; le duele mucho la cadera, no se puede parar y la pierna se le ve volteada hacia afuera.",
+      "expected_level": "centro_hoy",
+      "predicted_level": "centro_hoy",
+      "outcome": "ok",
+      "expected_rule_ids": [
+        "IITT-Y-TRAUMA-01",
+        "IITT-Y-PAIN-01"
+      ],
+      "fired_rule_ids": [
+        "IITT-Y-WEAK-01"
+      ],
+      "missing_rule_ids": [
+        "IITT-Y-TRAUMA-01",
+        "IITT-Y-PAIN-01"
+      ],
+      "unexpected_higher_rule_ids": [],
+      "findings": {
+        "sintomas": {
+          "debilidad_general": true,
+          "golpe_caida": true
+        },
+        "edad_meses": 888,
+        "sexo": "F"
+      },
+      "field_checks": [
+        {
+          "field": "edad_meses",
+          "expected": 888,
+          "got": 888,
+          "ok": true
+        }
+      ],
+      "preguntas": [],
+      "followup_asks_missing": false,
+      "uncertain": false,
+      "uncertainty_codes": [],
+      "uncertain_if_answered": false,
+      "expected_uncertain": false,
+      "asks_expected": false,
+      "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": true,
+      "sexo_ok": true,
+      "tags": [
+        "adulto_mayor"
+      ],
+      "latency_ms": 0.45
+    },
+    {
+      "id": "T3-31",
+      "split": "test_v3",
+      "text": "Señor de 30 años: le picó una araña negra con una manchita roja en la panza; le dan calambres muy fuertes y le duele toda la panza.",
+      "expected_level": "centro_hoy",
+      "predicted_level": "urgencia",
+      "outcome": "over",
+      "expected_rule_ids": [
+        "IITT-Y-PAIN-01"
+      ],
+      "fired_rule_ids": [
+        "SSA-ARANA-02",
+        "SSA-ARANA-03"
+      ],
+      "missing_rule_ids": [
+        "IITT-Y-PAIN-01"
+      ],
+      "unexpected_higher_rule_ids": [
+        "SSA-ARANA-02"
+      ],
+      "findings": {
+        "sintomas": {
+          "dolor_abdominal": true,
+          "mordedura_arana": true,
+          "arana_sintomas": true
+        },
+        "edad_meses": 360,
+        "sexo": "M"
+      },
+      "field_checks": [
+        {
+          "field": "edad_meses",
+          "expected": 360,
+          "got": 360,
+          "ok": true
+        }
+      ],
+      "preguntas": [],
+      "followup_asks_missing": false,
+      "uncertain": false,
+      "uncertainty_codes": [],
+      "uncertain_if_answered": false,
+      "expected_uncertain": false,
+      "asks_expected": false,
+      "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": true,
+      "sexo_ok": true,
+      "tags": [],
+      "latency_ms": 0.45,
+      "reason": "SOBRE-TRIAJE: disparó SSA-ARANA-02 [mordedura_arana=true, arana_sintomas=true]. Frases detectadas: \"le duele toda pansa\"→dolor_abdominal, \"le pico arana\"→mordedura_arana, \"calambres\"→arana_sintomas, \"pico arana\"→mordedura_arana"
+    },
+    {
+      "id": "T3-32",
+      "split": "test_v3",
+      "text": "A una señora de 28 le picó un alacrán en el pie hace como 20 minutos; nomás le duele y se le duerme el pie, no tiene otra cosa.",
+      "expected_level": "centro_hoy",
+      "predicted_level": "centro_hoy",
+      "outcome": "ok",
+      "expected_rule_ids": [],
+      "fired_rule_ids": [
+        "SSA-ALAC-04"
+      ],
+      "missing_rule_ids": [],
+      "unexpected_higher_rule_ids": [],
+      "findings": {
+        "sintomas": {
+          "picadura_alacran": true
+        },
+        "edad_meses": 336,
+        "sexo": "F"
+      },
+      "field_checks": [
+        {
+          "field": "edad_meses",
+          "expected": 336,
+          "got": 336,
+          "ok": true
+        }
+      ],
+      "preguntas": [
+        "alacran_sintomas",
+        "embarazada"
+      ],
+      "followup_asks_missing": false,
+      "uncertain": true,
+      "uncertainty_codes": [
+        "questions_pending"
+      ],
+      "uncertain_if_answered": false,
+      "expected_uncertain": false,
+      "asks_expected": false,
+      "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
+      "sexo_ok": true,
+      "tags": [
+        "sin_regla"
+      ],
+      "latency_ms": 0.53
+    },
+    {
+      "id": "T3-33",
+      "split": "test_v3",
+      "text": "Mujer de 35 años con diarrea desde hace cuatro días; ahora tiene mucha sed, la boca bien seca y los ojos hundidos.",
+      "expected_level": "centro_hoy",
+      "predicted_level": "centro_hoy",
+      "outcome": "ok",
+      "expected_rule_ids": [
+        "IMCI-DIAR-02"
+      ],
+      "fired_rule_ids": [
+        "IMCI-DIAR-02"
+      ],
+      "missing_rule_ids": [],
+      "unexpected_higher_rule_ids": [],
+      "findings": {
+        "sintomas": {
+          "bebe_con_avidez": true,
+          "ojos_hundidos": true,
+          "boca_seca": true,
+          "diarrea": true
+        },
+        "edad_meses": 420,
+        "duracion_dias": 4,
+        "sexo": "F"
+      },
+      "field_checks": [
+        {
+          "field": "edad_meses",
+          "expected": 420,
+          "got": 420,
+          "ok": true
+        }
+      ],
+      "preguntas": [
+        "no_puede_beber",
+        "letargico"
+      ],
+      "followup_asks_missing": false,
+      "uncertain": true,
+      "uncertainty_codes": [
+        "questions_pending"
+      ],
+      "uncertain_if_answered": false,
+      "expected_uncertain": false,
+      "asks_expected": false,
+      "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
+      "sexo_ok": true,
+      "tags": [],
+      "latency_ms": 0.41
+    },
+    {
+      "id": "T3-34",
+      "split": "test_v3",
+      "text": "Hombre de 48 años con diarrea con sangre desde ayer y calentura.",
+      "expected_level": "centro_hoy",
+      "predicted_level": "centro_hoy",
+      "outcome": "ok",
+      "expected_rule_ids": [
+        "IITT-Y-BLEED-01"
+      ],
+      "fired_rule_ids": [
+        "IITT-Y-BLEED-01"
+      ],
+      "missing_rule_ids": [],
+      "unexpected_higher_rule_ids": [],
+      "findings": {
+        "sintomas": {
+          "sangre_heces": true,
+          "fiebre": true,
+          "diarrea": true
+        },
+        "edad_meses": 576,
+        "duracion_dias": 1,
+        "sexo": "M"
+      },
+      "field_checks": [
+        {
+          "field": "edad_meses",
+          "expected": 576,
+          "got": 576,
+          "ok": true
+        }
+      ],
+      "preguntas": [
+        "no_puede_beber",
+        "vomita_todo"
+      ],
+      "followup_asks_missing": false,
+      "uncertain": true,
+      "uncertainty_codes": [
+        "questions_pending"
+      ],
+      "uncertain_if_answered": false,
+      "expected_uncertain": false,
+      "asks_expected": false,
+      "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": true,
+      "sexo_ok": true,
+      "tags": [],
+      "latency_ms": 0.4
+    },
+    {
+      "id": "T3-35",
+      "split": "test_v3",
+      "text": "Señora de 60, diabética, tiene una herida en el pie que no le sana; ahora está roja, caliente, le sale pus y tiene calentura.",
+      "expected_level": "centro_hoy",
+      "predicted_level": "centro_hoy",
+      "outcome": "ok",
+      "expected_rule_ids": [],
+      "fired_rule_ids": [
+        "NHS-WOUND-02"
+      ],
+      "missing_rule_ids": [],
+      "unexpected_higher_rule_ids": [],
+      "findings": {
+        "sintomas": {
+          "fiebre": true,
+          "herida": true,
+          "diabetes": true
+        },
+        "edad_meses": 720,
+        "sexo": "F"
+      },
+      "field_checks": [
+        {
+          "field": "edad_meses",
+          "expected": 720,
+          "got": 720,
+          "ok": true
+        }
+      ],
+      "preguntas": [
+        "objeto_clavado",
+        "herida_profunda"
+      ],
+      "followup_asks_missing": false,
+      "uncertain": true,
+      "uncertainty_codes": [
+        "questions_pending"
+      ],
+      "uncertain_if_answered": false,
+      "expected_uncertain": false,
+      "asks_expected": false,
+      "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": true,
+      "sexo_ok": true,
+      "tags": [
+        "sin_regla"
+      ],
+      "latency_ms": 0.57
+    },
+    {
+      "id": "T3-36",
+      "split": "test_v3",
+      "text": "Señor de 40 años con dolor de cintura muy fuerte desde ayer que se le baja por la pierna; no lo deja moverse ni dormir.",
+      "expected_level": "centro_hoy",
+      "predicted_level": "aqui",
+      "outcome": "under",
+      "expected_rule_ids": [
+        "IITT-Y-PAIN-01"
+      ],
+      "fired_rule_ids": [
+        "IITT-NOSIGNS-01"
+      ],
+      "missing_rule_ids": [
+        "IITT-Y-PAIN-01"
+      ],
+      "unexpected_higher_rule_ids": [],
+      "findings": {
+        "sintomas": {
+          "dolor_espalda_baja": true
+        },
+        "edad_meses": 480,
+        "duracion_dias": 1,
+        "sexo": "M"
+      },
+      "field_checks": [
+        {
+          "field": "edad_meses",
+          "expected": 480,
+          "got": 480,
+          "ok": true
+        }
+      ],
+      "preguntas": [
+        "signo_peligro_general",
+        "cauda_equina",
+        "no_puede_orinar"
+      ],
+      "followup_asks_missing": false,
+      "uncertain": true,
+      "uncertainty_codes": [
+        "danger_signs_unchecked",
+        "questions_pending"
+      ],
+      "uncertain_if_answered": false,
+      "expected_uncertain": false,
+      "asks_expected": false,
+      "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": true,
+      "sexo_ok": true,
+      "tags": [],
+      "latency_ms": 0.47,
+      "reason": "SUB-TRIAJE (extracción incompleta): no disparó IITT-Y-PAIN-01 [dolor_intenso=?, dolor_abdominal_intenso=?]"
+    },
+    {
+      "id": "T3-37",
+      "split": "test_v3",
+      "text": "Muchacha de 18 años vomitando desde anoche; ya lleva como ocho veces y no le para nada, ni el agua.",
+      "expected_level": "centro_hoy",
+      "predicted_level": "centro_hoy",
+      "outcome": "ok",
+      "expected_rule_ids": [
+        "IITT-Y-CIRC-01"
+      ],
+      "fired_rule_ids": [
+        "IITT-Y-CIRC-01"
+      ],
+      "missing_rule_ids": [],
+      "unexpected_higher_rule_ids": [],
+      "findings": {
+        "sintomas": {
+          "vomita_todo": true,
+          "vomito": true
+        },
+        "edad_meses": 216,
+        "duracion_dias": 0.5,
+        "sexo": "F"
+      },
+      "field_checks": [
+        {
+          "field": "edad_meses",
+          "expected": 216,
+          "got": 216,
+          "ok": true
+        }
+      ],
+      "preguntas": [
+        "embarazada",
+        "no_puede_beber"
+      ],
+      "followup_asks_missing": false,
+      "uncertain": true,
+      "uncertainty_codes": [
+        "questions_pending"
+      ],
+      "uncertain_if_answered": false,
+      "expected_uncertain": true,
+      "asks_expected": true,
+      "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
+      "sexo_ok": true,
+      "tags": [
+        "adolescente"
+      ],
+      "latency_ms": 0.64
+    },
+    {
+      "id": "T3-38",
+      "split": "test_v3",
+      "text": "Señora de 30, embarazada de cuatro meses, con ardor al orinar desde hace dos días; no tiene calentura.",
+      "expected_level": "centro_hoy",
+      "predicted_level": "centro_hoy",
+      "outcome": "ok",
+      "expected_rule_ids": [
+        "IMSS-EMB-04"
+      ],
+      "fired_rule_ids": [
+        "IMSS-EMB-04"
+      ],
+      "missing_rule_ids": [],
+      "unexpected_higher_rule_ids": [],
+      "findings": {
+        "sintomas": {
+          "fiebre": false,
+          "ardor_orinar": true
+        },
+        "edad_meses": 360,
+        "duracion_dias": 2,
+        "semanas_embarazo": 18,
+        "embarazada": true,
+        "sexo": "F"
+      },
+      "field_checks": [
+        {
+          "field": "edad_meses",
+          "expected": 360,
+          "got": 360,
+          "ok": true
+        },
+        {
+          "field": "embarazada",
+          "expected": true,
+          "got": true,
+          "ok": true
+        }
+      ],
+      "preguntas": [
+        "sangrado_vaginal",
+        "dolor_cabeza_intenso"
+      ],
+      "followup_asks_missing": false,
+      "uncertain": true,
+      "uncertainty_codes": [
+        "questions_pending",
+        "pregnancy_few"
+      ],
+      "uncertain_if_answered": true,
+      "expected_uncertain": false,
+      "asks_expected": false,
+      "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
+      "sexo_ok": true,
+      "tags": [
+        "embarazo"
+      ],
+      "latency_ms": 0.42
+    },
+    {
+      "id": "T3-39",
+      "split": "test_v3",
+      "text": "Niño de 8 años con dolor de cabeza desde hace dos días; no tiene calentura, sí come y juega poquito.",
+      "expected_level": "centro_hoy",
+      "predicted_level": "centro_hoy",
+      "outcome": "ok",
+      "expected_rule_ids": [],
+      "fired_rule_ids": [
+        "IITT-Y-HEAD-PED-01"
+      ],
+      "missing_rule_ids": [],
+      "unexpected_higher_rule_ids": [],
+      "findings": {
+        "sintomas": {
+          "fiebre": false,
+          "dolor_cabeza": true
+        },
+        "edad_meses": 96,
+        "duracion_dias": 2,
+        "sexo": "M"
+      },
+      "field_checks": [
+        {
+          "field": "edad_meses",
+          "expected": 96,
+          "got": 96,
+          "ok": true
+        }
+      ],
+      "preguntas": [
+        "letargico",
+        "rigidez_nuca"
+      ],
+      "followup_asks_missing": false,
+      "uncertain": true,
+      "uncertainty_codes": [
+        "questions_pending"
+      ],
+      "uncertain_if_answered": false,
+      "expected_uncertain": false,
+      "asks_expected": false,
+      "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": true,
+      "sexo_ok": true,
+      "tags": [
+        "sin_regla"
+      ],
+      "latency_ms": 0.46
+    },
+    {
+      "id": "T3-40",
+      "split": "test_v3",
+      "text": "Don Chuy, de 71, se marea cuando se para de la cama desde que tiene diarrea; ayer casi se cae.",
+      "expected_level": "centro_hoy",
+      "predicted_level": "aqui",
+      "outcome": "under",
+      "expected_rule_ids": [
+        "IITT-Y-FAINT-01"
+      ],
+      "fired_rule_ids": [
+        "IITT-NOSIGNS-01"
+      ],
+      "missing_rule_ids": [
+        "IITT-Y-FAINT-01"
+      ],
+      "unexpected_higher_rule_ids": [],
+      "findings": {
+        "sintomas": {
+          "diarrea": true,
+          "mareo": true
+        },
+        "edad_meses": 852,
+        "sexo": "M"
+      },
+      "field_checks": [
+        {
+          "field": "edad_meses",
+          "expected": 852,
+          "got": 852,
+          "ok": true
+        }
+      ],
+      "preguntas": [
+        "signo_peligro_general",
+        "no_puede_beber",
+        "letargico"
+      ],
+      "followup_asks_missing": false,
+      "uncertain": true,
+      "uncertainty_codes": [
+        "danger_signs_unchecked",
+        "questions_pending"
+      ],
+      "uncertain_if_answered": false,
+      "expected_uncertain": false,
+      "asks_expected": false,
+      "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": true,
+      "sexo_ok": true,
+      "tags": [
+        "adulto_mayor"
+      ],
+      "latency_ms": 0.54,
+      "reason": "SUB-TRIAJE (extracción incompleta): no disparó IITT-Y-FAINT-01 [desmayo=?, mareo_al_pararse=?, edad_meses=852]"
+    },
+    {
+      "id": "T3-41",
+      "split": "test_v3",
+      "text": "Señora de 46 que se desmayó en la mañana en la cocina; ya se repuso y está platicando normal.",
+      "expected_level": "centro_hoy",
+      "predicted_level": "centro_hoy",
+      "outcome": "ok",
+      "expected_rule_ids": [
+        "IITT-Y-FAINT-01"
+      ],
+      "fired_rule_ids": [
+        "IITT-Y-FAINT-01"
+      ],
+      "missing_rule_ids": [],
+      "unexpected_higher_rule_ids": [],
+      "findings": {
+        "sintomas": {
+          "desmayo": true
+        },
+        "edad_meses": 552,
+        "sexo": "F"
+      },
+      "field_checks": [
+        {
+          "field": "edad_meses",
+          "expected": 552,
+          "got": 552,
+          "ok": true
+        }
+      ],
+      "preguntas": [
+        "embarazada",
+        "llenado_capilar_lento"
+      ],
+      "followup_asks_missing": false,
+      "uncertain": true,
+      "uncertainty_codes": [
+        "questions_pending"
+      ],
+      "uncertain_if_answered": false,
+      "expected_uncertain": false,
+      "asks_expected": false,
+      "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
+      "sexo_ok": true,
+      "tags": [],
+      "latency_ms": 0.37
+    },
+    {
+      "id": "T3-42",
+      "split": "test_v3",
+      "text": "Muchacha de 22 años: le salieron ronchas en los brazos y la panza hace dos horas y cada vez son más; le pican mucho, pero respira bien y no tiene la cara hinchada.",
+      "expected_level": "centro_hoy",
+      "predicted_level": "aqui",
+      "outcome": "under",
+      "expected_rule_ids": [],
+      "fired_rule_ids": [
+        "IITT-NOSIGNS-01"
+      ],
+      "missing_rule_ids": [],
+      "unexpected_higher_rule_ids": [],
+      "findings": {
+        "sintomas": {
+          "hinchazon_cara_manos": false,
+          "sarpullido": true
+        },
+        "edad_meses": 264,
+        "duracion_dias": 0.08,
+        "sexo": "F"
+      },
+      "field_checks": [
+        {
+          "field": "edad_meses",
+          "expected": 264,
+          "got": 264,
+          "ok": true
+        }
+      ],
+      "preguntas": [
+        "signo_peligro_general",
+        "no_traga_saliva",
+        "hinchazon_labios_lengua"
+      ],
+      "followup_asks_missing": false,
+      "uncertain": true,
+      "uncertainty_codes": [
+        "danger_signs_unchecked",
+        "questions_pending"
+      ],
+      "uncertain_if_answered": false,
+      "expected_uncertain": false,
+      "asks_expected": false,
+      "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
+      "sexo_ok": true,
+      "tags": [
+        "sin_regla",
+        "fuentes_discrepan"
+      ],
+      "latency_ms": 0.7,
+      "reason": "SUB-TRIAJE (extracción incompleta): no disparó (ninguna regla esperada listada)"
+    },
+    {
+      "id": "T3-43",
+      "split": "test_v3",
+      "text": "Adolescente de 13 años, muchacha: le bajó la regla por primera vez hace 10 días y no se le quita, le baja más de lo normal; anda pálida y cansada.",
+      "expected_level": "centro_hoy",
+      "predicted_level": "aqui",
+      "outcome": "under",
+      "expected_rule_ids": [
+        "IITT-Y-BLEED-01"
+      ],
+      "fired_rule_ids": [
+        "IITT-NOSIGNS-01"
+      ],
+      "missing_rule_ids": [
+        "IITT-Y-BLEED-01"
+      ],
+      "unexpected_higher_rule_ids": [],
+      "findings": {
+        "sintomas": {
+          "palidez": true
+        },
+        "edad_meses": 156,
+        "duracion_dias": 10,
+        "sexo": "F"
+      },
+      "field_checks": [
+        {
+          "field": "edad_meses",
+          "expected": 156,
+          "got": 156,
+          "ok": true
+        }
+      ],
+      "preguntas": [
+        "signo_peligro_general"
+      ],
+      "followup_asks_missing": false,
+      "uncertain": true,
+      "uncertainty_codes": [
+        "danger_signs_unchecked",
+        "questions_pending"
+      ],
+      "uncertain_if_answered": false,
+      "expected_uncertain": false,
+      "asks_expected": false,
+      "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
+      "sexo_ok": true,
+      "tags": [
+        "adolescente"
+      ],
+      "latency_ms": 0.56,
+      "reason": "SUB-TRIAJE (extracción incompleta): no disparó IITT-Y-BLEED-01 [sangrado=?, vomito_sangre=?, heces_negras=?, sangre_heces=?, sangrado_mucosas=?]"
+    },
+    {
+      "id": "T3-44",
+      "split": "test_v3",
+      "text": "Mi familiar, de 26 años, tiene calentura de 39.5 desde ayer, con mucho dolor de cuerpo y de cabeza, y le duelen los ojos.",
+      "expected_level": "centro_hoy",
+      "predicted_level": "centro_hoy",
+      "outcome": "ok",
+      "expected_rule_ids": [
+        "PAHO-DEN-03",
+        "IITT-VS-01"
+      ],
+      "fired_rule_ids": [
+        "PAHO-DEN-03",
+        "IITT-VS-01"
+      ],
+      "missing_rule_ids": [],
+      "unexpected_higher_rule_ids": [],
+      "findings": {
+        "sintomas": {
+          "fiebre": true,
+          "dolor_muscular_articular": true,
+          "dolor_detras_ojos": true
+        },
+        "edad_meses": 312,
+        "temperatura_c": 39.5,
+        "duracion_dias": 1
+      },
+      "field_checks": [
+        {
+          "field": "edad_meses",
+          "expected": 312,
+          "got": 312,
+          "ok": true
+        },
+        {
+          "field": "temperatura_c",
+          "expected": 39.5,
+          "got": 39.5,
+          "ok": true
+        }
+      ],
+      "preguntas": [
+        "sexo",
+        "embarazada",
+        "vomita_todo"
+      ],
+      "followup_asks_missing": false,
+      "uncertain": true,
+      "uncertainty_codes": [
+        "questions_pending"
+      ],
+      "uncertain_if_answered": true,
+      "expected_uncertain": true,
+      "asks_expected": true,
+      "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
+      "sexo_ok": true,
+      "tags": [
+        "sexo_ambiguo"
+      ],
+      "latency_ms": 0.6
+    },
+    {
+      "id": "T3-45",
+      "split": "test_v3",
+      "text": "Chava de 15 años se torció el tobillo jugando fut; está muy hinchado, morado y no puede apoyar el pie.",
+      "expected_level": "centro_hoy",
+      "predicted_level": "aqui",
+      "outcome": "under",
+      "expected_rule_ids": [
+        "IITT-Y-TRAUMA-01"
+      ],
+      "fired_rule_ids": [
+        "IITT-NOSIGNS-01"
+      ],
+      "missing_rule_ids": [
+        "IITT-Y-TRAUMA-01"
+      ],
+      "unexpected_higher_rule_ids": [],
+      "findings": {
+        "sintomas": {
+          "hinchazon_cara_manos": true
+        },
+        "edad_meses": 180,
+        "sexo": "F"
+      },
+      "field_checks": [
+        {
+          "field": "edad_meses",
+          "expected": 180,
+          "got": 180,
+          "ok": true
+        }
+      ],
+      "preguntas": [
+        "signo_peligro_general",
+        "embarazada",
+        "posparto"
+      ],
+      "followup_asks_missing": false,
+      "uncertain": true,
+      "uncertainty_codes": [
+        "danger_signs_unchecked",
+        "questions_pending"
+      ],
+      "uncertain_if_answered": false,
+      "expected_uncertain": false,
+      "asks_expected": false,
+      "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
+      "sexo_ok": true,
+      "tags": [
+        "adolescente"
+      ],
+      "latency_ms": 0.36,
+      "reason": "SUB-TRIAJE (extracción incompleta): no disparó IITT-Y-TRAUMA-01 [fractura=?, quemadura=?]"
+    },
+    {
+      "id": "T3-46",
+      "split": "test_v3",
+      "text": "Niño de 6 años: le mordió el gato de la vecina en la mano, son dos agujeritos.",
+      "expected_level": "centro_hoy",
+      "predicted_level": "centro_hoy",
+      "outcome": "ok",
+      "expected_rule_ids": [
+        "IITT-Y-BITE-01"
+      ],
+      "fired_rule_ids": [
+        "IITT-Y-BITE-01"
+      ],
+      "missing_rule_ids": [],
+      "unexpected_higher_rule_ids": [],
+      "findings": {
+        "sintomas": {
+          "mordedura_animal": true
+        },
+        "edad_meses": 72,
+        "sexo": "M"
+      },
+      "field_checks": [
+        {
+          "field": "edad_meses",
+          "expected": 72,
+          "got": 72,
+          "ok": true
+        }
+      ],
+      "preguntas": [],
+      "followup_asks_missing": false,
+      "uncertain": false,
+      "uncertainty_codes": [],
+      "uncertain_if_answered": false,
+      "expected_uncertain": false,
+      "asks_expected": false,
+      "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": true,
+      "sexo_ok": true,
+      "tags": [],
+      "latency_ms": 0.3
+    },
+    {
+      "id": "T3-47",
+      "split": "test_v3",
+      "text": "Le duele mucho la panza desde la mañana; es un señor, no sé cuántos años tiene.",
+      "expected_level": "centro_hoy",
+      "predicted_level": "urgencia",
+      "outcome": "over",
+      "expected_rule_ids": [
+        "IITT-Y-PAIN-01"
+      ],
+      "fired_rule_ids": [
+        "IITT-R-ABD-01",
+        "IITT-Y-PAIN-01"
+      ],
+      "missing_rule_ids": [],
+      "unexpected_higher_rule_ids": [
+        "IITT-R-ABD-01"
+      ],
+      "findings": {
+        "sintomas": {
+          "dolor_abdominal_intenso": true,
+          "dolor_abdominal": true
+        },
+        "duracion_dias": 0.2,
+        "sexo": "M"
+      },
+      "field_checks": [],
+      "preguntas": [],
+      "followup_asks_missing": false,
+      "uncertain": false,
+      "uncertainty_codes": [],
+      "uncertain_if_answered": false,
+      "expected_uncertain": true,
+      "asks_expected": false,
+      "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": true,
+      "sexo_ok": true,
+      "tags": [
+        "falta_edad"
+      ],
+      "latency_ms": 0.29,
+      "reason": "SOBRE-TRIAJE: disparó IITT-R-ABD-01 [dolor_abdominal_intenso=true, edad_meses=?]. Frases detectadas: \"le duele mucho pansa\"→dolor_abdominal_intenso, \"le duele mucho pansa\"→dolor_abdominal"
+    },
+    {
+      "id": "T3-48",
+      "split": "test_v3",
+      "text": "Le picó un alacrán al chamaco en la mano; está llorando, nomás le duele.",
+      "expected_level": "centro_hoy",
+      "predicted_level": "urgencia",
+      "outcome": "over",
+      "expected_rule_ids": [],
+      "fired_rule_ids": [
+        "SSA-ALAC-01",
+        "SSA-ALAC-04"
+      ],
+      "missing_rule_ids": [],
+      "unexpected_higher_rule_ids": [
+        "SSA-ALAC-01"
+      ],
+      "findings": {
+        "sintomas": {
+          "picadura_alacran": true
+        },
+        "sexo": "M"
+      },
+      "field_checks": [],
+      "preguntas": [],
+      "followup_asks_missing": false,
+      "uncertain": false,
+      "uncertainty_codes": [],
+      "uncertain_if_answered": false,
+      "expected_uncertain": true,
+      "asks_expected": false,
+      "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": true,
+      "sexo_ok": true,
+      "tags": [
+        "falta_edad",
+        "sin_regla"
+      ],
+      "latency_ms": 0.28,
+      "reason": "SOBRE-TRIAJE: disparó SSA-ALAC-01 [picadura_alacran=true, edad_meses=?]. Frases detectadas: \"le pico alacran\"→picadura_alacran, \"pico alacran\"→picadura_alacran, \"pico alacran\"→picadura_alacran"
+    },
+    {
+      "id": "T3-49",
+      "split": "test_v3",
+      "text": "Hombre de 21 años con dolor de estómago, gases y estreñido desde hace dos días.",
+      "expected_level": "aqui",
+      "predicted_level": "aqui",
+      "outcome": "ok",
+      "expected_rule_ids": [
+        "IITT-NOSIGNS-01"
+      ],
+      "fired_rule_ids": [
+        "IITT-NOSIGNS-01"
+      ],
+      "missing_rule_ids": [],
+      "unexpected_higher_rule_ids": [],
+      "findings": {
+        "sintomas": {
+          "dolor_abdominal": true,
+          "estrenimiento": true,
+          "gases": true
+        },
+        "edad_meses": 252,
+        "duracion_dias": 2,
+        "sexo": "M"
+      },
+      "field_checks": [
+        {
+          "field": "edad_meses",
+          "expected": 252,
+          "got": 252,
+          "ok": true
+        }
+      ],
+      "preguntas": [
+        "signo_peligro_general",
+        "no_obra_ni_gases",
+        "dolor_derecha_baja"
+      ],
+      "followup_asks_missing": false,
+      "uncertain": true,
+      "uncertainty_codes": [
+        "danger_signs_unchecked",
+        "questions_pending"
+      ],
+      "uncertain_if_answered": false,
+      "expected_uncertain": false,
+      "asks_expected": false,
+      "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": true,
+      "sexo_ok": true,
+      "tags": [
+        "usuario_real"
+      ],
+      "latency_ms": 0.36
+    },
+    {
+      "id": "T3-50",
+      "split": "test_v3",
+      "text": "Muchacho de 19 anda con la panza inflamada y muchos gases desde que comió frijoles ayer; sí obra y no tiene calentura.",
+      "expected_level": "aqui",
+      "predicted_level": "aqui",
+      "outcome": "ok",
+      "expected_rule_ids": [
+        "IITT-NOSIGNS-01"
+      ],
+      "fired_rule_ids": [
+        "IITT-NOSIGNS-01"
+      ],
+      "missing_rule_ids": [],
+      "unexpected_higher_rule_ids": [],
+      "findings": {
+        "sintomas": {
+          "fiebre": false,
+          "distension_abdominal": true,
+          "gases": true
+        },
+        "edad_meses": 228,
+        "sexo": "M"
+      },
+      "field_checks": [
+        {
+          "field": "edad_meses",
+          "expected": 228,
+          "got": 228,
+          "ok": true
+        }
+      ],
+      "preguntas": [
+        "signo_peligro_general",
+        "no_obra_ni_gases",
+        "fiebre_reciente"
+      ],
+      "followup_asks_missing": false,
+      "uncertain": true,
+      "uncertainty_codes": [
+        "danger_signs_unchecked",
+        "questions_pending"
+      ],
+      "uncertain_if_answered": false,
+      "expected_uncertain": false,
+      "asks_expected": false,
+      "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": true,
+      "sexo_ok": true,
+      "tags": [],
+      "latency_ms": 0.52
+    },
+    {
+      "id": "T3-51",
+      "split": "test_v3",
+      "text": "Tiene 21 años, le duele la panza y no ha podido ir al baño en dos días.",
+      "expected_level": "aqui",
+      "predicted_level": "aqui",
+      "outcome": "ok",
+      "expected_rule_ids": [
+        "IITT-NOSIGNS-01"
+      ],
+      "fired_rule_ids": [
+        "IITT-NOSIGNS-01"
+      ],
+      "missing_rule_ids": [],
+      "unexpected_higher_rule_ids": [],
+      "findings": {
+        "sintomas": {
+          "dolor_abdominal": true
+        },
+        "edad_meses": 252
+      },
+      "field_checks": [
+        {
+          "field": "edad_meses",
+          "expected": 252,
+          "got": 252,
+          "ok": true
+        }
+      ],
+      "preguntas": [
+        "signo_peligro_general",
+        "sexo",
+        "embarazada",
+        "dolor_derecha_baja"
+      ],
+      "followup_asks_missing": false,
+      "uncertain": true,
+      "uncertainty_codes": [
+        "danger_signs_unchecked",
+        "questions_pending"
+      ],
+      "uncertain_if_answered": true,
+      "expected_uncertain": true,
+      "asks_expected": true,
+      "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
+      "sexo_ok": true,
+      "tags": [
+        "sexo_ambiguo"
+      ],
+      "latency_ms": 0.36
+    },
+    {
+      "id": "T3-52",
+      "split": "test_v3",
+      "text": "Señora de 27 años con dolor de panza y gases desde ayer; la regla le bajó normal hace una semana.",
+      "expected_level": "aqui",
+      "predicted_level": "aqui",
+      "outcome": "ok",
+      "expected_rule_ids": [
+        "IITT-NOSIGNS-01"
+      ],
+      "fired_rule_ids": [
+        "IITT-NOSIGNS-01"
+      ],
+      "missing_rule_ids": [],
+      "unexpected_higher_rule_ids": [],
+      "findings": {
+        "sintomas": {
+          "dolor_abdominal": true,
+          "gases": true
+        },
+        "edad_meses": 324,
+        "duracion_dias": 7,
+        "sexo": "F"
+      },
+      "field_checks": [
+        {
+          "field": "edad_meses",
+          "expected": 324,
+          "got": 324,
+          "ok": true
+        }
+      ],
+      "preguntas": [
+        "signo_peligro_general",
+        "no_obra_ni_gases",
+        "embarazada"
+      ],
+      "followup_asks_missing": false,
+      "uncertain": true,
+      "uncertainty_codes": [
+        "danger_signs_unchecked",
+        "questions_pending"
+      ],
+      "uncertain_if_answered": false,
+      "expected_uncertain": false,
+      "asks_expected": false,
+      "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
+      "sexo_ok": true,
+      "tags": [],
+      "latency_ms": 0.39
+    },
+    {
+      "id": "T3-53",
+      "split": "test_v3",
+      "text": "Doña Rosa, de 62 años, anda estreñida desde hace dos días; come bien, no tiene dolor fuerte ni vómito.",
+      "expected_level": "aqui",
+      "predicted_level": "aqui",
+      "outcome": "ok",
+      "expected_rule_ids": [
+        "IITT-NOSIGNS-01"
+      ],
+      "fired_rule_ids": [
+        "IITT-NOSIGNS-01"
+      ],
+      "missing_rule_ids": [],
+      "unexpected_higher_rule_ids": [],
+      "findings": {
+        "sintomas": {
+          "vomito": false,
+          "estrenimiento": true
+        },
+        "edad_meses": 744,
+        "duracion_dias": 2,
+        "sexo": "F"
+      },
+      "field_checks": [
+        {
+          "field": "edad_meses",
+          "expected": 744,
+          "got": 744,
+          "ok": true
+        }
+      ],
+      "preguntas": [
+        "signo_peligro_general",
+        "no_obra_ni_gases"
+      ],
+      "followup_asks_missing": false,
+      "uncertain": true,
+      "uncertainty_codes": [
+        "danger_signs_unchecked",
+        "questions_pending"
+      ],
+      "uncertain_if_answered": false,
+      "expected_uncertain": false,
+      "asks_expected": false,
+      "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": true,
+      "sexo_ok": true,
+      "tags": [
+        "adulto_mayor"
+      ],
+      "latency_ms": 0.39
+    },
+    {
+      "id": "T3-54",
+      "split": "test_v3",
+      "text": "Señor de 40 con diarrea desde esta mañana, unas cuatro veces; toma bien su agua, no tiene sangre ni calentura.",
+      "expected_level": "aqui",
+      "predicted_level": "aqui",
+      "outcome": "ok",
+      "expected_rule_ids": [
+        "IITT-NOSIGNS-01"
+      ],
+      "fired_rule_ids": [
+        "IITT-NOSIGNS-01"
+      ],
+      "missing_rule_ids": [],
+      "unexpected_higher_rule_ids": [],
+      "findings": {
+        "sintomas": {
+          "fiebre": false,
+          "diarrea": true
+        },
+        "edad_meses": 480,
+        "duracion_dias": 0.2,
+        "sexo": "M"
+      },
+      "field_checks": [
+        {
+          "field": "edad_meses",
+          "expected": 480,
+          "got": 480,
+          "ok": true
+        }
+      ],
+      "preguntas": [
+        "signo_peligro_general",
+        "no_puede_beber",
+        "letargico"
+      ],
+      "followup_asks_missing": false,
+      "uncertain": true,
+      "uncertainty_codes": [
+        "danger_signs_unchecked",
+        "questions_pending"
+      ],
+      "uncertain_if_answered": false,
+      "expected_uncertain": false,
+      "asks_expected": false,
+      "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": true,
+      "sexo_ok": true,
+      "tags": [],
+      "latency_ms": 0.55
+    },
+    {
+      "id": "T3-55",
+      "split": "test_v3",
+      "text": "Señora de 55 con agruras después de comer picante; se le quita con agua y no tiene dolor de pecho.",
+      "expected_level": "aqui",
+      "predicted_level": "aqui",
+      "outcome": "ok",
+      "expected_rule_ids": [
+        "IITT-NOSIGNS-01"
+      ],
+      "fired_rule_ids": [
+        "IITT-NOSIGNS-01"
+      ],
+      "missing_rule_ids": [],
+      "unexpected_higher_rule_ids": [],
+      "findings": {
+        "sintomas": {
+          "dolor_pecho": false,
+          "agruras": true
+        },
+        "edad_meses": 660,
+        "sexo": "F"
+      },
+      "field_checks": [
+        {
+          "field": "edad_meses",
+          "expected": 660,
+          "got": 660,
+          "ok": true
+        }
+      ],
+      "preguntas": [
+        "signo_peligro_general"
+      ],
+      "followup_asks_missing": false,
+      "uncertain": true,
+      "uncertainty_codes": [
+        "danger_signs_unchecked",
+        "questions_pending"
+      ],
+      "uncertain_if_answered": false,
+      "expected_uncertain": false,
+      "asks_expected": false,
+      "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": true,
+      "sexo_ok": true,
+      "tags": [],
+      "latency_ms": 0.41
+    },
+    {
+      "id": "T3-56",
+      "split": "test_v3",
+      "text": "Muchacha de 24 con náuseas desde ayer; vomitó una vez, ya toma líquidos y orina bien.",
+      "expected_level": "aqui",
+      "predicted_level": "aqui",
+      "outcome": "ok",
+      "expected_rule_ids": [
+        "IITT-NOSIGNS-01"
+      ],
+      "fired_rule_ids": [
+        "IITT-NOSIGNS-01"
+      ],
+      "missing_rule_ids": [],
+      "unexpected_higher_rule_ids": [],
+      "findings": {
+        "sintomas": {
+          "nauseas": true,
+          "vomito": true
+        },
+        "edad_meses": 288,
+        "duracion_dias": 1,
+        "sexo": "F"
+      },
+      "field_checks": [
+        {
+          "field": "edad_meses",
+          "expected": 288,
+          "got": 288,
+          "ok": true
+        }
+      ],
+      "preguntas": [
+        "signo_peligro_general",
+        "embarazada",
+        "no_puede_beber"
+      ],
+      "followup_asks_missing": false,
+      "uncertain": true,
+      "uncertainty_codes": [
+        "danger_signs_unchecked",
+        "questions_pending"
+      ],
+      "uncertain_if_answered": false,
+      "expected_uncertain": false,
+      "asks_expected": false,
+      "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
+      "sexo_ok": true,
+      "tags": [],
+      "latency_ms": 0.55
+    },
+    {
+      "id": "T3-57",
+      "split": "test_v3",
+      "text": "Doña Mari, de 48 años, tiene dolor de cabeza desde la tarde; dice que es por el sol y porque no ha comido. No tiene calentura.",
+      "expected_level": "aqui",
+      "predicted_level": "aqui",
+      "outcome": "ok",
+      "expected_rule_ids": [
+        "IITT-NOSIGNS-01"
+      ],
+      "fired_rule_ids": [
+        "IITT-NOSIGNS-01"
+      ],
+      "missing_rule_ids": [],
+      "unexpected_higher_rule_ids": [],
+      "findings": {
+        "sintomas": {
+          "fiebre": false,
+          "dolor_cabeza": true
+        },
+        "edad_meses": 576,
+        "sexo": "F"
+      },
+      "field_checks": [
+        {
+          "field": "edad_meses",
+          "expected": 576,
+          "got": 576,
+          "ok": true
+        }
+      ],
+      "preguntas": [
+        "signo_peligro_general",
+        "letargico",
+        "rigidez_nuca"
+      ],
+      "followup_asks_missing": false,
+      "uncertain": true,
+      "uncertainty_codes": [
+        "danger_signs_unchecked",
+        "questions_pending"
+      ],
+      "uncertain_if_answered": false,
+      "expected_uncertain": false,
+      "asks_expected": false,
+      "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
+      "sexo_ok": true,
+      "tags": [],
+      "latency_ms": 0.56
+    },
+    {
+      "id": "T3-58",
+      "split": "test_v3",
+      "text": "Hombre de 35 con gripa: mocos, estornudos, tos poquita y dolor de garganta desde hace dos días; respira bien.",
+      "expected_level": "aqui",
+      "predicted_level": "aqui",
+      "outcome": "ok",
+      "expected_rule_ids": [
+        "IITT-NOSIGNS-01"
+      ],
+      "fired_rule_ids": [
+        "IITT-NOSIGNS-01"
+      ],
+      "missing_rule_ids": [],
+      "unexpected_higher_rule_ids": [],
+      "findings": {
+        "sintomas": {
+          "dolor_garganta": true,
+          "escurrimiento_nasal": true,
+          "tos": true
+        },
+        "edad_meses": 420,
+        "duracion_dias": 2,
+        "sexo": "M"
+      },
+      "field_checks": [
+        {
+          "field": "edad_meses",
+          "expected": 420,
+          "got": 420,
+          "ok": true
+        }
+      ],
+      "preguntas": [
+        "signo_peligro_general",
+        "tiraje",
+        "no_puede_beber"
+      ],
+      "followup_asks_missing": false,
+      "uncertain": true,
+      "uncertainty_codes": [
+        "danger_signs_unchecked",
+        "questions_pending"
+      ],
+      "uncertain_if_answered": false,
+      "expected_uncertain": false,
+      "asks_expected": false,
+      "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": true,
+      "sexo_ok": true,
+      "tags": [],
+      "latency_ms": 0.46
+    },
+    {
+      "id": "T3-59",
+      "split": "test_v3",
+      "text": "Chavo de 14 años con dolor de garganta y un poco de tos desde ayer; sí traga y come bien.",
+      "expected_level": "aqui",
+      "predicted_level": "aqui",
+      "outcome": "ok",
+      "expected_rule_ids": [
+        "IITT-NOSIGNS-01"
+      ],
+      "fired_rule_ids": [
+        "IITT-NOSIGNS-01"
+      ],
+      "missing_rule_ids": [],
+      "unexpected_higher_rule_ids": [],
+      "findings": {
+        "sintomas": {
+          "dolor_garganta": true,
+          "tos": true
+        },
+        "edad_meses": 168,
+        "duracion_dias": 1,
+        "sexo": "M"
+      },
+      "field_checks": [
+        {
+          "field": "edad_meses",
+          "expected": 168,
+          "got": 168,
+          "ok": true
+        }
+      ],
+      "preguntas": [
+        "signo_peligro_general",
+        "tiraje",
+        "no_puede_beber"
+      ],
+      "followup_asks_missing": false,
+      "uncertain": true,
+      "uncertainty_codes": [
+        "danger_signs_unchecked",
+        "questions_pending"
+      ],
+      "uncertain_if_answered": false,
+      "expected_uncertain": false,
+      "asks_expected": false,
+      "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": true,
+      "sexo_ok": true,
+      "tags": [
+        "adolescente"
+      ],
+      "latency_ms": 0.42
+    },
+    {
+      "id": "T3-60",
+      "split": "test_v3",
+      "text": "Señora de 70 años con tos y mocos desde hace tres días; sin calentura, respira bien y está platicando normal.",
+      "expected_level": "aqui",
+      "predicted_level": "aqui",
+      "outcome": "ok",
+      "expected_rule_ids": [
+        "IITT-NOSIGNS-01"
+      ],
+      "fired_rule_ids": [
+        "IITT-NOSIGNS-01"
+      ],
+      "missing_rule_ids": [],
+      "unexpected_higher_rule_ids": [],
+      "findings": {
+        "sintomas": {
+          "fiebre": false,
+          "tos": true,
+          "escurrimiento_nasal": true
+        },
+        "edad_meses": 840,
+        "duracion_dias": 3,
+        "sexo": "F"
+      },
+      "field_checks": [
+        {
+          "field": "edad_meses",
+          "expected": 840,
+          "got": 840,
+          "ok": true
+        }
+      ],
+      "preguntas": [
+        "signo_peligro_general",
+        "tiraje",
+        "estridor"
+      ],
+      "followup_asks_missing": false,
+      "uncertain": true,
+      "uncertainty_codes": [
+        "danger_signs_unchecked",
+        "questions_pending"
+      ],
+      "uncertain_if_answered": false,
+      "expected_uncertain": false,
+      "asks_expected": false,
+      "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": true,
+      "sexo_ok": true,
+      "tags": [
+        "adulto_mayor"
+      ],
+      "latency_ms": 0.43
+    },
+    {
+      "id": "T3-61",
+      "split": "test_v3",
+      "text": "El señor de 39 tiene dolor de oído desde ayer; no le sale nada y no tiene calentura.",
+      "expected_level": "aqui",
+      "predicted_level": "aqui",
+      "outcome": "ok",
+      "expected_rule_ids": [
+        "IITT-NOSIGNS-01"
+      ],
+      "fired_rule_ids": [
+        "IITT-NOSIGNS-01"
+      ],
+      "missing_rule_ids": [],
+      "unexpected_higher_rule_ids": [],
+      "findings": {
+        "sintomas": {
+          "fiebre": false,
+          "dolor_oido": true
+        },
+        "edad_meses": 468,
+        "duracion_dias": 1,
+        "sexo": "M"
+      },
+      "field_checks": [
+        {
+          "field": "edad_meses",
+          "expected": 468,
+          "got": 468,
+          "ok": true
+        }
+      ],
+      "preguntas": [
+        "signo_peligro_general",
+        "pus_oido",
+        "hinchazon_detras_oreja"
+      ],
+      "followup_asks_missing": false,
+      "uncertain": true,
+      "uncertainty_codes": [
+        "danger_signs_unchecked",
+        "questions_pending"
+      ],
+      "uncertain_if_answered": false,
+      "expected_uncertain": false,
+      "asks_expected": false,
+      "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": true,
+      "sexo_ok": true,
+      "tags": [],
+      "latency_ms": 0.41
+    },
+    {
+      "id": "T3-62",
+      "split": "test_v3",
+      "text": "Señora de 52 con ardor al orinar desde hoy en la mañana; sin calentura ni dolor de cintura.",
+      "expected_level": "aqui",
+      "predicted_level": "aqui",
+      "outcome": "ok",
+      "expected_rule_ids": [
+        "IITT-NOSIGNS-01"
+      ],
+      "fired_rule_ids": [
+        "IITT-NOSIGNS-01"
+      ],
+      "missing_rule_ids": [],
+      "unexpected_higher_rule_ids": [],
+      "findings": {
+        "sintomas": {
+          "dolor_espalda_baja": false,
+          "fiebre": false,
+          "ardor_orinar": true
+        },
+        "edad_meses": 624,
+        "duracion_dias": 0.2,
+        "sexo": "F"
+      },
+      "field_checks": [
+        {
+          "field": "edad_meses",
+          "expected": 624,
+          "got": 624,
+          "ok": true
+        }
+      ],
+      "preguntas": [
+        "signo_peligro_general",
+        "dolor_fosa_renal",
+        "orina_sangre"
+      ],
+      "followup_asks_missing": false,
+      "uncertain": true,
+      "uncertainty_codes": [
+        "danger_signs_unchecked",
+        "questions_pending"
+      ],
+      "uncertain_if_answered": false,
+      "expected_uncertain": false,
+      "asks_expected": false,
+      "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": true,
+      "sexo_ok": true,
+      "tags": [
+        "fuentes_discrepan"
+      ],
+      "latency_ms": 0.37
+    },
+    {
+      "id": "T3-63",
+      "split": "test_v3",
+      "text": "Muchacho de 28 con dolor de espalda baja desde que cargó costales ayer; camina bien y no tiene otra molestia.",
+      "expected_level": "aqui",
+      "predicted_level": "aqui",
+      "outcome": "ok",
+      "expected_rule_ids": [
+        "IITT-NOSIGNS-01"
+      ],
+      "fired_rule_ids": [
+        "IITT-NOSIGNS-01"
+      ],
+      "missing_rule_ids": [],
+      "unexpected_higher_rule_ids": [],
+      "findings": {
+        "sintomas": {
+          "dolor_espalda_baja": true
+        },
+        "edad_meses": 336,
+        "sexo": "M"
+      },
+      "field_checks": [
+        {
+          "field": "edad_meses",
+          "expected": 336,
+          "got": 336,
+          "ok": true
+        }
+      ],
+      "preguntas": [
+        "signo_peligro_general",
+        "cauda_equina",
+        "no_puede_orinar"
+      ],
+      "followup_asks_missing": false,
+      "uncertain": true,
+      "uncertainty_codes": [
+        "danger_signs_unchecked",
+        "questions_pending"
+      ],
+      "uncertain_if_answered": false,
+      "expected_uncertain": false,
+      "asks_expected": false,
+      "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": true,
+      "sexo_ok": true,
+      "tags": [],
+      "latency_ms": 0.4
+    },
+    {
+      "id": "T3-64",
+      "split": "test_v3",
+      "text": "Señor de 45 le duele una muela desde hoy; no tiene hinchada la cara ni calentura.",
+      "expected_level": "aqui",
+      "predicted_level": "aqui",
+      "outcome": "ok",
+      "expected_rule_ids": [
+        "IITT-NOSIGNS-01"
+      ],
+      "fired_rule_ids": [
+        "IITT-NOSIGNS-01"
+      ],
+      "missing_rule_ids": [],
+      "unexpected_higher_rule_ids": [],
+      "findings": {
+        "sintomas": {
+          "fiebre": false,
+          "hinchazon_cara_manos": false,
+          "dolor_muela": true
+        },
+        "edad_meses": 540,
+        "duracion_dias": 0.2,
+        "sexo": "M"
+      },
+      "field_checks": [
+        {
+          "field": "edad_meses",
+          "expected": 540,
+          "got": 540,
+          "ok": true
+        }
+      ],
+      "preguntas": [
+        "signo_peligro_general",
+        "no_traga_saliva",
+        "hinchazon_cuello_ojo"
+      ],
+      "followup_asks_missing": false,
+      "uncertain": true,
+      "uncertainty_codes": [
+        "danger_signs_unchecked",
+        "questions_pending"
+      ],
+      "uncertain_if_answered": false,
+      "expected_uncertain": false,
+      "asks_expected": false,
+      "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": true,
+      "sexo_ok": true,
+      "tags": [],
+      "latency_ms": 0.34
+    },
+    {
+      "id": "T3-65",
+      "split": "test_v3",
+      "text": "Niña de 6 años con ronchitas que le pican en las piernas, parecen piquetes de mosco; está jugando normal y sin calentura.",
+      "expected_level": "aqui",
+      "predicted_level": "aqui",
+      "outcome": "ok",
+      "expected_rule_ids": [
+        "IITT-NOSIGNS-01"
+      ],
+      "fired_rule_ids": [
+        "IITT-NOSIGNS-01"
+      ],
+      "missing_rule_ids": [],
+      "unexpected_higher_rule_ids": [],
+      "findings": {
+        "sintomas": {
+          "fiebre": false,
+          "comezon": true,
+          "sarpullido": true
+        },
+        "edad_meses": 72,
+        "sexo": "F"
+      },
+      "field_checks": [
+        {
+          "field": "edad_meses",
+          "expected": 72,
+          "got": 72,
+          "ok": true
+        }
+      ],
+      "preguntas": [
+        "signo_peligro_general",
+        "no_traga_saliva",
+        "hinchazon_labios_lengua"
+      ],
+      "followup_asks_missing": false,
+      "uncertain": true,
+      "uncertainty_codes": [
+        "danger_signs_unchecked",
+        "questions_pending"
+      ],
+      "uncertain_if_answered": false,
+      "expected_uncertain": false,
+      "asks_expected": false,
+      "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": true,
+      "sexo_ok": true,
+      "tags": [],
+      "latency_ms": 0.51
+    },
+    {
+      "id": "T3-66",
+      "split": "test_v3",
+      "text": "Señora de 36 años con comezón y unas ronchas en el cuello desde que usó un jabón nuevo; respira bien y no se le hincha la cara.",
+      "expected_level": "aqui",
+      "predicted_level": "aqui",
+      "outcome": "ok",
+      "expected_rule_ids": [
+        "IITT-NOSIGNS-01"
+      ],
+      "fired_rule_ids": [
+        "IITT-NOSIGNS-01"
+      ],
+      "missing_rule_ids": [],
+      "unexpected_higher_rule_ids": [],
+      "findings": {
+        "sintomas": {
+          "hinchazon_cara_manos": false,
+          "sarpullido": true,
+          "comezon": true
+        },
+        "edad_meses": 432,
+        "sexo": "F"
+      },
+      "field_checks": [
+        {
+          "field": "edad_meses",
+          "expected": 432,
+          "got": 432,
+          "ok": true
+        }
+      ],
+      "preguntas": [
+        "signo_peligro_general",
+        "no_traga_saliva",
+        "hinchazon_labios_lengua"
+      ],
+      "followup_asks_missing": false,
+      "uncertain": true,
+      "uncertainty_codes": [
+        "danger_signs_unchecked",
+        "questions_pending"
+      ],
+      "uncertain_if_answered": false,
+      "expected_uncertain": false,
+      "asks_expected": false,
+      "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
+      "sexo_ok": true,
+      "tags": [],
+      "latency_ms": 0.68
+    },
+    {
+      "id": "T3-67",
+      "split": "test_v3",
+      "text": "El niño de 5 años se cortó el dedo con una hoja de papel; es una cortadita chiquita y ya no sangra.",
+      "expected_level": "aqui",
+      "predicted_level": "aqui",
+      "outcome": "ok",
+      "expected_rule_ids": [
+        "IITT-NOSIGNS-01"
+      ],
+      "fired_rule_ids": [
+        "IITT-NOSIGNS-01"
+      ],
+      "missing_rule_ids": [],
+      "unexpected_higher_rule_ids": [],
+      "findings": {
+        "sintomas": {
+          "herida": true
+        },
+        "edad_meses": 60,
+        "sexo": "M"
+      },
+      "field_checks": [
+        {
+          "field": "edad_meses",
+          "expected": 60,
+          "got": 60,
+          "ok": true
+        }
+      ],
+      "preguntas": [
+        "signo_peligro_general",
+        "objeto_clavado",
+        "herida_profunda"
+      ],
+      "followup_asks_missing": false,
+      "uncertain": true,
+      "uncertainty_codes": [
+        "danger_signs_unchecked",
+        "questions_pending"
+      ],
+      "uncertain_if_answered": false,
+      "expected_uncertain": false,
+      "asks_expected": false,
+      "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": true,
+      "sexo_ok": true,
+      "tags": [],
+      "latency_ms": 0.38
+    },
+    {
+      "id": "T3-68",
+      "split": "test_v3",
+      "text": "Don Pancho, de 66, se dio un golpe en la rodilla con la mesa; se le puso morado, pero camina bien y no está hinchado.",
+      "expected_level": "aqui",
+      "predicted_level": "urgencia",
+      "outcome": "over",
+      "expected_rule_ids": [
+        "IITT-NOSIGNS-01"
+      ],
+      "fired_rule_ids": [
+        "GEN-CYAN-01"
+      ],
+      "missing_rule_ids": [
+        "IITT-NOSIGNS-01"
+      ],
+      "unexpected_higher_rule_ids": [
+        "GEN-CYAN-01"
+      ],
+      "findings": {
+        "sintomas": {
+          "hinchazon_cara_manos": false,
+          "cianosis": true
+        },
+        "edad_meses": 792,
+        "sexo": "M"
+      },
+      "field_checks": [
+        {
+          "field": "edad_meses",
+          "expected": 792,
+          "got": 792,
+          "ok": true
+        }
+      ],
+      "preguntas": [],
+      "followup_asks_missing": false,
+      "uncertain": false,
+      "uncertainty_codes": [],
+      "uncertain_if_answered": false,
+      "expected_uncertain": false,
+      "asks_expected": false,
+      "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": true,
+      "sexo_ok": true,
+      "tags": [
+        "fuentes_discrepan",
+        "adulto_mayor"
+      ],
+      "latency_ms": 0.54,
+      "reason": "SOBRE-TRIAJE: disparó GEN-CYAN-01 [cianosis=true, apnea=?]. Frases detectadas: \"se le puso morado\"→cianosis"
+    },
+    {
+      "id": "T3-69",
+      "split": "test_v3",
+      "text": "Muchacha de 20 años anda nerviosa y no duerme bien por problemas en la casa; dice que no ha pensado en hacerse daño.",
+      "expected_level": "aqui",
+      "predicted_level": "aqui",
+      "outcome": "ok",
+      "expected_rule_ids": [
+        "IITT-NOSIGNS-01"
+      ],
+      "fired_rule_ids": [
+        "IITT-NOSIGNS-01"
+      ],
+      "missing_rule_ids": [],
+      "unexpected_higher_rule_ids": [],
+      "findings": {
+        "sintomas": {},
+        "edad_meses": 240,
+        "sexo": "F"
+      },
+      "field_checks": [
+        {
+          "field": "edad_meses",
+          "expected": 240,
+          "got": 240,
+          "ok": true
+        }
+      ],
+      "preguntas": [
+        "signo_peligro_general"
+      ],
+      "followup_asks_missing": false,
+      "uncertain": true,
+      "uncertainty_codes": [
+        "no_findings",
+        "danger_signs_unchecked",
+        "questions_pending"
+      ],
+      "uncertain_if_answered": true,
+      "expected_uncertain": false,
+      "asks_expected": false,
+      "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
+      "sexo_ok": true,
+      "tags": [
+        "salud_mental",
+        "negacion"
+      ],
+      "latency_ms": 0.41
+    },
+    {
+      "id": "T3-70",
+      "split": "test_v3",
+      "text": "Señor de 50 dice que trae los nervios de punta por el trabajo; no puede dormir y anda irritable, pero no tiene dolor de pecho ni le falta el aire.",
+      "expected_level": "aqui",
+      "predicted_level": "aqui",
+      "outcome": "ok",
+      "expected_rule_ids": [
+        "IITT-NOSIGNS-01"
+      ],
+      "fired_rule_ids": [
+        "IITT-NOSIGNS-01"
+      ],
+      "missing_rule_ids": [],
+      "unexpected_higher_rule_ids": [],
+      "findings": {
+        "sintomas": {
+          "dolor_pecho": false,
+          "dificultad_respirar": false,
+          "irritable": true,
+          "nervios_ansiedad": true
+        },
+        "edad_meses": 600,
+        "sexo": "M"
+      },
+      "field_checks": [
+        {
+          "field": "edad_meses",
+          "expected": 600,
+          "got": 600,
+          "ok": true
+        }
+      ],
+      "preguntas": [
+        "signo_peligro_general",
+        "ideas_suicidas",
+        "diarrea"
+      ],
+      "followup_asks_missing": false,
+      "uncertain": true,
+      "uncertainty_codes": [
+        "danger_signs_unchecked",
+        "questions_pending"
+      ],
+      "uncertain_if_answered": false,
+      "expected_uncertain": false,
+      "asks_expected": false,
+      "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": true,
+      "sexo_ok": true,
+      "tags": [
+        "salud_mental",
+        "negacion"
+      ],
+      "latency_ms": 0.56
+    },
+    {
+      "id": "T3-71",
+      "split": "test_v3",
+      "text": "Señora de 64, hipertensa, vino a que le tomaran la presión; no tiene ninguna molestia y se toma sus pastillas.",
+      "expected_level": "aqui",
+      "predicted_level": "aqui",
+      "outcome": "ok",
+      "expected_rule_ids": [
+        "IITT-NOSIGNS-01"
+      ],
+      "fired_rule_ids": [
+        "IITT-NOSIGNS-01"
+      ],
+      "missing_rule_ids": [],
+      "unexpected_higher_rule_ids": [],
+      "findings": {
+        "sintomas": {
+          "hipertension": true
+        },
+        "edad_meses": 768,
+        "sexo": "F"
+      },
+      "field_checks": [
+        {
+          "field": "edad_meses",
+          "expected": 768,
+          "got": 768,
+          "ok": true
+        }
+      ],
+      "preguntas": [
+        "signo_peligro_general"
+      ],
+      "followup_asks_missing": false,
+      "uncertain": true,
+      "uncertainty_codes": [
+        "danger_signs_unchecked",
+        "questions_pending"
+      ],
+      "uncertain_if_answered": false,
+      "expected_uncertain": false,
+      "asks_expected": false,
+      "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": true,
+      "sexo_ok": true,
+      "tags": [
+        "adulto_mayor"
+      ],
+      "latency_ms": 0.41
+    },
+    {
+      "id": "T3-72",
+      "split": "test_v3",
+      "text": "Diabético de 57 años con gripa desde ayer; se checó el azúcar y está como siempre, come y toma bien.",
+      "expected_level": "aqui",
+      "predicted_level": "aqui",
+      "outcome": "ok",
+      "expected_rule_ids": [
+        "IITT-NOSIGNS-01"
+      ],
+      "fired_rule_ids": [
+        "IITT-NOSIGNS-01"
+      ],
+      "missing_rule_ids": [],
+      "unexpected_higher_rule_ids": [],
+      "findings": {
+        "sintomas": {
+          "diabetes": true,
+          "escurrimiento_nasal": true
+        },
+        "edad_meses": 684,
+        "duracion_dias": 1
+      },
+      "field_checks": [
+        {
+          "field": "edad_meses",
+          "expected": 684,
+          "got": 684,
+          "ok": true
+        }
+      ],
+      "preguntas": [
+        "signo_peligro_general",
+        "vomito",
+        "dolor_abdominal"
+      ],
+      "followup_asks_missing": false,
+      "uncertain": true,
+      "uncertainty_codes": [
+        "danger_signs_unchecked",
+        "questions_pending"
+      ],
+      "uncertain_if_answered": false,
+      "expected_uncertain": false,
+      "asks_expected": false,
+      "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": true,
+      "sexo_ok": false,
+      "tags": [],
+      "latency_ms": 0.41
+    },
+    {
+      "id": "T3-73",
+      "split": "test_v3",
+      "text": "Bebé de 8 meses con gases y cólico desde la noche; sí mama bien, sí hace popó, no vomita ni tiene calentura.",
+      "expected_level": "aqui",
+      "predicted_level": "aqui",
+      "outcome": "ok",
+      "expected_rule_ids": [
+        "IMCI-NOSIGNS-01"
+      ],
+      "fired_rule_ids": [
+        "IMCI-NOSIGNS-01"
+      ],
+      "missing_rule_ids": [],
+      "unexpected_higher_rule_ids": [],
+      "findings": {
+        "sintomas": {
+          "fiebre": false,
+          "vomito": false,
+          "dolor_abdominal": true,
+          "gases": true
+        },
+        "edad_meses": 8,
+        "duracion_dias": 0.5
+      },
+      "field_checks": [
+        {
+          "field": "edad_meses",
+          "expected": 8,
+          "got": 8,
+          "ok": true
+        }
+      ],
+      "preguntas": [
+        "signo_peligro_general",
+        "no_obra_ni_gases",
+        "dolor_al_moverse"
+      ],
+      "followup_asks_missing": false,
+      "uncertain": true,
+      "uncertainty_codes": [
+        "danger_signs_unchecked",
+        "questions_pending"
+      ],
+      "uncertain_if_answered": false,
+      "expected_uncertain": false,
+      "asks_expected": false,
+      "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": true,
+      "sexo_ok": true,
+      "tags": [],
+      "latency_ms": 0.45
+    },
+    {
+      "id": "T3-74",
+      "split": "test_v3",
+      "text": "Niño de 3 años estreñido desde hace dos días; come bien, juega y no vomita.",
+      "expected_level": "aqui",
+      "predicted_level": "aqui",
+      "outcome": "ok",
+      "expected_rule_ids": [
+        "IMCI-NOSIGNS-01"
+      ],
+      "fired_rule_ids": [
+        "IMCI-NOSIGNS-01"
+      ],
+      "missing_rule_ids": [],
+      "unexpected_higher_rule_ids": [],
+      "findings": {
+        "sintomas": {
+          "vomito": false,
+          "estrenimiento": true
+        },
+        "edad_meses": 36,
+        "duracion_dias": 2,
+        "sexo": "M"
+      },
+      "field_checks": [
+        {
+          "field": "edad_meses",
+          "expected": 36,
+          "got": 36,
+          "ok": true
+        }
+      ],
+      "preguntas": [
+        "signo_peligro_general",
+        "no_obra_ni_gases"
+      ],
+      "followup_asks_missing": false,
+      "uncertain": true,
+      "uncertainty_codes": [
+        "danger_signs_unchecked",
+        "questions_pending"
+      ],
+      "uncertain_if_answered": false,
+      "expected_uncertain": false,
+      "asks_expected": false,
+      "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": true,
+      "sexo_ok": true,
+      "tags": [],
+      "latency_ms": 0.32
+    },
+    {
+      "id": "T3-75",
+      "split": "test_v3",
+      "text": "Muchacha de 17 con cólicos de la regla; le bajó hoy, como cada mes, y no tiene calentura.",
+      "expected_level": "aqui",
+      "predicted_level": "aqui",
+      "outcome": "ok",
+      "expected_rule_ids": [
+        "IITT-NOSIGNS-01"
+      ],
+      "fired_rule_ids": [
+        "IITT-NOSIGNS-01"
+      ],
+      "missing_rule_ids": [],
+      "unexpected_higher_rule_ids": [],
+      "findings": {
+        "sintomas": {
+          "fiebre": false
+        },
+        "edad_meses": 204,
+        "sexo": "F"
+      },
+      "field_checks": [
+        {
+          "field": "edad_meses",
+          "expected": 204,
+          "got": 204,
+          "ok": true
+        }
+      ],
+      "preguntas": [
+        "signo_peligro_general"
+      ],
+      "followup_asks_missing": false,
+      "uncertain": true,
+      "uncertainty_codes": [
+        "danger_signs_unchecked",
+        "questions_pending"
+      ],
+      "uncertain_if_answered": false,
+      "expected_uncertain": false,
+      "asks_expected": false,
+      "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
+      "sexo_ok": true,
+      "tags": [
+        "adolescente"
+      ],
+      "latency_ms": 0.38
+    },
+    {
+      "id": "T3-76",
+      "split": "test_v3",
+      "text": "Señor de 75 con dolor en las rodillas desde hace años; hoy le duelen un poco más por el frío, pero camina con su bastón como siempre.",
+      "expected_level": "aqui",
+      "predicted_level": "aqui",
+      "outcome": "ok",
+      "expected_rule_ids": [
+        "IITT-NOSIGNS-01"
+      ],
+      "fired_rule_ids": [
+        "IITT-NOSIGNS-01"
+      ],
+      "missing_rule_ids": [],
+      "unexpected_higher_rule_ids": [],
+      "findings": {
+        "sintomas": {},
+        "edad_meses": 900,
+        "sexo": "M"
+      },
+      "field_checks": [
+        {
+          "field": "edad_meses",
+          "expected": 900,
+          "got": 900,
+          "ok": true
+        }
+      ],
+      "preguntas": [
+        "signo_peligro_general"
+      ],
+      "followup_asks_missing": false,
+      "uncertain": true,
+      "uncertainty_codes": [
+        "no_findings",
+        "danger_signs_unchecked",
+        "questions_pending"
+      ],
+      "uncertain_if_answered": true,
+      "expected_uncertain": false,
+      "asks_expected": false,
+      "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": true,
+      "sexo_ok": true,
+      "tags": [
+        "adulto_mayor"
+      ],
+      "latency_ms": 0.45
+    },
+    {
+      "id": "T3-77",
+      "split": "test_v3",
+      "text": "Tiene 30 años, le duele la cabeza desde ayer por la tarde, como otras veces; no tiene calentura.",
+      "expected_level": "aqui",
+      "predicted_level": "aqui",
+      "outcome": "ok",
+      "expected_rule_ids": [
+        "IITT-NOSIGNS-01"
+      ],
+      "fired_rule_ids": [
+        "IITT-NOSIGNS-01"
+      ],
+      "missing_rule_ids": [],
+      "unexpected_higher_rule_ids": [],
+      "findings": {
+        "sintomas": {
+          "fiebre": false,
+          "dolor_cabeza": true
+        },
+        "edad_meses": 360,
+        "duracion_dias": 1
+      },
+      "field_checks": [
+        {
+          "field": "edad_meses",
+          "expected": 360,
+          "got": 360,
+          "ok": true
+        }
+      ],
+      "preguntas": [
+        "signo_peligro_general",
+        "letargico",
+        "rigidez_nuca"
+      ],
+      "followup_asks_missing": false,
+      "uncertain": true,
+      "uncertainty_codes": [
+        "danger_signs_unchecked",
+        "questions_pending"
+      ],
+      "uncertain_if_answered": false,
+      "expected_uncertain": false,
+      "asks_expected": false,
+      "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
+      "sexo_ok": true,
+      "tags": [
+        "sexo_ambiguo"
+      ],
+      "latency_ms": 0.44
+    },
+    {
+      "id": "T3-78",
+      "split": "test_v3",
+      "text": "Señor de 30 años se raspó la rodilla al caer de la bici; el raspón es chico, ya no sangra y camina bien.",
+      "expected_level": "aqui",
+      "predicted_level": "aqui",
+      "outcome": "ok",
+      "expected_rule_ids": [
+        "IITT-NOSIGNS-01"
+      ],
+      "fired_rule_ids": [
+        "IITT-NOSIGNS-01"
+      ],
+      "missing_rule_ids": [],
+      "unexpected_higher_rule_ids": [],
+      "findings": {
+        "sintomas": {
+          "herida": true
+        },
+        "edad_meses": 360,
+        "sexo": "M"
+      },
+      "field_checks": [
+        {
+          "field": "edad_meses",
+          "expected": 360,
+          "got": 360,
+          "ok": true
+        }
+      ],
+      "preguntas": [
+        "signo_peligro_general",
+        "objeto_clavado",
+        "herida_profunda"
+      ],
+      "followup_asks_missing": false,
+      "uncertain": true,
+      "uncertainty_codes": [
+        "danger_signs_unchecked",
+        "questions_pending"
+      ],
+      "uncertain_if_answered": false,
+      "expected_uncertain": false,
+      "asks_expected": false,
+      "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": true,
+      "sexo_ok": true,
+      "tags": [
+        "fuentes_discrepan"
+      ],
+      "latency_ms": 0.41
+    },
+    {
+      "id": "T3-79",
+      "split": "test_v3",
+      "text": "Niña de 2 años con mocos y tos desde ayer; come bien, respira tranquila y no tiene calentura.",
+      "expected_level": "aqui",
+      "predicted_level": "aqui",
+      "outcome": "ok",
+      "expected_rule_ids": [
+        "IMCI-NOSIGNS-01"
+      ],
+      "fired_rule_ids": [
+        "IMCI-NOSIGNS-01"
+      ],
+      "missing_rule_ids": [],
+      "unexpected_higher_rule_ids": [],
+      "findings": {
+        "sintomas": {
+          "fiebre": false,
+          "escurrimiento_nasal": true,
+          "tos": true
+        },
+        "edad_meses": 24,
+        "duracion_dias": 1,
+        "sexo": "F"
+      },
+      "field_checks": [
+        {
+          "field": "edad_meses",
+          "expected": 24,
+          "got": 24,
+          "ok": true
+        }
+      ],
+      "preguntas": [
+        "signo_peligro_general",
+        "resp_por_min",
+        "tiraje"
+      ],
+      "followup_asks_missing": false,
+      "uncertain": true,
+      "uncertainty_codes": [
+        "danger_signs_unchecked",
+        "questions_pending"
+      ],
+      "uncertain_if_answered": true,
+      "expected_uncertain": false,
+      "asks_expected": false,
+      "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": true,
+      "sexo_ok": true,
+      "tags": [],
+      "latency_ms": 0.39
+    },
+    {
+      "id": "T3-80",
+      "split": "test_v3",
+      "text": "Señora de 44: le duele la garganta al tragar desde ayer, tiene poquita calentura (37.8), come bien y respira bien.",
+      "expected_level": "aqui",
+      "predicted_level": "aqui",
+      "outcome": "ok",
+      "expected_rule_ids": [
+        "IITT-NOSIGNS-01"
+      ],
+      "fired_rule_ids": [
+        "IITT-NOSIGNS-01"
+      ],
+      "missing_rule_ids": [],
+      "unexpected_higher_rule_ids": [],
+      "findings": {
+        "sintomas": {
+          "dolor_garganta": true,
+          "fiebre": true
+        },
+        "edad_meses": 528,
+        "temperatura_c": 37.8,
+        "duracion_dias": 1,
+        "sexo": "F"
+      },
+      "field_checks": [
+        {
+          "field": "edad_meses",
+          "expected": 528,
+          "got": 528,
+          "ok": true
+        },
+        {
+          "field": "temperatura_c",
+          "expected": 37.8,
+          "got": 37.8,
+          "ok": true
+        }
+      ],
+      "preguntas": [
+        "signo_peligro_general",
+        "embarazada",
+        "no_puede_beber"
+      ],
+      "followup_asks_missing": false,
+      "uncertain": true,
+      "uncertainty_codes": [
+        "danger_signs_unchecked",
+        "questions_pending"
+      ],
+      "uncertain_if_answered": false,
+      "expected_uncertain": false,
+      "asks_expected": false,
+      "symptom_checks": [],
+      "forbidden_asked": [],
+      "has_not_ask": false,
+      "sexo_ok": true,
+      "tags": [],
+      "latency_ms": 0.64
     }
   ]
 }

@@ -6,6 +6,7 @@ import { LEVELS, OVERRIDE_REASONS, UNCERTAIN_META, levelLabel, levelSub, overrid
 import { saveCase, getSettings } from '../db/db';
 import { classifySyndrome } from '../triage/syndrome';
 import { assessUncertainty } from '../triage/uncertainty';
+import { selectAdvice, type SelectedAdvice } from '../triage/advice';
 import { speak, stopSpeaking, ttsAvailable } from '../components/speech';
 import { findingsSummary } from '../components/findingsView';
 import { getCentroTel, notifyCasesChanged, telHref } from '../components/storage';
@@ -17,6 +18,59 @@ const LevelIcon = ({ level, size }: { level: TriageLevel; size: number }) =>
   level === 'urgencia' ? <Alert size={size} strokeWidth={2.4} /> : level === 'centro_hoy' ? <Clinic size={size} strokeWidth={2.4} /> : <CheckCircle size={size} strokeWidth={2.4} />;
 
 const pick = (r: Record<Lang, string>, lang: Lang) => (lang === 'nah' && r.nah?.trim() ? r.nah : r.es);
+
+const Bullets = ({ items }: { items: string[] }) => (
+  <ul className="mt-1.5 flex flex-col gap-1.5">
+    {items.map((x) => (
+      <li key={x} className="flex gap-2 text-[17px] font-semibold leading-snug">
+        <span className="mt-2 inline-block h-2 w-2 shrink-0 rounded-full bg-brand" aria-hidden="true" />{x}
+      </li>
+    ))}
+  </ul>
+);
+
+/** Cuidados según la molestia (src/triage/advice.ts): en casa ("aqui") o mientras llega al centro ("centro_hoy"). */
+function AdviceBody({ a, lang }: { a: SelectedAdvice; lang: Lang }) {
+  return (
+    <>
+      <Bullets items={a.cuidados} />
+      {a.regrese.length > 0 && (
+        <>
+          <p className="mt-3 text-[15px] font-extrabold">{t('adv_go_if', lang)}</p>
+          <Bullets items={a.regrese} />
+        </>
+      )}
+      {a.consulta.length > 0 && (
+        <>
+          <p className="mt-3 text-[15px] font-extrabold">{t('adv_consult_if', lang)}</p>
+          <Bullets items={a.consulta} />
+        </>
+      )}
+      <p className="mt-2 text-[12px] text-muted">
+        <span className="font-bold">{t('result_source', lang)}:</span>{' '}
+        <a href={a.fuente_url} target="_blank" rel="noreferrer" className="underline decoration-dotted">{a.fuente}</a>
+      </p>
+    </>
+  );
+}
+
+/** La primera molestia se muestra abierta; las demás, plegadas (se abren con un toque) para no hacer larga la pantalla. */
+function AdviceBlock({ a, lang, open }: { a: SelectedAdvice; lang: Lang; open: boolean }) {
+  if (open) {
+    return (
+      <div data-testid={`advice-${a.id}`}>
+        <h3 className="text-[19px] font-extrabold">{a.titulo}</h3>
+        <AdviceBody a={a} lang={lang} />
+      </div>
+    );
+  }
+  return (
+    <details className="mt-4 border-t border-line pt-4" data-testid={`advice-${a.id}`}>
+      <summary className="min-h-11 cursor-pointer text-[19px] font-extrabold">{a.titulo}</summary>
+      <AdviceBody a={a} lang={lang} />
+    </details>
+  );
+}
 const ALL_LEVELS: TriageLevel[] = ['aqui', 'centro_hoy', 'urgencia'];
 
 function LevelPill({ level, lang }: { level: TriageLevel; lang: Lang }) {
@@ -74,6 +128,9 @@ export default function Result() {
     return out;
   }, [result, lang]);
 
+  // Cuidados según la molestia: no cambian el nivel; con urgencia no se muestran (manda la acción de la regla).
+  const advice = useMemo(() => (result && findings ? selectAdvice(findings, result.level) : []), [result, findings]);
+
   const speech = useMemo(() => {
     if (!result) return '';
     // La voz siempre en español: no hay voz del sistema en náhuatl.
@@ -85,9 +142,10 @@ export default function Result() {
     if (showUnc) {
       return `${t('unc_title', 'es')}. ${t('unc_sub', 'es')}. ${uncWhy} ${t('unc_rules_say', 'es')} ${levelLabel(result.level, 'es')}. Qué hacer: ${todo}`;
     }
-    const base = `${levelLabel(result.level, 'es')}. ${levelSub(result.level, 'es')}. ${why ? `Por qué: ${why}.` : ''} Qué hacer: ${todo}`;
+    const care = advice[0] ? ` ${advice[0].modo === 'casa' ? 'Cuidados' : 'Mientras llega'}: ${advice[0].cuidados.join(' ')}` : '';
+    const base = `${levelLabel(result.level, 'es')}. ${levelSub(result.level, 'es')}. ${why ? `Por qué: ${why}.` : ''} Qué hacer: ${todo}${care}`;
     return unc.uncertain ? `${base}. ${t('unc_also', 'es').replace('⚪ ', '')}: ${uncWhy}` : base;
-  }, [result, unc, showUnc]);
+  }, [result, unc, showUnc, advice]);
 
   // Intentar hablar al llegar (iOS puede bloquearlo sin un toque; queda el botón "Escuchar").
   useEffect(() => {
@@ -239,6 +297,17 @@ export default function Result() {
             ))}
           </ol>
         </section>
+
+        {advice.length > 0 && (
+          <section className="mt-3 rounded-3xl bg-white p-5 text-ink shadow-lg" data-testid="advice">
+            <h2 className="text-[14px] font-extrabold uppercase tracking-wider text-muted">
+              {advice[0].modo === 'casa' ? t('adv_home', lang) : t('adv_meanwhile', lang)}
+            </h2>
+            <div className="mt-3">
+              {advice.map((a, i) => <AdviceBlock key={a.id} a={a} lang={lang} open={i === 0} />)}
+            </div>
+          </section>
+        )}
 
         <Referral level={refLevel} lang={lang} uncertain={unc.uncertain} />
 

@@ -458,7 +458,7 @@ export const SYMPTOMS = {
   // ── Cardiovascular ───────────────────────────────────────────────────────
   dolor_pecho: {
     es: 'Dolor u opresión en el pecho',
-    synonyms: ['dolor de pecho', 'le duele el pecho', 'opresión en el pecho', 'le aprieta el pecho', 'dolor en el corazón', 'piquete en el pecho'],
+    synonyms: ['dolor de pecho', 'le duele el pecho', 'opresión en el pecho', 'le aprieta el pecho', 'dolor en el corazón', 'piquete en el pecho', 'angina de pecho'],
     group: 'cardiovascular',
   },
   sudor_frio: {
@@ -601,6 +601,273 @@ export const SYMPTOMS = {
     synonyms: ['no ha orinado en 6 horas', 'no ha hecho pipí en todo el día', 'orina muy poquito', 'casi no orina', 'casi no hace pipí', 'orina poquito'],
     group: 'urinario',
   },
+
+  // ── Ronda 3 (4-oct-2026): molestias comunes de primer nivel (docs/research-common-complaints.md) ──
+  // Frases verificadas en el Diccionario del español de México (DEM) cuando se indica; el resto es uso común,
+  // NO validado con promotoras. Las claves sin regla propia sirven para los cuidados en casa (src/triage/advice.ts)
+  // y para que el relato no salga "no entendí ningún síntoma".
+  gases: {
+    es: 'Gases o panza "aventada"',
+    // DEM "aventado": (Popular) vientre lleno de gases. "inflamado del estómago" en este sentido: uso común.
+    synonyms: ['gases', 'muchos gases', 'echa muchos gases', 'echa gases', 'flatulencias', 'pedos', 'anda aventado', 'anda aventada', 'aventado', 'aventada', 'panza aventada', 'inflamado del estómago', 'inflamada del estómago', 'eructa mucho', 'eructos'],
+    group: 'digestivo',
+  },
+  estrenimiento: {
+    es: 'Estreñimiento (no ha obrado)',
+    // DEM: "obrar" acep. 4 "Defecar"; "tapado" (Popular) "Que está estreñido"; "evacuar".
+    synonyms: ['estreñido', 'estreñida', 'estreñimiento', 'está tapado', 'está tapada', 'anda tapado', 'anda tapada', 'no ha obrado', 'no obra', 'no puede obrar', 'no puede hacer del baño', 'no puede hacer popó', 'hace muy duro', 'popó dura', 'le cuesta hacer del baño', 'se estriñe', 'lo estriñe', 'la estriñe'],
+    group: 'digestivo',
+  },
+  no_obra_ni_gases: {
+    es: 'No puede hacer del baño ni echar gases',
+    synonyms: ['no puede echar gases', 'no echa gases', 'no ha echado gases', 'ni gases echa', 'no puede sacar los gases', 'no le salen los gases', 'no ha podido echar gases', 'ni obra ni echa gases', 'no obra ni echa gases', 'no puede ni echar gases', 'no puede hacer del baño ni echar gases', 'no ha podido hacer del baño ni echar gases', 'no ha hecho del baño ni echado gases', 'no ha obrado ni echado gases', 'no puede obrar ni echar gases', 'no puede hacer popó ni echar gases'],
+    group: 'digestivo',
+  },
+  dolor_derecha_baja: {
+    es: 'Dolor de panza abajo a la derecha (o que se pasó del ombligo a la derecha)',
+    synonyms: ['abajo a la derecha', 'abajito a la derecha', 'lado derecho de abajo', 'parte baja derecha', 'se le pasó el dolor a la derecha', 'se le bajó el dolor a la derecha', 'le duele del lado derecho de la panza', 'dolor del lado derecho de la panza'],
+    group: 'digestivo',
+  },
+  dolor_al_moverse: {
+    es: 'El dolor de panza aumenta al caminar o al toser',
+    synonyms: ['le duele más al caminar', 'le duele al caminar', 'le duele al toser', 'le duele más al toser', 'no puede caminar derecho del dolor', 'camina agachado del dolor', 'camina encorvado del dolor'],
+    group: 'digestivo',
+  },
+  dolor_testiculo: {
+    es: 'Dolor o hinchazón de un testículo',
+    synonyms: ['le duele un testículo', 'le duelen los testículos', 'dolor de testículo', 'dolor en los testículos', 'testículo hinchado', 'se le hinchó un testículo', 'le duelen los huevitos', 'dolor en los huevos', 'dolor en el escroto', 'le duele la bolsa de los testículos'],
+    group: 'urinario',
+  },
+  vomito_verde: {
+    es: 'Vomita verde',
+    synonyms: ['vomita verde', 'vómito verde', 'vomitó verde', 'vomitando verde', 'vómitos verdes'],
+    group: 'digestivo',
+  },
+  agruras: {
+    es: 'Agruras o acidez',
+    // DEM "agruras": dolor y ardor principalmente en la boca del estómago.
+    synonyms: ['agruras', 'acidez', 'reflujo', 'le sube el ácido', 'le regresa lo agrio', 'ardor en el estómago', 'le arde el estómago'],
+    group: 'digestivo',
+  },
+  dolor_garganta: {
+    es: 'Dolor de garganta (anginas)',
+    // DEM "angina" acep. 2 (amígdalas). "angina de pecho" (acep. 3) va a dolor_pecho.
+    synonyms: ['dolor de garganta', 'le duele la garganta', 'anginas', 'le duelen las anginas', 'anginas inflamadas', 'garganta irritada', 'carraspera', 'garganta inflamada'],
+    group: 'respiratorio',
+  },
+  placas_garganta: {
+    es: 'Placas blancas o pus en la garganta',
+    synonyms: ['placas blancas en la garganta', 'placas en la garganta', 'placas en las anginas', 'pus en las anginas', 'anginas con pus', 'garganta con pus', 'puntos blancos en la garganta', 'puntitos blancos en las anginas'],
+    group: 'respiratorio',
+  },
+  no_traga_saliva: {
+    es: 'No puede tragar ni su saliva, o siente que se le cierra la garganta',
+    synonyms: ['no puede tragar ni su saliva', 'no puede pasar la saliva', 'no puede tragar saliva', 'no puede pasar ni la saliva', 'se le cerró la garganta', 'se le cierra la garganta', 'siente que se le cierra la garganta', 'siente la garganta cerrada'],
+    group: 'respiratorio',
+  },
+  babeo: {
+    es: 'Babea mucho (mucha saliva)',
+    synonyms: ['babea', 'babeando', 'se le escurre la baba', 'mucha baba', 'mucha saliva', 'echa mucha saliva', 'saliva de más'],
+    group: 'respiratorio',
+  },
+  hinchazon_boca_cuello: {
+    es: 'Hinchazón o bola en la boca, la garganta, la encía, la quijada o el cuello',
+    synonyms: ['bola en el cuello', 'se le hinchó el cuello', 'cuello hinchado', 'se le hinchó la encía', 'encía hinchada', 'se le hinchó la quijada', 'quijada hinchada', 'cachete hinchado', 'se le hinchó el cachete', 'absceso', 'bola en la garganta', 'se le hinchó la cara por la muela'],
+    group: 'respiratorio',
+  },
+  hinchazon_cuello_ojo: {
+    es: 'Hinchazón alrededor del ojo o del cuello',
+    synonyms: ['se le hinchó el ojo', 'ojo hinchado', 'se le cerró el ojo de lo hinchado', 'se le hinchó alrededor del ojo', 'se le hinchó el cuello', 'cuello hinchado'],
+    group: 'respiratorio',
+  },
+  dolor_muela: {
+    es: 'Dolor de muela o de dientes',
+    synonyms: ['dolor de muela', 'dolor de muelas', 'le duele una muela', 'le duele la muela', 'muela picada', 'dolor de dientes', 'le duele un diente', 'dolor de diente'],
+    group: 'digestivo',
+  },
+  dolor_oido: {
+    es: 'Dolor de oído',
+    synonyms: ['dolor de oído', 'dolor de oídos', 'le duele el oído', 'le duelen los oídos', 'le duele su oído'],
+    group: 'respiratorio',
+  },
+  pus_oido: {
+    es: 'Le sale pus o líquido del oído',
+    synonyms: ['le sale pus del oído', 'le supura el oído', 'le sale agua del oído', 'le sale líquido del oído', 'le escurre el oído', 'oído con pus', 'le sale agua por el oído'],
+    group: 'respiratorio',
+  },
+  sangre_oido: {
+    es: 'Le sale sangre del oído',
+    synonyms: ['le sale sangre del oído', 'sangre por el oído', 'sangra del oído', 'le sale sangre por el oído'],
+    group: 'respiratorio',
+  },
+  hinchazon_detras_oreja: {
+    es: 'Hinchazón dolorosa detrás de la oreja',
+    synonyms: ['bola detrás de la oreja', 'se le hinchó detrás de la oreja', 'hinchado detrás de la oreja', 'hinchazón detrás de la oreja'],
+    group: 'respiratorio',
+  },
+  objeto_en_oido: {
+    es: 'Tiene algo atorado en el oído',
+    synonyms: ['se le metió algo al oído', 'se le metió algo en el oído', 'tiene algo en el oído', 'se le metió un bicho al oído', 'se le metió una semilla al oído'],
+    group: 'respiratorio',
+  },
+  dolor_fosa_renal: {
+    es: 'Dolor en la espalda, a un lado, debajo de las costillas (riñón)',
+    synonyms: ['le duele el riñón', 'dolor de riñón', 'dolor en el riñón', 'dolor en los riñones', 'le duelen los riñones', 'abajo de las costillas en la espalda', 'dolor en el costado de la espalda'],
+    group: 'urinario',
+  },
+  orina_sangre: {
+    es: 'Sangre en la orina',
+    synonyms: ['orina con sangre', 'pipí con sangre', 'sangre en la orina', 'sangre en la pipí', 'orina roja', 'orina sangre'],
+    group: 'urinario',
+  },
+  dolor_espalda_baja: {
+    es: 'Dolor de espalda baja ("dolor de cintura")',
+    // DEM "cintura" como zona del cuerpo; "dolor de cintura" = lumbalgia: uso común (no verificado en DEM).
+    synonyms: ['dolor de cintura', 'le duele la cintura', 'dolor de espalda', 'le duele la espalda', 'dolor en la espalda', 'dolor de espalda baja', 'dolor de la espalda baja', 'lumbago', 'se lastimó la espalda'],
+    group: 'trauma',
+  },
+  cauda_equina: {
+    es: 'No controla la orina o la popó, se le durmió la entrepierna o perdió fuerza en las dos piernas',
+    synonyms: ['no siente la entrepierna', 'se le durmió la entrepierna', 'se le durmieron las nalgas', 'se le duermen las nalgas', 'se hace del baño sin sentir', 'se orina sin sentir', 'no controla la orina', 'no controla la popó', 'se le durmieron las dos piernas', 'no puede mover las dos piernas', 'se le debilitaron las dos piernas', 'no tiene fuerza en las dos piernas'],
+    group: 'trauma',
+  },
+  comezon: {
+    es: 'Comezón',
+    // DEM "comezón"; "roncha" (piquetes, alergias).
+    synonyms: ['comezón', 'le pica todo', 'le pica mucho', 'mucha comezón', 'le da comezón', 'ronchas que le pican', 'le pica la piel'],
+    group: 'piel',
+  },
+  hinchazon_labios_lengua: {
+    es: 'Se le hincharon de repente los labios, la lengua o la boca',
+    synonyms: ['se le hincharon los labios', 'labios hinchados', 'se le hinchó la lengua', 'lengua hinchada', 'se le hinchó la boca', 'boca hinchada', 'se le hinchó la garganta'],
+    group: 'piel',
+  },
+  erupcion_empeora: {
+    es: 'Ronchas o erupción nueva que se extiende en horas, o la piel se le pela',
+    synonyms: ['se le está pelando la piel', 'se le pela la piel', 'se le despelleja la piel', 'se le cae la piel', 'las ronchas se le están extendiendo', 'se le extienden las ronchas', 'se le riegan las ronchas', 'cada vez le salen más ronchas', 'le salen más y más ronchas', 'se le está regando el salpullido'],
+    group: 'piel',
+  },
+  herida: {
+    es: 'Herida o cortada',
+    // DEM "cortada", "raspón".
+    synonyms: ['cortada', 'se cortó', 'se rajó', 'raspón', 'se raspó', 'herida', 'tiene una herida', 'se hizo una herida'],
+    group: 'trauma',
+  },
+  objeto_clavado: {
+    es: 'Tiene algo clavado en la herida (vidrio, clavo, madera)',
+    synonyms: ['tiene algo clavado', 'se le quedó clavado', 'se le quedó un vidrio adentro', 'tiene un vidrio clavado', 'tiene el clavo clavado', 'todavía tiene el clavo', 'se le quedó el clavo adentro', 'tiene una astilla grande clavada'],
+    group: 'trauma',
+  },
+  herida_profunda: {
+    es: 'Herida muy grande o profunda',
+    synonyms: ['herida profunda', 'cortada profunda', 'cortada honda', 'herida honda', 'herida muy grande', 'se le ve la carne', 'se le ve el hueso de la herida', 'herida muy abierta'],
+    group: 'trauma',
+  },
+  herida_sucia: {
+    es: 'Herida grande (más de 5 cm), sucia con tierra, o por clavo',
+    synonyms: ['herida grande', 'cortada grande', 'herida sucia', 'herida con tierra', 'se le metió tierra en la herida', 'pisó un clavo', 'se enterró un clavo', 'se clavó un clavo', 'se espinó con un clavo', 'clavo oxidado'],
+    group: 'trauma',
+  },
+  herida_infectada: {
+    es: 'Herida roja, caliente, hinchada o con pus',
+    synonyms: ['herida con pus', 'le sale pus de la herida', 'herida infectada', 'se le infectó la herida', 'se le enconó', 'la herida está roja e hinchada', 'la herida se puso roja'],
+    group: 'trauma',
+  },
+  herida_sin_sensibilidad: {
+    es: 'Junto a la herida no siente o no puede mover (dedo, mano, pie)',
+    synonyms: ['no siente el dedo', 'se le durmió el dedo', 'no puede mover el dedo', 'no siente la mano', 'no puede mover los dedos', 'se le durmieron los dedos'],
+    group: 'trauma',
+  },
+  quemadura_grave: {
+    es: 'Quemadura en la cara o el cuello, que le da toda la vuelta a un brazo, pierna o al cuerpo, o respiró humo',
+    synonyms: ['se quemó la cara', 'quemadura en la cara', 'se quemó el cuello', 'quemadura en el cuello', 'respiró humo', 'respiró mucho humo', 'se quemó todo el brazo', 'se quemó toda la pierna'],
+    group: 'trauma',
+  },
+  quemadura_quimica_electrica: {
+    es: 'Quemadura por ácido, químico o electricidad, o en sus partes o nalgas',
+    synonyms: ['se quemó con ácido', 'quemadura con ácido', 'se quemó con químico', 'quemadura química', 'le dio la luz', 'le dieron toques', 'se electrocutó', 'descarga eléctrica', 'le pegó la corriente', 'se quemó sus partes', 'quemadura en las nalgas'],
+    group: 'trauma',
+  },
+  picadura_alacran: {
+    es: 'Picadura de alacrán',
+    // DEM "piquete": "un piquete de alacrán".
+    synonyms: ['le picó un alacrán', 'lo picó un alacrán', 'la picó un alacrán', 'piquete de alacrán', 'picadura de alacrán', 'alacranazo', 'le picó un escorpión', 'picadura de escorpión'],
+    group: 'trauma',
+  },
+  alacran_sintomas: {
+    es: 'Después del piquete: algo atorado en la garganta, ojos que se mueven solos, lengua que tiembla, mucho sudor o ve rojo',
+    synonyms: ['siente algo atorado en la garganta', 'siente como un pelo en la garganta', 'siente una bola en la garganta', 'los ojos se le mueven solos', 'se le mueven los ojos solos', 'le tiembla la lengua', 'suda mucho', 'está sudando mucho', 've rojo', 've halos rojos', 've todo rojo'],
+    group: 'trauma',
+  },
+  mordedura_arana: {
+    es: 'Mordedura de araña',
+    synonyms: ['lo mordió una araña', 'la mordió una araña', 'le picó una araña', 'piquete de araña', 'picadura de araña', 'mordedura de araña'],
+    group: 'trauma',
+  },
+  arana_peligrosa: {
+    es: 'Fue viuda negra (capulina) o violinista (araña café, del rincón)',
+    // SSA/CENAPRECE 2026 p. 4 y 14; CENAPRECE loxoscelismo.
+    synonyms: ['viuda negra', 'araña capulina', 'capulina', 'araña del trasero rojo', 'araña de la colita roja', 'casampulga', 'cintlatlahua', 'araña violinista', 'violinista', 'araña del rincón', 'araña reclusa', 'araña café', 'araña parda'],
+    group: 'trauma',
+  },
+  arana_sintomas: {
+    es: 'Después de la araña: dolor que sube por el brazo o la pierna, calambres, panza dura, mordida morada o negra, orina oscura',
+    synonyms: ['el dolor se le sube por el brazo', 'el dolor se le sube por la pierna', 'el dolor se le corre por el brazo', 'el dolor se le corre por la pierna', 'calambres', 'panza dura', 'se le puso morada la mordida', 'se le puso negra la mordida', 'ampolla con sangre', 'orina oscura', 'orina muy oscura'],
+    group: 'trauma',
+  },
+  golpe_cabeza: {
+    es: 'Golpe en la cabeza',
+    // DEM "chichón".
+    synonyms: ['se pegó en la cabeza', 'golpe en la cabeza', 'se golpeó la cabeza', 'se dio en la cabeza', 'chichón', 'chipote', 'se dio un golpe en la cabeza', 'le pegaron en la cabeza'],
+    group: 'trauma',
+  },
+  anticoagulante: {
+    es: 'Toma medicina para adelgazar la sangre (anticoagulante)',
+    synonyms: ['toma medicina para adelgazar la sangre', 'toma pastillas para adelgazar la sangre', 'toma anticoagulante', 'anticoagulado', 'anticoagulada', 'medicina para la sangre espesa'],
+    group: 'general',
+  },
+  mareo: {
+    es: 'Mareo',
+    synonyms: ['mareo', 'mareado', 'mareada', 'se marea', 'todo le da vueltas', 'se le va la cabeza', 'anda mareado', 'anda mareada'],
+    group: 'neurologico',
+  },
+  diabetes: {
+    es: 'Tiene diabetes',
+    synonyms: ['es diabético', 'es diabética', 'diabético', 'diabética', 'tiene diabetes', 'diabetes', 'tiene azúcar', 'tiene el azúcar alta', 'se inyecta insulina', 'usa insulina'],
+    group: 'general',
+  },
+  sintomas_hipoglucemia: {
+    es: 'Señas de azúcar baja: tiembla, mucha hambre de repente, corazón acelerado',
+    synonyms: ['mucha hambre de repente', 'le tiemblan las manos', 'está temblando', 'tiembla', 'tiembla mucho', 'el corazón le late muy rápido', 'palpitaciones'],
+    group: 'general',
+  },
+  azucar_baja: {
+    es: 'Se le bajó el azúcar (hipoglucemia)',
+    synonyms: ['se le bajó el azúcar', 'azúcar baja', 'le bajó el azúcar', 'se le baja el azúcar', 'hipoglucemia'],
+    group: 'general',
+  },
+  hipertension: {
+    es: 'Tiene presión alta',
+    // DEM "presión" acep. 4.
+    synonyms: ['presión alta', 'tiene presión alta', 'es hipertenso', 'es hipertensa', 'hipertensión', 'hipertenso', 'hipertensa', 'se le subió la presión', 'padece de la presión'],
+    group: 'cardiovascular',
+  },
+  enfermedad_cronica: {
+    es: 'Enfermedad del corazón, asma, de los riñones o cirrosis',
+    synonyms: ['es asmático', 'es asmática', 'tiene asma', 'enfermo del corazón', 'enferma del corazón', 'enfermedad del corazón', 'enfermo de los riñones', 'enferma de los riñones', 'insuficiencia renal', 'cirrosis'],
+    group: 'general',
+  },
+  tos_sangre: {
+    es: 'Tose o escupe sangre',
+    synonyms: ['tose sangre', 'escupe sangre', 'tos con sangre', 'flemas con sangre', 'le salió sangre al toser', 'gargajo con sangre', 'tosió sangre'],
+    group: 'respiratorio',
+  },
+  nervios_ansiedad: {
+    es: 'Nervios, ansiedad o angustia',
+    // DEM "nervio" acep. 2; "ansia" acep. 1.
+    synonyms: ['nervios', 'anda de los nervios', 'muy nerviosa', 'muy nervioso', 'ansiedad', 'ansias', 'angustia', 'angustiado', 'angustiada', 'ataque de pánico', 'ataque de nervios', 'siente que se va a morir'],
+    group: 'general',
+  },
 } satisfies Record<string, SymptomDef>;
 
 export type SymptomKeyStrict = keyof typeof SYMPTOMS;
@@ -733,6 +1000,58 @@ export const PREGUNTAS: Record<string, string> = {
   llenado_capilar_lento: 'Apriete una uña 5 segundos y suéltela: ¿tarda más de 3 segundos en volver a ponerse rosa?',
   pulso_debil_rapido: '¿El pulso se siente débil y rápido?',
   oliguria: '¿Lleva 6 horas o más sin orinar, u orina casi nada?',
+  // Ronda 3 (molestias comunes). "Sí" = el signo está presente.
+  sexo: '¿Es hombre o mujer?',
+  gases: '¿Tiene muchos gases o la panza "aventada"?',
+  estrenimiento: '¿Está estreñido (no ha podido hacer del baño)?',
+  no_obra_ni_gases: '¿Lleva horas o días sin poder hacer del baño NI echar gases?',
+  dolor_derecha_baja: '¿El dolor de panza está abajo a la derecha, o empezó en el ombligo y se pasó a la derecha?',
+  dolor_al_moverse: '¿El dolor de panza aumenta al caminar o al toser?',
+  dolor_testiculo: '¿Le duele o se le hinchó un testículo?',
+  vomito_verde: '¿Vomita verde?',
+  agruras: '¿Tiene agruras o acidez?',
+  dolor_garganta: '¿Le duele la garganta?',
+  placas_garganta: 'Pídale que abra la boca: ¿se ven placas blancas o pus en la garganta?',
+  no_traga_saliva: '¿No puede tragar ni su propia saliva, o siente que se le cierra la garganta?',
+  babeo: '¿Babea mucho o se le escurre la saliva?',
+  hinchazon_boca_cuello: '¿Tiene hinchada o con una bola la boca, la encía, la quijada, la garganta o el cuello?',
+  hinchazon_cuello_ojo: '¿Se le hinchó alrededor del ojo o el cuello?',
+  dolor_muela: '¿Le duele una muela o un diente?',
+  dolor_oido: '¿Le duele el oído?',
+  pus_oido: '¿Le sale pus o líquido del oído?',
+  sangre_oido: '¿Le sale sangre del oído?',
+  hinchazon_detras_oreja: '¿Tiene una hinchazón dolorosa detrás de la oreja?',
+  objeto_en_oido: '¿Tiene algo atorado dentro del oído?',
+  dolor_fosa_renal: '¿Le duele la espalda de un lado, debajo de las costillas?',
+  orina_sangre: '¿Tiene sangre en la orina (orina roja o color café)?',
+  dolor_espalda_baja: '¿Le duele la espalda baja (la cintura)?',
+  cauda_equina: '¿No puede orinar o no controla la orina o la popó, se le durmió la entrepierna, o perdió fuerza en las dos piernas?',
+  comezon: '¿Tiene comezón?',
+  hinchazon_labios_lengua: '¿Se le hincharon de repente los labios, la lengua o la boca?',
+  erupcion_empeora: '¿Las ronchas o manchas se le están extendiendo en horas, o se le está pelando la piel?',
+  herida: '¿Tiene una herida o cortada?',
+  objeto_clavado: '¿Tiene algo clavado en la herida (vidrio, clavo, madera)? No se lo saque.',
+  herida_profunda: '¿La herida es muy grande o profunda (se ve la carne)?',
+  herida_sucia: '¿La herida es de más de 5 cm (como 3 dedos), quedó sucia con tierra aunque la lavó, o fue con un clavo?',
+  herida_infectada: '¿La herida está roja, caliente, hinchada o con pus?',
+  herida_sin_sensibilidad: 'Junto a la herida, ¿no siente o no puede mover el dedo, la mano o el pie?',
+  quemadura_grave: '¿La quemadura está en la cara o el cuello, le da toda la vuelta a un brazo, pierna o al cuerpo, o respiró humo?',
+  quemadura_quimica_electrica: '¿La quemadura fue por ácido, químico o electricidad, o está en sus partes o las nalgas?',
+  picadura_alacran: '¿Le picó un alacrán?',
+  alacran_sintomas: '¿Babea, siente algo atorado en la garganta, los ojos se le mueven solos, le tiembla la lengua, suda mucho, vomita, ve borroso o rojo, o le falta el aire?',
+  mordedura_arana: '¿Le mordió una araña?',
+  arana_peligrosa: '¿Fue una viuda negra (negra con mancha roja, capulina) o una violinista (café, del rincón)?',
+  arana_sintomas: '¿El dolor le sube por el brazo o la pierna, tiene calambres o la panza dura, la mordida se puso morada o negra, o la orina sale oscura?',
+  golpe_cabeza: '¿Se golpeó la cabeza?',
+  anticoagulante: '¿Toma medicina para adelgazar la sangre (anticoagulante)?',
+  mareo: '¿Está mareado?',
+  diabetes: '¿Tiene diabetes (azúcar)?',
+  sintomas_hipoglucemia: '¿Tiembla, tiene mucha hambre de repente o el corazón le late muy rápido?',
+  azucar_baja: '¿Se le bajó el azúcar (le midieron el azúcar baja o tiene las señas de siempre)?',
+  hipertension: '¿Tiene presión alta?',
+  enfermedad_cronica: '¿Tiene asma, enfermedad del corazón, de los riñones o cirrosis?',
+  tos_sangre: '¿Tose o escupe sangre?',
+  nervios_ansiedad: '¿Anda con muchos nervios, ansiedad o angustia?',
 };
 
 /**

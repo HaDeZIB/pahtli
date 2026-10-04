@@ -8,7 +8,8 @@ export type RuleBlock =
   | 'young_infant'
   | 'pregnancy'
   | 'dengue'
-  | 'adult';
+  | 'adult'
+  | 'common';
 
 export interface Rule {
   id: string;
@@ -29,6 +30,11 @@ export interface Rule {
    * aunque ninguno de ellos sea conocido (p. ej. tos → preguntar tiraje).
    */
   context?: string[];
+  /**
+   * Si existe, SOLO estas claves (o `context`) cuentan como evidencia para hacer preguntas. Sirve para reglas
+   * "molestia + signo" (alacrán + vómito): sin esto, un vómito cualquiera haría preguntar "¿le picó un alacrán?".
+   */
+  trigger?: string[];
   /** 'verbatim' = criterio y nivel tal cual la fuente; 'adaptado' = ver docs/clinical-sources.md. */
   fidelidad: 'verbatim' | 'adaptado';
 }

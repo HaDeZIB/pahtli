@@ -11,12 +11,13 @@ const here = dirname(fileURLToPath(import.meta.url));
 const cases = parseCases(readFileSync(join(here, 'cases.jsonl'), 'utf8'));
 
 describe('eval/cases.jsonl', () => {
-  it('tiene 130 casos: 60 dev, 30 test_v1 y 40 test_v2, ids únicos', () => {
-    expect(cases).toHaveLength(130);
+  it('tiene 210 casos: 60 dev, 30 test_v1, 40 test_v2 y 80 test_v3, ids únicos', () => {
+    expect(cases).toHaveLength(210);
     expect(cases.filter((c) => c.split === 'dev')).toHaveLength(60);
     expect(cases.filter((c) => c.split === 'test_v1')).toHaveLength(30);
     expect(cases.filter((c) => c.split === 'test_v2')).toHaveLength(40);
-    expect(new Set(cases.map((c) => c.id)).size).toBe(130);
+    expect(cases.filter((c) => c.split === 'test_v3')).toHaveLength(80);
+    expect(new Set(cases.map((c) => c.id)).size).toBe(210);
   });
 
   it('test_v2 sigue congelado (mismo contenido que al escribirlo, antes de los cambios al extractor)', async () => {
@@ -24,6 +25,13 @@ describe('eval/cases.jsonl', () => {
     const lines = readFileSync(join(here, 'cases.jsonl'), 'utf8').split('\n').filter((l) => l.includes('"split":"test_v2"'));
     const sha = createHash('sha256').update(lines.join('\n') + '\n').digest('hex');
     expect(sha).toBe('6e16a1af2424b6e4efc39f722893f0c9c3e30594f0b9023c084a432901d736d5');
+  });
+
+  it('test_v3 sigue congelado (escrito a ciegas antes de los cambios de la ronda 3, docs/eval.md §2.4)', async () => {
+    const { createHash } = await import('node:crypto');
+    const lines = readFileSync(join(here, 'cases.jsonl'), 'utf8').split('\n').filter((l) => l.includes('"split":"test_v3"'));
+    const sha = createHash('sha256').update(lines.join('\n') + '\n').digest('hex');
+    expect(sha).toBe('6063ea588c1c8221c3eb7d3d466aca9143c437c6ac9df9210771daf6eedc6d81');
   });
 
   it('test_v2: con los hallazgos anotados, el motor da el nivel esperado (las etiquetas son coherentes con las reglas)', () => {
@@ -46,17 +54,25 @@ describe('eval/cases.jsonl', () => {
     }
   });
 
+  // test_v3 trae 18 casos `sin_regla` a propósito (expected_rule_ids vacío): la guía da un nivel que ninguna regla
+  // producía al escribirlos. Se exentan de las dos pruebas que suponen una regla esperada.
+  const sinRegla = (c: (typeof cases)[number]) => c.split === 'test_v3' && c.expected_rule_ids.length === 0;
+
+  it('test_v3: 18 casos sin regla esperada', () => {
+    expect(cases.filter(sinRegla)).toHaveLength(18);
+  });
+
   it('cada caso tiene texto, fuente y reglas esperadas que existen en el motor', () => {
     for (const c of cases) {
       expect(c.text.length, c.id).toBeGreaterThan(10);
       expect(c.source_rule.length, c.id).toBeGreaterThan(5);
-      expect(c.expected_rule_ids.length, c.id).toBeGreaterThan(0);
+      if (!sinRegla(c)) expect(c.expected_rule_ids.length, c.id).toBeGreaterThan(0);
       for (const id of c.expected_rule_ids) expect(RULES_BY_ID[id], `${c.id}: ${id}`).toBeDefined();
     }
   });
 
   it('el nivel esperado coincide con la regla esperada de mayor nivel', () => {
-    for (const c of cases) {
+    for (const c of cases.filter((x) => !sinRegla(x))) {
       const top = Math.max(...c.expected_rule_ids.map((id) => LEVEL_RANK[RULES_BY_ID[id].level]));
       expect(top, c.id).toBe(LEVEL_RANK[c.expected_level]);
     }

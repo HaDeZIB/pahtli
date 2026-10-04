@@ -9,6 +9,7 @@ import { DENGUE_RULES } from './dengue';
 import { FEVER_RULES } from './fever';
 import { DIARRHEA_RULES } from './diarrhea';
 import { ADULT_RULES } from './adult';
+import { COMMON_RULES } from './common';
 import { CITE, SRC } from './sources';
 
 export type { Rule, RuleBlock } from './types';
@@ -23,6 +24,7 @@ export const ALL_RULES: Rule[] = [
   ...FEVER_RULES,
   ...DIARRHEA_RULES,
   ...ADULT_RULES,
+  ...COMMON_RULES,
 ];
 
 /** Regla por defecto cuando ninguna otra dispara (clasificaciones "verdes" de AIEPI / AIEPI comunitario). */

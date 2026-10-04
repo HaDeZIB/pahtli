@@ -310,3 +310,88 @@ describe('paráfrasis del LLM (salidas reales capturadas)', () => {
     expect(groundedIn('dolor en el pecho', 'se le hunde el pecho')).toBe(false);
   });
 });
+
+// ── Ronda 3 (4-oct-2026): pistas de sexo y edad, error de Whisper "nombre de N años" y molestias comunes ──
+describe('ronda 3: sexo, edad y vocabulario de molestias comunes', () => {
+  const R3: [string, Expect][] = [
+    // Reporte de uso real (Whisper escribió "Nombre" por "Hombre")
+    ['Nombre de 21 años con dolor de estómago, gases y estreñido por dos días', { sexo: 'M', edad: 252, dur: 2, pos: ['dolor_abdominal', 'gases', 'estrenimiento'] }],
+    ['nombre de veintiún años con dolor de cabeza', { sexo: 'M', edad: 252 }],
+    // Pistas de sexo
+    ['el muchacho de 17 años con dolor de garganta', { sexo: 'M', pos: ['dolor_garganta'] }],
+    ['la muchacha de 17 años con agruras', { sexo: 'F', pos: ['agruras'] }],
+    ['el chavo tiene dolor de muela', { sexo: 'M', pos: ['dolor_muela'] }],
+    ['don Pedro de 70 años se mareó', { sexo: 'M', edad: 840 }],
+    ['doña Lupe de 65 años con dolor de cintura', { sexo: 'F', edad: 780, pos: ['dolor_espalda_baja'] }],
+    ['mi esposo tiene dolor de espalda', { sexo: 'M', pos: ['dolor_espalda_baja'] }],
+    ['mi esposa anda con muchos nervios', { sexo: 'F', pos: ['nervios_ansiedad'] }],
+    ['la señora trae a su esposo de 40 años con ardor al orinar', { sexo: 'M', edad: 480, pos: ['ardor_orinar'] }],
+    ['el bebé tiene mocos', { sexo: 'M' }],
+    ['la bebé tiene mocos', { sexo: 'F' }],
+    ['la joven de 21 años con dolor de panza', { sexo: 'F' }],
+    ['el joven de 21 años con dolor de panza', { sexo: 'M' }],
+    // Edad: "hombre de 50 diabético" ("dia-bético" ya no se confunde con "días")
+    ['hombre de 50 diabético que tiembla y suda frío', { sexo: 'M', edad: 600, pos: ['diabetes', 'sintomas_hipoglucemia', 'sudor_frio'] }],
+    // Digestivo
+    ['anda tapado, no ha obrado desde el lunes', { pos: ['estrenimiento'] }],
+    ['anda aventado de la panza', { pos: ['gases'], absent: ['distension_abdominal'] }],
+    ['no puede hacer del baño ni echar gases', { pos: ['no_obra_ni_gases', 'estrenimiento'] }],
+    ['le duele abajo a la derecha y le duele más al caminar', { pos: ['dolor_derecha_baja', 'dolor_al_moverse', 'dolor_abdominal'] }],
+    ['vomita verde', { pos: ['vomito_verde', 'vomito'] }],
+    // Garganta, oído, muela
+    ['le duelen las anginas y tiene placas blancas en la garganta', { pos: ['dolor_garganta', 'placas_garganta'] }],
+    ['tiene angina de pecho', { pos: ['dolor_pecho'], notPos: ['dolor_garganta'] }],
+    ['le sale agua del oído', { pos: ['pus_oido'], absent: ['salida_liquido_vaginal'], embarazada: undefined }],
+    ['le duele el oído desde hace 3 días', { pos: ['dolor_oido'], dur: 3 }],
+    ['dolor de muela y la cara hinchada', { pos: ['dolor_muela', 'hinchazon_boca_cuello'], absent: ['hinchazon_cara_manos'] }],
+    ['no puede tragar ni su saliva', { pos: ['no_traga_saliva'], notPos: ['no_puede_beber'] }],
+    // Picaduras y mordeduras (orden libre)
+    ['un alacrán le picó en el pie', { pos: ['picadura_alacran'] }],
+    ['le picó un alacrán', { pos: ['picadura_alacran'] }],
+    ['no le picó el alacrán, solo lo vio', { notPos: ['picadura_alacran'] }],
+    ['lo mordió una viuda negra', { pos: ['mordedura_arana', 'arana_peligrosa'] }],
+    ['una araña lo picó en el brazo', { pos: ['mordedura_arana'] }],
+    ['se le hincharon los labios y la lengua', { pos: ['hinchazon_labios_lengua'] }],
+    // Heridas, quemaduras, golpes
+    ['se cortó la mano y tiene un vidrio clavado', { pos: ['herida', 'objeto_clavado'] }],
+    ['pisó un clavo oxidado', { pos: ['herida_sucia', 'herida'] }],
+    ['se quemó la cara con aceite', { pos: ['quemadura_grave', 'quemadura'] }],
+    ['le dio la luz con un cable', { pos: ['quemadura_quimica_electrica', 'quemadura'] }],
+    ['se pegó en la cabeza y tiene un chichón', { pos: ['golpe_cabeza'] }],
+    ['toma medicina para adelgazar la sangre', { pos: ['anticoagulante'] }],
+    // Orina, espalda, otros
+    ['le arde al orinar y orina con sangre', { pos: ['ardor_orinar', 'orina_sangre'], absent: ['sangrado'] }],
+    ['le duele el riñón', { pos: ['dolor_fosa_renal'] }],
+    ['dolor de cintura, ya no siente la entrepierna', { pos: ['dolor_espalda_baja', 'cauda_equina'] }],
+    ['tose sangre', { pos: ['tos_sangre', 'tos'], absent: ['sangrado'] }],
+    ['se le bajó el azúcar', { pos: ['azucar_baja'] }],
+    ['tiene comezón y ronchas', { pos: ['comezon', 'sarpullido'] }],
+    ['se le está pelando la piel', { pos: ['erupcion_empeora'] }],
+    ['todo le da vueltas', { pos: ['mareo'] }],
+    ['no tiene gases', { neg: ['gases'] }],
+  ];
+  for (const [text, e] of R3) {
+    it(text, () => {
+      const f = keywordExtract(text);
+      for (const k of e.pos ?? []) expect(f.sintomas[k], `${k} debe ser true`).toBe(true);
+      for (const k of e.neg ?? []) expect(f.sintomas[k], `${k} debe ser false`).toBe(false);
+      for (const k of e.notPos ?? []) expect(f.sintomas[k], `${k} no debe ser true`).not.toBe(true);
+      for (const k of e.absent ?? []) expect(f.sintomas[k], `${k} no debe marcarse`).toBeUndefined();
+      if (e.edad !== undefined) expect(f.edad_meses).toBeCloseTo(e.edad, 1);
+      if (e.dur !== undefined) expect(f.duracion_dias).toBeCloseTo(e.dur, 2);
+      if ('embarazada' in e) expect(f.embarazada).toBe(e.embarazada);
+      if (e.sexo !== undefined) expect(f.sexo).toBe(e.sexo);
+    });
+  }
+
+  it('sexo ambiguo → sin sexo (para que la app lo pregunte): joven, paciente, "el paciente", mi familiar', () => {
+    for (const t of ['joven de 21 años con dolor de panza', 'paciente de 21 años con dolor de estómago', 'el paciente de 30 años con tos', 'mi familiar tiene dolor de cabeza', 'tiene 21 años y le duele la panza']) {
+      expect(keywordExtract(t).sexo, t).toBeUndefined();
+    }
+  });
+
+  it('"nombre" solo se corrige a "hombre" antes de "de N años"', () => {
+    expect(keywordExtract('su nombre es Juan, tiene 21 años, le duele la panza').sexo).toBeUndefined();
+    expect(keywordExtract('Nombre de 30 años con tos').sexo).toBe('M');
+  });
+});

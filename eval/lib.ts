@@ -14,8 +14,9 @@ export const LEVELS: TriageLevel[] = ['aqui', 'centro_hoy', 'urgencia'];
  * arreglar fallos generales en la ronda 2 → ahora es solo regresión. test_v2: held-out nuevo (40),
  * escrito y congelado ANTES de cambiar el extractor en la ronda 2 (ver docs/eval.md).
  */
-export type Split = 'dev' | 'test_v1' | 'test_v2';
-export const SPLITS: Split[] = ['dev', 'test_v1', 'test_v2'];
+export type Split = 'dev' | 'test_v1' | 'test_v2' | 'test_v3';
+/** test_v3 (ronda 3): 80 casos escritos a ciegas y congelados por hash ANTES de los cambios de la ronda 3 (docs/eval.md §2.4). */
+export const SPLITS: Split[] = ['dev', 'test_v1', 'test_v2', 'test_v3'];
 
 export interface GoldFindings {
   edad_meses?: number;
@@ -47,6 +48,12 @@ export interface EvalCase {
   /** Campos que, idealmente, la app debería preguntar en un caso expected_uncertain. */
   expected_ask?: string[];
   tags?: string[];
+  /** Ronda 3 (test_v3): sexo que dice el relato ("M", "F") o null si no lo dice. */
+  expected_sexo?: 'F' | 'M' | null;
+  /** Ronda 3: preguntas que la app NO debe hacer (p. ej. "embarazada" a un hombre). */
+  expected_not_ask?: string[];
+  complaint?: string;
+  notes?: string;
 }
 
 export interface SymptomCheck {
@@ -91,6 +98,12 @@ export interface CaseResult {
   /** En un caso expected_uncertain: ¿alguna pregunta pide uno de expected_ask? */
   asks_expected: boolean;
   symptom_checks: SymptomCheck[];
+  /** expected_not_ask que la app preguntó (en la primera lista o en el flujo simulado de hasta 4 preguntas). */
+  forbidden_asked: string[];
+  /** El caso trae expected_not_ask. */
+  has_not_ask: boolean;
+  /** Solo si el caso trae expected_sexo: ¿el extractor dio ese sexo (o nada, si es null)? */
+  sexo_ok?: boolean;
   /** Nivel que da el motor con los hallazgos ANOTADOS (extracción perfecta). Solo si hay expected_sintomas. */
   gold_level?: TriageLevel;
   reason?: string;
@@ -201,8 +214,12 @@ function simulateFollowUp(c: EvalCase, findings: Findings): { findings: Findings
       if (typeof v === 'number') { (f as unknown as Record<string, unknown>)[q.campo] = v; answered.push({ campo: q.campo, known: true }); }
       else answered.push({ campo: q.campo, known: false });
     } else if (q.campo === 'embarazada') {
-      f.embarazada = gold?.embarazada ?? false;
+      f.embarazada = gold?.embarazada ?? c.expected_findings?.embarazada ?? false;
       answered.push({ campo: q.campo, known: true });
+    } else if (q.campo === 'sexo') {
+      // "¿Es hombre o mujer?": el sexo anotado; si el relato no lo dice, "No sé".
+      if (c.expected_sexo === 'F' || c.expected_sexo === 'M') { f.sexo = c.expected_sexo; answered.push({ campo: q.campo, known: true }); }
+      else answered.push({ campo: q.campo, known: false });
     } else {
       f.sintomas[q.campo] = gold?.sintomas[q.campo] ?? false;
       answered.push({ campo: q.campo, known: true });
@@ -223,12 +240,14 @@ export function evaluateCase(c: EvalCase): CaseResult {
   const matched = fired.includes('IITT-NOSIGNS-01') ? [...fired, 'IMCI-NOSIGNS-01'] : fired;
   const predicted = r.level;
   let unc = { uncertain: false, codes: [] as string[], ifAnswered: false };
+  let simAsked: string[] = [];
   try {
     const extraction = { findings, method: 'keywords' as const, latency_ms: 0 };
     const u = assessUncertainty({ transcript: c.text, extraction, triageResult: r, findings });
     const sim = simulateFollowUp(c, findings);
     const ua = assessUncertainty({ transcript: c.text, extraction, triageResult: sim.result, findings: sim.findings, answeredQuestions: sim.answered });
     unc = { uncertain: u.uncertain, codes: u.codes, ifAnswered: ua.uncertain };
+    simAsked = sim.answered.map((a) => a.campo);
   } catch {
     /* el módulo de incertidumbre es de otro equipo; si falla, se reporta como "no avisó" */
   }
@@ -261,6 +280,9 @@ export function evaluateCase(c: EvalCase): CaseResult {
     expected_uncertain: c.expected_uncertain === true,
     asks_expected: c.expected_uncertain === true && (c.expected_ask ?? []).some((x) => asked.includes(x)),
     symptom_checks: checkSymptoms(c.expected_sintomas, findings),
+    forbidden_asked: (c.expected_not_ask ?? []).filter((x) => asked.includes(x) || simAsked.includes(x)),
+    has_not_ask: (c.expected_not_ask ?? []).length > 0,
+    ...(c.expected_sexo !== undefined ? { sexo_ok: (findings.sexo ?? null) === c.expected_sexo } : {}),
     gold_level: gold ? triage(gold).level : undefined,
     tags: c.tags ?? [],
     latency_ms: Math.round(latency_ms * 100) / 100,
@@ -299,6 +321,10 @@ export interface Metrics {
   flagged_without_need: { count: number; of: number };
   /** Igual, pero si la promotora contesta las preguntas de seguimiento (en vez de "Saltar"). */
   flagged_without_need_answered: { count: number; of: number };
+  /** Casos con expected_not_ask en los que la app hizo una pregunta prohibida (p. ej. embarazo a un hombre). */
+  forbidden_questions: { count: number; of: number };
+  /** Sexo extraído igual al anotado (casos con expected_sexo). */
+  sexo: { ok: number; of: number };
   /** Exactitud del motor con los hallazgos anotados (extracción perfecta). Separa errores de extracción de errores de reglas. */
   gold_accuracy?: { correct: number; of: number; rate: number };
 }
@@ -357,6 +383,7 @@ export function computeMetrics(rows: CaseResult[]): Metrics {
   const notUnc = rows.filter((r) => !r.expected_uncertain);
   const goldRows = rows.filter((r) => r.gold_level !== undefined);
   const goldOk = goldRows.filter((r) => r.gold_level === r.expected_level).length;
+  const notAskRows = rows.filter((r) => r.has_not_ask);
   const urgSilent = urg.filter((r) => r.predicted_level !== 'urgencia' && !r.uncertain && r.preguntas.length === 0).length;
 
   const lat = rows.map((r) => r.latency_ms).sort((a, b) => a - b);
@@ -402,6 +429,8 @@ export function computeMetrics(rows: CaseResult[]): Metrics {
     },
     flagged_without_need: { count: notUnc.filter((r) => r.uncertain).length, of: notUnc.length },
     flagged_without_need_answered: { count: notUnc.filter((r) => r.uncertain_if_answered).length, of: notUnc.length },
+    forbidden_questions: { count: notAskRows.filter((r) => r.forbidden_asked.length > 0).length, of: notAskRows.length },
+    sexo: { ok: rows.filter((r) => r.sexo_ok === true).length, of: rows.filter((r) => r.sexo_ok !== undefined).length },
     ...(goldRows.length ? { gold_accuracy: { correct: goldOk, of: goldRows.length, rate: rate(goldOk, goldRows.length) } } : {}),
   };
 }
@@ -429,7 +458,7 @@ export function renderMarkdown(rows: CaseResult[], bySplit: Record<string, Metri
   L.push('');
   L.push(`> Generado por \`npm run eval\` el ${generatedAt}. Pipeline: texto → \`keywordExtract\` → \`triage\` (Node, sin LLM) + fail-safe \`assessUncertainty\`.`);
   L.push('> Viñetas sintéticas escritas por el equipo, **pendientes de validación clínica por la Dra. Ines**.');
-  L.push('> `dev` se usó para ajustar. `test_v1` (held-out original) ya se vio y se usó en la ronda 2: ahora es solo regresión. **`test_v2` es el held-out vigente**: se escribió y congeló antes de los cambios de la ronda 2.');
+  L.push('> `dev` se usó para ajustar. `test_v1` (held-out original) ya se vio y se usó en la ronda 2: ahora es solo regresión. `test_v2` se escribió y congeló antes de los cambios de la ronda 2. **`test_v3` es el held-out vigente** (ronda 3): 80 casos escritos a ciegas y congelados antes de los cambios de la ronda 3; 18 son `sin_regla` a propósito.');
   L.push('');
   L.push('## Métricas');
   L.push('');
@@ -451,6 +480,8 @@ export function renderMarkdown(rows: CaseResult[], bySplit: Record<string, Metri
   row('Casos `expected_uncertain`: aviso "no estoy segura" · pregunta algo · pregunta el dato esperado', (m) => (m.uncertain_cases.of ? `${m.uncertain_cases.flagged}/${m.uncertain_cases.of} · ${m.uncertain_cases.asks_any}/${m.uncertain_cases.of} · ${m.uncertain_cases.asks_expected}/${m.uncertain_cases.of}` : '—'));
   row('Aviso "no estoy segura" en casos sin falta de datos (ruido) — si salta las preguntas', (m) => `${m.flagged_without_need.count}/${m.flagged_without_need.of}`);
   row('…ruido si contesta las preguntas como en la app (hasta 4; Sí/No según lo anotado o "No")', (m) => `${m.flagged_without_need_answered.count}/${m.flagged_without_need_answered.of}`);
+  row('Casos con pregunta prohibida (`expected_not_ask`, p. ej. embarazo a un hombre)', (m) => (m.forbidden_questions.of ? `${m.forbidden_questions.count}/${m.forbidden_questions.of}` : '—'));
+  row('Sexo extraído igual al anotado (`expected_sexo`)', (m) => (m.sexo.of ? `${pct(m.sexo.ok / m.sexo.of)} (${m.sexo.ok}/${m.sexo.of})` : '—'));
   row('Latencia extracción+triaje (media / p95, ms)', (m) => `${m.latency_ms.mean} / ${m.latency_ms.p95}`);
   L.push('');
   for (const s of splits) {

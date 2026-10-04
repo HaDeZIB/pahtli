@@ -231,3 +231,51 @@ test('"No sé" → aviso "No estoy segura", la promotora decide antes de guardar
 
   expect(errors).toEqual([]);
 });
+
+// Ronda 3 (reporte de uso real, 4-oct-2026): "hombre de 21 años… gases y estreñido" → la app preguntó si estaba
+// embarazado (Whisper escribió "Nombre de 21 años"). Ahora: no pregunta embarazo y da cuidados según la molestia.
+test('hombre de 21 años con estreñimiento: sin preguntas de embarazo y con cuidados de estreñimiento y gases', async ({ page }) => {
+  const errors: string[] = [];
+  page.on('pageerror', (e) => errors.push(e.message));
+  await page.goto('/#/');
+  await page.getByRole('tab', { name: 'Escribir' }).click();
+  await page.locator('#transcript').fill('Nombre de 21 años con dolor de estómago, gases y estreñido por dos días');
+  await page.getByRole('main').getByRole('button', { name: 'Evaluar', exact: true }).click();
+  await page.waitForURL(/#\/preguntas/);
+  const seen: string[] = [];
+  for (let i = 0; i < 5 && page.url().includes('#/preguntas'); i++) {
+    const h = (await page.getByRole('heading', { level: 2 }).first().textContent()) ?? '';
+    seen.push(h);
+    await page.getByRole('button', { name: 'No', exact: true }).click();
+    await page.waitForTimeout(150);
+  }
+  await page.waitForURL(/#\/resultado/);
+  for (const h of seen) expect(h).not.toMatch(/embaraz|dio a luz|hombre o mujer/i);
+  await expect(page.getByTestId('result-aqui')).toBeVisible();
+  const adv = page.getByTestId('advice');
+  await expect(adv).toContainText('Cuidados en casa');
+  await expect(adv.getByTestId('advice-ADV-ESTRENIMIENTO')).toContainText('fibra');
+  await expect(adv.getByTestId('advice-ADV-GASES')).toBeVisible();
+  await expect(adv.getByTestId('advice-ADV-ESTRENIMIENTO')).toContainText('no puede hacer del baño ni echar gases');
+  await expect(adv).not.toContainText(/embaraz/i);
+  expect(errors).toEqual([]);
+});
+
+test('sexo desconocido: primero "¿Es hombre o mujer?"; con "Hombre" ya no pregunta embarazo', async ({ page }) => {
+  await page.goto('/#/');
+  await page.getByRole('tab', { name: 'Escribir' }).click();
+  await page.locator('#transcript').fill('joven de 21 años con dolor de panza desde ayer');
+  await page.getByRole('main').getByRole('button', { name: 'Evaluar', exact: true }).click();
+  await page.waitForURL(/#\/preguntas/);
+  const seen: string[] = [];
+  for (let i = 0; i < 5 && page.url().includes('#/preguntas'); i++) {
+    const h = (await page.getByRole('heading', { level: 2 }).first().textContent()) ?? '';
+    seen.push(h);
+    if (h.includes('¿Es hombre o mujer?')) await page.getByRole('button', { name: 'Hombre', exact: true }).click();
+    else await page.getByRole('button', { name: 'No', exact: true }).click();
+    await page.waitForTimeout(150);
+  }
+  await page.waitForURL(/#\/resultado/);
+  expect(seen.some((h) => h.includes('¿Es hombre o mujer?'))).toBe(true);
+  for (const h of seen) expect(h).not.toMatch(/embaraz|dio a luz/i);
+});

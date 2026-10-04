@@ -113,6 +113,46 @@ const POSITIVE: Record<string, Findings> = {
   'IITT-R-SHOCK-02': F({ manos_pies_frios: true, sudor_frio: true }, { edad_meses: years(45) }),
   'IITT-Y-VISION-01': F({ vision_borrosa: true }, { edad_meses: years(50) }),
   'MHGAP-SUI-01': F({ ideas_suicidas: true }, { edad_meses: years(30) }),
+  // Ronda 3: molestias comunes (src/triage/rules/common.ts)
+  'SSA-ALAC-01': F({ picadura_alacran: true }, { edad_meses: 36 }),
+  'SSA-ALAC-02': F({ picadura_alacran: true, babeo: true }, { edad_meses: years(30) }),
+  'SSA-ALAC-03': F({ picadura_alacran: true, diabetes: true }, { edad_meses: years(45) }),
+  'SSA-ALAC-04': F({ picadura_alacran: true }, { edad_meses: years(40) }),
+  'SSA-ARANA-01': F({ mordedura_arana: true, arana_peligrosa: true }, { edad_meses: years(30) }),
+  'SSA-ARANA-02': F({ mordedura_arana: true, arana_sintomas: true }, { edad_meses: years(30) }),
+  'SSA-ARANA-03': F({ mordedura_arana: true }, { edad_meses: years(30) }),
+  'NHS-ANAPH-01': F({ hinchazon_labios_lengua: true }, { edad_meses: years(20) }),
+  'NHS-THROAT-01': F({ dolor_garganta: true, babeo: true }, { edad_meses: years(20) }),
+  'IITT-Y-NECK-01': F({ hinchazon_boca_cuello: true }, { edad_meses: years(25) }),
+  'NHS-TOOTH-01': F({ dolor_muela: true, hinchazon_cuello_ojo: true }, { edad_meses: years(25) }),
+  'IMSS062-FARINGO-01': F({ placas_garganta: true, fiebre: true }, { edad_meses: years(9) }),
+  'IMCI-EAR-01': F({ hinchazon_detras_oreja: true }, { edad_meses: 30 }),
+  'IMCI-EAR-02': F({ dolor_oido: true }, { edad_meses: 30 }),
+  'NHS-EAR-01': F({ pus_oido: true }, { edad_meses: years(30) }),
+  'NHS-ABD-OBST-01': F({ no_obra_ni_gases: true }, { edad_meses: years(40) }),
+  'IMSS031-APEND-01': F({ dolor_derecha_baja: true, dolor_al_moverse: true }, { edad_meses: years(20) }),
+  'NHS-VOM-GREEN-01': F({ vomito_verde: true }, { edad_meses: years(40) }),
+  'NHS-DM-VOM-01': F({ diabetes: true, vomito: true, dolor_abdominal: true }, { edad_meses: years(55) }),
+  'NHS-BLOAT-01': F({ distension_abdominal: true, dolor_abdominal: true }, { edad_meses: years(35) }),
+  'IITT-R-TESTIS-01': F({ dolor_testiculo: true }, { edad_meses: years(9), sexo: 'M' }),
+  'IITT-Y-TESTIS-01': F({ dolor_testiculo: true }, { edad_meses: years(25), sexo: 'M' }),
+  'IMSS077-PIELO-01': F({ ardor_orinar: true, fiebre: true }, { edad_meses: years(30), sexo: 'F' }),
+  'NHS-UTI-01': F({ ardor_orinar: true }, { edad_meses: years(30), sexo: 'M' }),
+  'IMSS045-CAUDA-01': F({ dolor_espalda_baja: true, cauda_equina: true }, { edad_meses: years(45) }),
+  'IMSS045-FIEBRE-01': F({ dolor_espalda_baja: true, fiebre: true }, { edad_meses: years(45) }),
+  'IITT-Y-RASH-01': F({ erupcion_empeora: true }, { edad_meses: years(30) }),
+  'NHS-WOUND-01': F({ herida: true, objeto_clavado: true }, { edad_meses: years(30) }),
+  'NHS-WOUND-02': F({ herida: true, herida_sucia: true }, { edad_meses: years(30) }),
+  'IITT-R-BURN-01': F({ quemadura: true, quemadura_grave: true }, { edad_meses: years(30) }),
+  'NHS-BURN-01': F({ quemadura: true, quemadura_quimica_electrica: true }, { edad_meses: years(30) }),
+  'NHS-HEAD-01': F({ golpe_cabeza: true, letargico: true }, { edad_meses: years(30) }),
+  'NHS-HEAD-02': F({ golpe_cabeza: true, vomito: true }, { edad_meses: years(30) }),
+  'IITT-R-TRAUMA-ANTICOAG-01': F({ golpe_caida: true, anticoagulante: true }, { edad_meses: years(75) }),
+  'NHS-HA-01': F({ dolor_cabeza: true, vomito: true }, { edad_meses: years(30) }),
+  'IITT-Y-HEAD-PED-01': F({ dolor_cabeza: true }, { edad_meses: years(8) }),
+  'NHS-COUGH-01': F({ tos: true, tos_sangre: true }, { edad_meses: years(40) }),
+  'NOM006-TB-01': F({ tos: true }, { edad_meses: years(40), duracion_dias: 20 }),
+  'NOM015-HIPO-01': F({ diabetes: true, sintomas_hipoglucemia: true }, { edad_meses: years(55) }),
   // Respuesta "Sí" a la revisión de signos de peligro (src/triage/screening.ts)
   'PAHTLI-GDS-SCREEN': F({ signo_peligro_general: true }, { edad_meses: years(53) }),
 };
@@ -333,8 +373,9 @@ describe('preguntas de seguimiento', () => {
   it('nunca más de 2 preguntas clínicas (más la revisión de signos de peligro) y sin campos repetidos', () => {
     for (const f of [F({ fiebre: true }), F({ tos: true }), F({ diarrea: true }), F({}, { embarazada: true }), F({ tos: true }, { edad_meses: 24, resp_por_min: 45 })]) {
       const q = triage(f).preguntas;
-      expect(q.filter((x) => x.campo !== 'signo_peligro_general').length).toBeLessThanOrEqual(2);
-      expect(q.length).toBeLessThanOrEqual(3);
+      // La revisión de signos de peligro y "¿Es hombre o mujer?" (antes del embarazo) son compuertas, no preguntas clínicas.
+      expect(q.filter((x) => x.campo !== 'signo_peligro_general' && x.campo !== 'sexo').length).toBeLessThanOrEqual(2);
+      expect(q.length).toBeLessThanOrEqual(4);
       expect(new Set(q.map((x) => x.campo)).size).toBe(q.length);
     }
   });

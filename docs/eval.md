@@ -2,7 +2,7 @@
 
 > Estado: **viñetas sintéticas, pendientes de validación clínica por la Dra. Ines.** Las métricas miden si el software reproduce el nivel que dictan las guías para un relato dado. No miden si el triaje es clínicamente correcto en pacientes reales.
 >
-> Última corrida: después de las decisiones clínicas provisionales (`docs/decisiones-clinicas.md`, 3-oct-2026), `npm run eval`. Detalle por caso en `eval/results.md` y `eval/results.json`. La línea base de la ronda 2 (antes de tocar el extractor) está en `eval/baseline-r2-pre/`.
+> Última corrida: **ronda 3** (4-oct-2026, molestias comunes y sexo antes que embarazo; sección 3.4), `npm run eval`. test_v3 se corrió visible **una sola vez, con el código ya congelado**; sus fallos no se corrigieron. Detalle por caso en `eval/results.md` y `eval/results.json`. La línea base de la ronda 2 (antes de tocar el extractor) está en `eval/baseline-r2-pre/`.
 
 ## 0. Resumen
 
@@ -17,6 +17,22 @@
 | Nivel con hallazgos anotados (extracción perfecta) | — | — | 100 % (36/36) |
 
 IC95 = intervalo de Wilson. **La cifra que hay que citar es la de test_v2, y con la advertencia de la sección 3.3**: quien escribió test_v2 también escribió los cambios al extractor. Si se quitan los sinónimos nuevos que aparecen literalmente en test_v2, el resultado baja a **85 % de exactitud y 6/16 urgencias sub-triadas (IC95 19–61 %)**. La estimación honesta del desempeño en relatos nuevos está entre esos dos números, y probablemente más cerca del peor.
+
+### 0.1 Ronda 3 (4-oct-2026): resumen
+
+| Métrica | dev (60) | test_v1 (30) | test_v2 (40) | **test_v3 (80, held-out vigente) antes → después** |
+|---|---:|---:|---:|---:|
+| Exactitud | 100 % | 100 % | 92.5 % | 66.3 % (53/80) → **80.0 % (64/80)**, IC95 70–87 % |
+| **Urgencias sub-triadas** | 0/22 | 0/11 | 3/16 | 9/20 (45 %) → **6/20 (30 %)**, IC95 15–52 % |
+| …en silencio | 0/22 | 0/11 | 1/16 | 1/20 → **0/20** |
+| Sobre-triaje | 0 % | 0 % | 0 % | 2.5 % (2) → 5.0 % (4) |
+| Sensibilidad de referencia | 100 % | 100 % | 96.7 % | 56.3 % (27/48) → **83.3 % (40/48)**, IC95 70–91 % |
+| **Pregunta prohibida** (`expected_not_ask`, p. ej. embarazo a un hombre) | — | — | — | 1/54 → **0/54** |
+| Sexo extraído = anotado | — | — | — | 78/80 → 78/80 |
+| Casos `sin_regla` (18) acertados | — | — | — | — → 11/18 |
+| Aviso "no estoy segura" en casos completos, contestando como en la app | 9/58 (antes 11) | 3/28 (antes 4) | 7/36 (antes 9) | 16/73 → 5/73 |
+
+"Antes" = código de la ronda 2 (commit `de209a0`) corrido con el mismo `eval/lib.ts` y los fallos de test_v3 ocultos. dev, test_v1 y test_v2: **sin cambio de nivel en ningún caso**. El caso reportado (T3-49, "Hombre de 21 años con dolor de estómago, gases y estreñido…") sale `aqui`, no pregunta embarazo y pregunta: revisión de signos de peligro, "¿lleva horas o días sin poder hacer del baño ni echar gases?" y "¿el dolor está abajo a la derecha…?".
 
 ## 1. Qué se mide
 
@@ -48,7 +64,8 @@ No se evalúa el LLM (web-llm no corre en Node) ni la voz (Whisper; ver `docs/ai
 |---|---:|---|
 | `dev` | 60 | Se usó para ajustar el extractor (rondas 1 y 2). |
 | `test_v1` | 30 | Era el held-out de la ronda 1 (antes `test`). Sus fallos se vieron en la ronda 1 y se arreglaron de forma general en la ronda 2. **Ya no es held-out: es regresión** (`eval/cases.test.ts` exige 0 urgencias sub-triadas). |
-| **`test_v2`** | 40 | **Held-out vigente.** 16 urgencia / 14 centro hoy / 10 aquí; 4 marcados `expected_uncertain`. |
+| `test_v2` | 40 | Held-out de la ronda 2. 16 urgencia / 14 centro hoy / 10 aquí; 4 marcados `expected_uncertain`. Ya se vio: ahora es regresión. |
+| **`test_v3`** | 80 | **Held-out vigente (ronda 3).** Escrito a ciegas y congelado por hash antes de los cambios de la ronda 3 (§2.4). 20 urgencia / 28 centro hoy / 32 aquí; 18 `sin_regla`. |
 
 ### 2.2 Protocolo de test_v2
 
@@ -67,6 +84,44 @@ No se evalúa el LLM (web-llm no corre en Node) ni la voz (Whisper; ver `docs/ai
 - **No se cambió ninguna etiqueta en la ronda 2.** El único cambio sigue siendo D42 (`centro_hoy` → `urgencia`, fact-check del 3-oct, NOM-031 3.32 y 8.2.5.3.1.1; ver el final del documento).
 - **D35** (`centro_hoy` según la OPS) daba `urgencia` por IITT-R-NEURO-01. Con la decisión provisional #14 (`docs/decisiones-clinicas.md`) ya da `centro_hoy`; la etiqueta no se tocó.
 - Se agregó `expected_uncertain` a D22, D23, T12 y T13 (respiración rápida sin saber si es difícil llegar a la unidad, o sin conteo). No cambia su nivel esperado.
+
+### 2.4 test_v3: held-out ciego de la ronda 3 (congelado antes de los cambios de la ronda 3)
+
+**Motivo.** Reporte de uso real del 4-oct-2026: "hombre de 21 años, dolor de estómago, gases y estreñido por dos días" y la app preguntó si estaba embarazado. Las rondas 1 y 2 casi no cubrían las molestias de todas las semanas en adultos, adolescentes y adultos mayores de los dos sexos.
+
+**Protocolo.**
+1. Se escribieron 80 viñetas (`T3-01`…`T3-80`, `split: "test_v3"`) **antes de cualquier cambio de código de la ronda 3** y **sin abrir `src/ai/keywords.ts`** (no se vio el vocabulario del extractor). Solo se consultó la tabla regla → fuente de `docs/clinical-sources.md` para llenar `expected_rule_ids`.
+2. No se corrió el eval con test_v3 visible. La primera corrida debe ser con `EVAL_HIDE_FAILURES=test_v3` (línea base) y el split no se usa para ajustar nada; si se ajusta con un caso, ese caso pasa a dev.
+3. **Congelado: sha256 de las 80 líneas que contienen `"split":"test_v3"` (unidas con `\n` y con `\n` final, mismo método que test_v2) = `6063ea588c1c8221c3eb7d3d466aca9143c437c6ac9df9210771daf6eedc6d81`**, escrito el 2026-10-04 a las 21:22 UTC, frozen before round-3 changes. El hash de test_v2 no cambió.
+
+**Composición.** 20 urgencia (25 %) / 28 centro hoy (35 %) / 32 aquí (40 %). Sexo: 39 hombre, 35 mujer, 6 sin sexo en el relato ("mi familiar", "tiene 21 años", "se cortó la mano"). Pistas de sexo variadas: muchacho, chavo, chamaco, señora, doña, don, la niña, la muchacha. 7 casos `expected_uncertain` (5 por embarazo posible sin confirmar, 2 por edad faltante que decide el nivel). 18 casos `sin_regla`: la guía da un nivel que **ninguna regla actual** produce (alacrán, obstrucción intestinal, posible embarazo ectópico, abdomen agudo en niño, testículo en <12, otitis en <5, absceso dental o de garganta, cefalea en <12 años, ronchas que empeoran, pie diabético, herida honda o por clavo).
+
+| Molestia | n | | Molestia | n |
+|---|---:|---|---|---:|
+| estreñimiento / gases | 7 | | dolor de garganta | 3 |
+| dolor abdominal | 6 | | heridas / cortadas | 3 |
+| golpes / caídas | 6 | | diabetes conocida | 3 |
+| dolor de cabeza | 5 | | gripa / tos (adulto 3, niña 1) | 4 |
+| piquete de alacrán | 4 | | presión alta conocida, agruras, quemaduras, oído, muelas, espalda/cintura, náusea/vómito, mareo, adolescentes (regla) | 2 c/u |
+| ronchas / comezón | 4 | | mordedura de perro o gato | 2 |
+| diarrea en adultos | 4 | | araña, fiebre con dolor de cuerpo, rodillas (adulto mayor) | 1 c/u |
+| ansiedad / nervios | 4 | | ardor al orinar | 4 |
+
+**Campos nuevos** (`eval/lib.ts` todavía no los lee; son JSON extra que no rompen el parser):
+- `expected_sexo`: `"M"`, `"F"` o `null` (el relato no lo dice).
+- `expected_not_ask`: preguntas que la app **no** debe hacer. `["embarazada"]` en hombres, en mujeres fuera de 10–49 años y en niños. Es la prueba directa del reporte del usuario (T3-49 es ese caso literal; T3-51 es la variante sin sexo, donde sí corresponde preguntar).
+- `complaint`, `notes`: molestia principal y la bandera roja oculta, si la hay.
+- `expected_rule_ids` vacío (`[]`) = caso `sin_regla`.
+
+**Convención de etiquetas (provisional, para la Dra. Ines).** Se usó la misma equivalencia de `docs/clinical-sources.md` §1: IITT rojo / "Call 9-1-1" → `urgencia`; IITT amarillo → `centro_hoy`; IITT sin criterios → `aqui`; AIEPI amarillo que trata el centro → `centro_hoy`. Para las fuentes nuevas de MedlinePlus: "call 911 / get medical help right away" → `urgencia`; "contact your provider **right away**" → `centro_hoy`; "contact your provider" (sin inmediatez) o cuidados en casa → `aqui`. Cuando IITT y MedlinePlus no coinciden se siguió IITT (es la fuente de la regla del motor) y el caso lleva la etiqueta `fuentes_discrepan` (5 casos: quemadura pequeña con ampollas T3-29, ronchas que empeoran T3-42, ardor al orinar sin fiebre T3-62, moretón T3-68, raspón T3-78). Se descartaron los casos donde no se pudo justificar el nivel con una fuente (vómito con sangre y popó negra con dolor: MedlinePlus dice 911 y la regla IITT-Y-BLEED-01 dice amarillo; visión borrosa súbita: CDC stroke vs IITT-Y-VISION-01; mareo posicional; dolor leve de gases en mayor de 50: IITT literal lo pone en rojo).
+
+**Fuentes nuevas leídas para test_v3 (4-oct-2026, texto descargado y leído):**
+- MedlinePlus (NLM/NIH), secciones "When to Contact a Medical Professional": [Abdominal pain 003120](https://medlineplus.gov/ency/article/003120.htm), [Abdominal pain - children <12 007504](https://medlineplus.gov/ency/article/007504.htm), [Headache 003024](https://medlineplus.gov/ency/article/003024.htm), [Ectopic pregnancy 000895](https://medlineplus.gov/ency/article/000895.htm), [Urination - painful 003145](https://medlineplus.gov/ency/article/003145.htm), [Toothaches 003067](https://medlineplus.gov/ency/article/003067.htm), [Hives 000845](https://medlineplus.gov/ency/article/000845.htm), [Cuts and puncture wounds 000043](https://medlineplus.gov/ency/article/000043.htm), [Burns 000030](https://medlineplus.gov/ency/article/000030.htm), [Heartburn 003114](https://medlineplus.gov/ency/article/003114.htm), [Diarrhea 003126](https://medlineplus.gov/ency/article/003126.htm), [Nausea and vomiting - adults 003117](https://medlineplus.gov/ency/article/003117.htm), [Constipation - self-care 000120](https://medlineplus.gov/ency/patientinstructions/000120.htm), [Constipation in infants and children 003125](https://medlineplus.gov/ency/article/003125.htm), [Abdominal bloating 003123](https://medlineplus.gov/ency/article/003123.htm), [Low back pain - acute 007425](https://medlineplus.gov/ency/article/007425.htm), [Black widow spider 002858](https://medlineplus.gov/ency/article/002858.htm), [Bruise 007213](https://medlineplus.gov/ency/article/007213.htm).
+- Secretaría de Salud / DGE, *Manual de Procedimientos Estandarizados para la Vigilancia Epidemiológica de la Intoxicación por Picadura de Alacrán*, sept. 2012, p. 31–32 y 39 ([copia en CEVECE Edomex](https://cevece.edomex.gob.mx/sites/cevece.edomex.gob.mx/files/files/docs/marco_juridico/manualesvep/Manual_Picadura_Alacran.pdf)). **Ojo:** la NOM-033-SSA2-2011 (alacrán) fue **cancelada** (DOF 08-07-2024, [aviso](https://sidof.segob.gob.mx/notas/5732620)); no se cita como norma vigente.
+- IITT, tabla ≥12 y <12 y tarjeta de referencia "High-Risk Trauma Criteria" (anticoagulación, "Any burn in age < 2 or age > 70"), ya listadas en clinical-sources §2; se volvieron a leer.
+- AIEPI/IMCI 2014, p. 9 del PDF, "Does the child have an ear problem?" (dolor de oído → amarillo; hinchazón dolorosa detrás de la oreja → rosa).
+
+**Lo que tiene que ajustar quien sea dueño de `eval/lib.ts` y `eval/cases.test.ts`** (este autor no los tocó): agregar `test_v3` a `Split`/`SPLITS`; el test "130 casos" ahora debe contar 210; la guardia de hash de test_v3; y excluir de "cada caso tiene reglas esperadas" y "nivel = regla de mayor nivel" a los casos `sin_regla` de test_v3 (son, a propósito, huecos de reglas). La distribución global (210 casos) queda en 69 urgencia / 72 centro hoy / 69 aquí (33 / 34 / 33 %), dentro del rango 25–40 % que exige el test.
 
 ## 3. Resultados
 
@@ -112,6 +167,45 @@ Las viñetas de test_v2 y el vocabulario nuevo los escribió el mismo autor (asi
 - Aun así, su efecto en test_v2 no es una medición limpia, y algunos mecanismos (por ejemplo, el marco "boca … torcida") también se pensaron con ejemplos parecidos a los del set.
 - **Conclusión: la cifra defendible es "entre 85 % y 92.5 % de exactitud y entre 3/16 y 6/16 urgencias sub-triadas" en relatos escritos por el equipo.**
 - Para una medición limpia hace falta un **test_v3 escrito por otra persona**: la Dra. Ines o, mejor, transcripciones reales de promotoras (anonimizadas y con consentimiento).
+
+### 3.4 Ronda 3: molestias comunes, sexo antes que embarazo y cuidados (4-oct-2026)
+
+**Protocolo.** (1) test_v3 se escribió y congeló (§2.4) antes de tocar el código. (2) Todo el desarrollo se hizo con `EVAL_HIDE_FAILURES=test_v3`, mirando solo dev, test_v1, test_v2, las pruebas unitarias y `docs/research-common-complaints.md`; nunca se abrieron los textos de test_v3. La tabla agregada (sin casos) sí se imprimió durante el desarrollo, como en la ronda 2. (3) Se congeló el código (pruebas, `tsc -b`, `build` y `e2e` en verde) y **después** se corrió una vez con test_v3 visible. (4) **Ningún fallo de test_v3 se corrigió.** La línea base "antes" se calculó con el código del commit `de209a0` y el `eval/lib.ts` nuevo.
+
+**Cambios evaluados:** 50 claves nuevas, 39 reglas nuevas (`src/triage/rules/common.ts`), pregunta "¿Es hombre o mujer?" antes del embarazo, pistas de sexo y edad en el extractor (incluida la corrección de Whisper "nombre de N años"), y `trigger` para que una regla "molestia + signo" solo pregunte cuando hay la molestia. `eval/lib.ts` ahora lee `expected_sexo` y `expected_not_ask` y simula la respuesta a "¿Es hombre o mujer?" con el sexo anotado (o "No sé").
+
+**Matriz de confusión de test_v3** (filas = esperado):
+
+| | antes: aquí | centro | urg. | después: aquí | centro | urg. |
+|---|---:|---:|---:|---:|---:|---:|
+| **aquí** | 31 | 0 | 1 | 31 | 0 | 1 |
+| **centro hoy** | 16 | 11 | 1 | 6 | 19 | 3 |
+| **urgencia** | 5 | 4 | 11 | 2 | 4 | 14 |
+
+**Fallos de test_v3 después de la ronda 3 (sin corregir a propósito):**
+
+| Caso | Esperado → predicho | Qué pasó |
+|---|---|---|
+| T3-01 | urgencia → centro hoy | "ya **ni** echa gases" no se reconoce (la clave `no_obra_ni_gases` no tiene esa frase). Salió `NHS-BLOAT-01` y la app **pregunta** si puede echar gases. |
+| T3-02 | urgencia → centro hoy | Posible embarazo ectópico: no hay regla. Sale `IITT-Y-PAIN-01` y pregunta embarazo. |
+| T3-03 | urgencia → aquí | "el peor de su vida" con relleno ("un dolor de cabeza horrible, el peor de su vida") no casa con `dolor_cabeza_subito`. Pregunta revisión de signos y avisa "no estoy segura". |
+| T3-09 | urgencia → aquí | "toma **pastilla** para adelgazar la sangre" (singular) no casa con `anticoagulante`; la app pregunta, pero no eso. |
+| T3-17 | urgencia → centro hoy | "dolor muy fuerte **en un testículo**" no casa con `dolor_testiculo` (frases de la forma "le duele un testículo"). |
+| T3-18 | urgencia → centro hoy | Niño con panza dura que no deja tocar: no hay regla de abdomen agudo en niños. |
+| T3-28 | centro hoy → aquí | "honda" con relleno ("abierta y honda") no casa con `herida_profunda`; la app pregunta justo eso y avisa. |
+| T3-31 | centro hoy → urgencia | Viuda negra con calambres: **las fuentes no coinciden** (la etiqueta sigue el IITT; Pahtli sigue a la SSA 2026, "urgencia médica"). Para la Dra. Ines. |
+| T3-36 | centro hoy → aquí | "dolor de cintura **muy fuerte**" no activa `dolor_intenso`. |
+| T3-40 | centro hoy → aquí | "se marea cuando se para de la cama" no casa con `mareo_al_pararse`. |
+| T3-42 | centro hoy → aquí | "cada vez son más" (ronchas) no casa con `erupcion_empeora`. |
+| T3-43 | centro hoy → aquí | Sangrado menstrual abundante y prolongado: no hay clave. |
+| T3-45 | centro hoy → aquí | "se torció el tobillo… no puede apoyar el pie": no es `fractura` (a propósito, ronda 2) y no hay regla de esguince grave. |
+| T3-47 | centro hoy → urgencia | Edad desconocida con dolor fuerte: `IITT-R-ABD-01` aplica con edad desconocida (regla existente, más prudente). |
+| T3-48 | centro hoy → urgencia | Alacrán en "el chamaco" sin edad: `SSA-ALAC-01` aplica con edad desconocida (menor de 5 posible). |
+| T3-68 | aquí → urgencia | **Falso positivo existente:** "se le puso morado" (un moretón) → `cianosis` → `GEN-CYAN-01`. Es un sinónimo de la ronda 1. |
+
+Sexo: T3-14 ("Mi **vecino**… no reconoce a su **hija**") sale mujer y T3-72 ("Diabético de 57 años") sale sin sexo: "vecino" y "diabético" no son pistas de sexo en el extractor. Ninguno cambia el nivel.
+
+**Arreglos recomendados para la ronda 4 (no aplicados, para no ajustar sobre test_v3; si se aplican, esos casos pasan a dev):** frases con "ni" ("ya ni echa gases"), relleno de más de 2 palabras en `dolor_cabeza_subito`, singular "pastilla", "dolor… en un testículo", "honda" con relleno, "muy fuerte" después de cualquier dolor, "se marea cuando se para", "cada vez son más", moretón ≠ cianosis (exigir "labios/boca/cara" para "morado"), y las reglas que faltan (embarazo ectópico, abdomen agudo en niños, sangrado menstrual abundante, esguince que no deja apoyar).
 
 ## 4. Análisis de fallos
 
@@ -195,23 +289,23 @@ Tests: más de 50 casos nuevos en `src/ai/keywords.test.ts`. Incluyen adversaria
 ```bash
 cd /Users/brandongarcia/pahtli
 npm run eval                      # tabla por split; escribe eval/results.json y eval/results.md (siempre termina con código 0)
-EVAL_HIDE_FAILURES=test_v2 npm run eval        # solo métricas agregadas de test_v2 (para desarrollar sin mirar el held-out)
+EVAL_HIDE_FAILURES=test_v3 npm run eval        # solo métricas agregadas de test_v3 (para desarrollar sin mirar el held-out vigente)
 EVAL_OUT_DIR=/tmp/x npm run eval              # escribe la salida en otra carpeta
 npx vitest run src/ai src/triage eval          # extractor, motor e integridad del set (incluye el hash de test_v2)
 ```
 
 Archivos:
-- `eval/cases.jsonl`: los 130 casos.
+- `eval/cases.jsonl`: los 210 casos (dev 60, test_v1 30, test_v2 40, test_v3 80).
 - `eval/lib.ts`: métricas (Wilson, síntomas, nivel con hallazgos anotados, aviso de incertidumbre), sin entrada/salida de archivos.
 - `eval/run-eval.ts`: el script.
-- `eval/cases.test.ts`: integridad, hash de test_v2, coherencia etiqueta–regla y guardias de regresión de dev y test_v1.
+- `eval/cases.test.ts`: integridad, hashes de test_v2 y test_v3, coherencia etiqueta–regla (los 18 `sin_regla` de test_v3 quedan exentos) y guardias de regresión de dev y test_v1. test_v3 no tiene guardia a propósito.
 - `eval/results.{json,md}`: la última corrida.
 - `eval/baseline-r2-pre/`: la línea base de la ronda 2, con los fallos por caso de test_v2 ocultos.
 
 Reglas para agregar casos:
 - **Un caso de test_v2 no se edita ni se usa para ajustar el extractor.** El hash lo vigila.
 - Si se ajusta con un caso, ese caso pasa a dev.
-- El próximo held-out (test_v3) debe escribirlo otra persona.
+- test_v3 lo escribió otra sesión, a ciegas (sin ver el extractor). El próximo held-out debería venir de la Dra. Ines o de transcripciones reales de promotoras.
 
 ## Historial de etiquetas
 
@@ -219,3 +313,5 @@ Reglas para agregar casos:
 - **Ronda 2 (3-oct-2026):** no cambió ninguna etiqueta. Se renombró `test` → `test_v1`. Se agregó `expected_uncertain` a D22, D23, T12 y T13. D35 se mantiene en `centro_hoy` (después resuelto por la decisión provisional #14).
 - **Decisiones clínicas provisionales (3-oct-2026, `docs/decisiones-clinicas.md`):** **no cambió ninguna etiqueta.** Se revisaron los 130 casos contra los 3 cambios de regla: #1 (fiebre del lactante: ≥38 °C medido o calentura referida → urgencia; 37.5–37.9 °C → centro hoy) no afecta a ningún caso (D21 tiene 38.2 °C y "calentura"; T2-V01 y T2-A10 no traen temperatura medida); #12 (aleteo nasal → urgencia) no aparece en ningún caso; #14 (fiebre + dolor de cabeza en ≥12 años ya no basta para IITT-R-NEURO-01) hace que **D35 pase de sobre-triaje a acierto** sin tocar su etiqueta (`centro_hoy`, PAHO-DEN-03). Métricas después: dev 100 % (60/60), test_v1 100 %, test_v2 92.5 % (sin cambio, 3/16 urgencias sub-triadas por extracción), total 97.7 % (127/130), sobre-triaje 0/130, sensibilidad de referencia 98.9 %. El hash de test_v2 no cambió.
 - **Revisión de signos de peligro y acción por edad (4-oct-2026, decisión provisional #20 de `docs/decisiones-clinicas.md`):** **no cambió ninguna etiqueta ni ningún nivel predicho** (130/130 iguales; exactitud, sub-triaje, sobre-triaje y sensibilidad sin cambio). La regla por defecto ahora tiene variante por edad (`IITT-NOSIGNS-01` en ≥5 años); `eval/lib.ts` la cuenta como `IMCI-NOSIGNS-01` al comparar reglas esperadas (las etiquetas de test_v2 están congeladas), así que "reglas esperadas que dispararon" no cambia. La pregunta de revisión va **además** de las 2 preguntas clínicas de cada vuelta, así que "sub-triadas sin pregunta que pida el dato" sigue en 2/16 (test_v2) y el sub-triaje en silencio en 1/16. Aviso "no estoy segura": 37 de los 38 casos que salen `aqui` traen ahora `danger_signs_unchecked` si no se contesta (el 38 es T2-A10, bebé de 6 semanas: la revisión no aplica a menores de 2 meses); ruido si salta todas las preguntas 61/122 → **65/122**; ruido simulando la app (contesta "No" a la revisión) **24/122, sin cambio**; `expected_uncertain` 8/8, sin cambio. D38 dejó de preguntar "¿calentura?" a una señora de 65 años: la única regla que la motivaba era la del puerperio, y el embarazo ya no se considera fuera de 10–49 años.
+- **Ronda 3 (4-oct-2026, molestias comunes):** **no cambió ninguna etiqueta.** Se agregaron los 80 casos de test_v3 (§2.4, escritos y congelados antes). `eval/lib.ts`: split `test_v3`, campos `expected_sexo` y `expected_not_ask` (métricas "pregunta prohibida" y "sexo extraído"), y la respuesta simulada a "¿Es hombre o mujer?". `eval/cases.test.ts`: 210 casos, hash de test_v3 y exención de los 18 `sin_regla`. Resultado: dev, test_v1 y test_v2 sin cambio de nivel en ningún caso; test_v3 66.3 % → 80.0 % y 9/20 → 6/20 urgencias sub-triadas (§3.4). Los 16 fallos de test_v3 no se corrigieron.
+

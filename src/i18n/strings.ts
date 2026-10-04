@@ -69,6 +69,10 @@ const es = {
   breath_manual: 'Ya las conté, escribir número',
 
   result_why: 'Por qué',
+  adv_home: 'Cuidados en casa',
+  adv_meanwhile: 'Mientras llega al centro de salud',
+  adv_go_if: 'Vaya a la unidad de salud (hoy, o de inmediato si es urgencia) si:',
+  adv_consult_if: 'Acuda a consulta, sin urgencia, si:',
   result_todo: 'Qué hacer ahora',
   result_source: 'Fuente',
   result_no_rules: 'No se encontraron signos de alarma con los datos dados.',

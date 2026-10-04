@@ -8,7 +8,12 @@ const OBSTETRIC_SIGNS = [
   'dolor_epigastrio', 'sangrado_aumenta', 'golpe_caida',
 ];
 const HEMORRHAGIC = ['sangrado_mucosas', 'petequias', 'vomito_sangre', 'heces_negras', 'sangrado_abundante'];
-const TRAUMA = ['trauma_grave', 'golpe_caida', 'fractura', 'quemadura', 'mordedura_serpiente', 'mordedura_animal', 'intoxicacion'];
+const TRAUMA = [
+  'trauma_grave', 'golpe_caida', 'fractura', 'quemadura', 'mordedura_serpiente', 'mordedura_animal', 'intoxicacion',
+  // Ronda 3: alacrán, araña, heridas, quemaduras graves y golpe en la cabeza.
+  'picadura_alacran', 'mordedura_arana', 'arana_peligrosa', 'herida', 'herida_profunda', 'objeto_clavado', 'herida_sucia',
+  'quemadura_grave', 'quemadura_quimica_electrica', 'golpe_cabeza',
+];
 const NEURO = ['convulsiones', 'inconsciente', 'rigidez_nuca', 'cara_caida', 'debilidad_un_lado', 'dificultad_hablar', 'confusion', 'perdida_equilibrio', 'dolor_cabeza_subito', 'perdida_vision_subita'];
 const RESP = ['tos', 'dificultad_respirar', 'respira_rapido', 'tiraje', 'estridor', 'sibilancias', 'cianosis', 'apnea', 'quejido', 'aleteo_nasal'];
 

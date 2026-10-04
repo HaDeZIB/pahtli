@@ -174,6 +174,18 @@ const IMPLIES: Partial<Record<SymptomKeyStrict, SymptomKeyStrict[]>> = {
   dolor_abdominal_intenso: ['dolor_abdominal'],
   sangrado_abundante: ['sangrado'],
   pliegue_muy_lento: ['pliegue_lento'],
+  // Ronda 3
+  dolor_derecha_baja: ['dolor_abdominal'],
+  no_obra_ni_gases: ['estrenimiento'],
+  herida_profunda: ['herida'],
+  herida_sucia: ['herida'],
+  herida_infectada: ['herida'],
+  objeto_clavado: ['herida'],
+  quemadura_grave: ['quemadura'],
+  quemadura_quimica_electrica: ['quemadura'],
+  tos_sangre: ['tos'],
+  placas_garganta: ['dolor_garganta'],
+  arana_sintomas: [],
 };
 
 /**
@@ -185,11 +197,20 @@ const SUPPRESSED_INSIDE: Partial<Record<SymptomKeyStrict, SymptomKeyStrict[]>> =
   diarrea: ['sangrado_abundante'],
   no_se_mueve: ['movimientos_fetales_disminuidos'],
   letargico: ['inconsciente'],
-  sangrado: ['sangrado_mucosas', 'sangrado_vaginal', 'sangre_heces', 'vomito_sangre', 'sangrado_abundante', 'flujo_mal_olor'],
+  sangrado: ['sangrado_mucosas', 'sangrado_vaginal', 'sangre_heces', 'vomito_sangre', 'sangrado_abundante', 'flujo_mal_olor', 'sangre_oido', 'orina_sangre', 'tos_sangre', 'arana_sintomas'],
+  // "le sale agua del oído" no es "se le rompió la fuente" (que implica embarazo).
+  salida_liquido_vaginal: ['pus_oido'],
+  // "angina de pecho" (DEM acep. 3) es dolor de pecho, no de garganta.
+  dolor_garganta: ['dolor_pecho'],
+  // "se le hinchó la cara por la muela" no es la hinchazón de cara del embarazo.
+  hinchazon_cara_manos: ['hinchazon_ambos_pies', 'hinchazon_boca_cuello', 'hinchazon_labios_lengua', 'hinchazon_cuello_ojo'],
+  // "no puede tragar ni su saliva": el signo es de garganta.
+  no_puede_beber: ['no_traga_saliva'],
+  // "no echa gases" dentro de "no obra ni echa gases": ya cuenta la clave más específica.
+  gases: ['no_obra_ni_gases'],
   vomito: ['vomito_sangre'],
   se_siente_frio: ['manos_pies_frios', 'sudor_frio'],
   dolor_pecho: ['pechos_rojos_dolorosos'],
-  hinchazon_cara_manos: ['hinchazon_ambos_pies'],
   zumbido_oidos: [],
 };
 
@@ -413,6 +434,9 @@ const EVENT_KEYS = new Set<SymptomKeyStrict>([
   'mordedura_serpiente', 'mordedura_animal', 'intoxicacion', 'vomito_sangre', 'heces_negras', 'sangrado_vaginal',
   'salida_liquido_vaginal', 'ideas_suicidas', 'cara_caida', 'debilidad_un_lado', 'dificultad_hablar', 'perdida_vision_subita',
   'sangre_heces', 'posparto',
+  // Ronda 3: el piquete, la mordedura, el golpe o la herida cuentan aunque "ya se le pasó" el dolor.
+  'picadura_alacran', 'mordedura_arana', 'arana_peligrosa', 'golpe_cabeza', 'herida', 'herida_sucia', 'herida_profunda',
+  'quemadura_grave', 'quemadura_quimica_electrica', 'tos_sangre', 'orina_sangre', 'hinchazon_labios_lengua', 'azucar_baja',
 ]);
 const RESOLVE_VERBS = new Set(['quito', 'paso', 'bajo', 'calmo', 'compuso', 'corto', 'sano', 'curo', 'alibio'].map(phonetic));
 
@@ -482,6 +506,15 @@ const FRAMES: Frame[] = ([
   },
   { key: 'fiebre', order: 'ab', dist: 3, a: ['siente', 'siento', 'sentimos', 'sentia', 'anda', 'amanecio', 'nota', 'noto', 'puso', 'esta'], b: ['caliente', 'hirviendo'] },
   { key: 'cara_caida', a: ['boca', 'cara'], b: ['torcida', 'torcido', 'chueca', 'chueco', 'caida', 'ladeada', 'jalada', 'colgada'], dist: 3 },
+  // Ronda 3 (docs/research-common-complaints.md): orden libre ("un alacrán le picó", "le picó en el pie un alacrán").
+  { key: 'picadura_alacran', a: ['alacran', 'alacrancito', 'escorpion', 'alacranes'], b: ['pico', 'picado', 'picada', 'picadura', 'piquete', 'pica', 'mordio'], dist: 4 },
+  { key: 'mordedura_arana', a: ['arana', 'aranita', 'aranas', 'viuda', 'capulina', 'violinista'], b: ['mordio', 'pico', 'picado', 'picada', 'picadura', 'piquete', 'pica'], dist: 4 },
+  { key: 'golpe_cabeza', a: ['cabeza'], b: ['pego', 'pegaron', 'golpeo', 'golpe', 'golpazo', 'madrazo', 'trancazo', 'descalabro'], dist: 3 },
+  { key: 'hinchazon_labios_lengua', a: ['labios', 'labio', 'lengua', 'boca'], b: ['hinchado'], dist: 3 },
+  { key: 'quemadura_grave', a: ['quemo', 'quemada', 'quemado', 'quemadura', 'quemaduras'], b: ['cara', 'cuello'], dist: 3 },
+  { key: 'dolor_espalda_baja', a: ['espalda', 'cintura'], b: ['duele', 'dolor'], dist: 3 },
+  { key: 'dolor_oido', a: ['oido', 'oidos', 'oreja'], b: ['duele', 'dolor'], dist: 3 },
+  { key: 'dolor_garganta', a: ['garganta'], b: ['duele', 'dolor', 'arde'], dist: 3 },
 ] as Frame[]).map((f) => ({ ...f, a: f.a.map(phonetic), b: f.b.map(phonetic) }));
 
 const NEG_INSIDE = new Set(['no', 'sin', 'ni', 'nunca']);
@@ -699,7 +732,7 @@ export function parseNumbers(raw: string): NumericOut {
   // Duración
   const durations: number[] = [];
   const durRes = [
-    new RegExp(`(?:desde hace|hace|lleva|llevan|llevamos|ya van|ya va|ya tiene|tiene|con|desde) (?:ya )?(?:como |unos |unas |mas de )?${NUM} (horas?|horitas?|dias?|diitas?|semanas?|semanitas?|mes(?:es)?|anos?)`, 'g'),
+    new RegExp(`(?:desde hace|hace|lleva|llevan|llevamos|ya van|ya va|ya tiene|tiene|con|desde|por|durante) (?:ya )?(?:como |unos |unas |mas de )?${NUM} (horas?|horitas?|dias?|diitas?|semanas?|semanitas?|mes(?:es)?|anos?)`, 'g'),
     new RegExp(`${NUM} (horas?|dias?|semanas?) (?:con|de|que|asi|enferm)`, 'g'),
   ];
   for (const re of durRes) {
@@ -734,7 +767,7 @@ export function parseNumbers(raw: string): NumericOut {
     const ym = new RegExp(`${NUM} (?:anos?|anitos?) (?:y|con) ${NUM} (?:mes(?:es)?|mesecitos?)`).exec(s);
     const y = new RegExp(`${NUM} (?:anos?|anitos?)\\b`).exec(s);
     const mo = new RegExp(`${NUM} (?:mes(?:es)?|mesecitos?)\\b`).exec(s);
-    const person = new RegExp(`\\b${PERSON}(?: [a-z]+){0,2}? de ${NUM}(?![\\d.])(?! (?:anos?|anitos?|mes(?:es)?|mesecitos?|semanas?|dias?|horas?|grados))`).exec(s);
+    const person = new RegExp(`\\b${PERSON}(?: [a-z]+){0,2}? de ${NUM}(?![\\d.])(?! (?:anos?|anitos?|mes(?:es)?|mesecitos?|semanas?|dias?|horas?|grados)\\b)`).exec(s);
     const cands: { idx: number; months: number }[] = [];
     if (ym) cands.push({ idx: ym.index, months: parseFloat(ym[1]) * 12 + parseFloat(ym[2]) });
     if (y && !(ym && ym.index === y.index)) cands.push({ idx: y.index, months: parseFloat(y[1]) * 12 });
@@ -754,27 +787,55 @@ export function parseNumbers(raw: string): NumericOut {
 // ─────────────────────────────────────────────────────────────────────────────
 // Sexo y embarazo
 // ─────────────────────────────────────────────────────────────────────────────
-const FEMALE = /^(nina|ninita|senora|senorita|mujer|muchacha|muchachita|chamaca|chamaquita|abuela|abuelita|dona|nena|bebita|hija|chava|morra|viejita|anciana|chiquita|embarazada|ella|mama|madre|seno)$/;
-const MALE = /^(nino|ninito|senor|hombre|muchacho|muchachito|chamaco|chamaquito|abuelo|abuelito|don|nene|bebito|hijo|chavo|morro|viejito|anciano|chiquito|el|papa|padre)$/;
+// Ronda 3: parentescos ("mi esposo", "su suegra") y "varón/caballero". "joven", "adolescente" y "paciente" solo
+// tienen sexo con artículo femenino o masculino explícito ("la joven", "el joven"); "el paciente" es genérico en
+// español y NO se toma como hombre (si fuera mujer, se perdería la pregunta de embarazo).
+const FEMALE = /^(nina|ninita|senora|senorita|mujer|muchacha|muchachita|chamaca|chamaquita|abuela|abuelita|dona|nena|bebita|hija|chava|morra|viejita|anciana|chiquita|embarazada|ella|mama|madre|seno|esposa|hermana|tia|suegra|cunada|sobrina|nieta|comadre|prima|femenino)$/;
+const MALE = /^(nino|ninito|senor|hombre|muchacho|muchachito|chamaco|chamaquito|abuelo|abuelito|don|nene|bebito|hijo|chavo|morro|viejito|anciano|chiquito|el|papa|padre|esposo|marido|hermano|tio|suegro|cunado|sobrino|nieto|compadre|primo|varon|caballero|masculino)$/;
 
 const CHILD_F = /^(nina|ninita|bebita|nena|hija|chamaca|chamaquita|chiquita|muchachita)$/;
 const CHILD_M = /^(nino|ninito|bebito|nene|hijo|chamaco|chamaquito|chiquito|muchachito)$/;
+/** Sustantivos sin sexo propio: lo da el artículo ("la joven" / "el joven"). "paciente" solo con "la". */
+const BY_ARTICLE = /^(bebe|criatura|joven|adolescente|paciente)$/;
+/** Demasiado ambiguos para decidir el sexo del paciente (puede ser quien lo trae). */
+const AMBIGUOUS = new Set(['el', 'ella', 'mama', 'madre', 'papa', 'padre', 'seno']);
+const sexOf = (w: string): 'F' | 'M' | undefined => (FEMALE.test(w) ? 'F' : MALE.test(w) ? 'M' : undefined);
+const isAgeAfter = (toks: string[], i: number) => toks[i + 1] === 'de' && /^\d/.test(toks[i + 2] ?? '');
 
 function detectSex(toks: string[]): 'F' | 'M' | undefined {
   // Si se habla de un niño/a, la paciente es la criatura (no "la señora" que la trae)
   for (let i = 0; i < toks.length; i++) {
     const w = toks[i];
-    if (/^(bebe|criatura|paciente)$/.test(w) && (toks[i - 1] === 'la' || toks[i - 1] === 'una')) return 'F';
-    if (/^(bebe|paciente)$/.test(w) && (toks[i - 1] === 'el' || toks[i - 1] === 'un')) return 'M';
+    if (BY_ARTICLE.test(w) && (toks[i - 1] === 'la' || toks[i - 1] === 'una')) return 'F';
+    if (BY_ARTICLE.test(w) && w !== 'paciente' && w !== 'criatura' && (toks[i - 1] === 'el' || toks[i - 1] === 'un')) return 'M';
     if (CHILD_F.test(w)) return 'F';
     if (CHILD_M.test(w)) return 'M';
   }
+  // La persona de la que se da la edad ("su esposa de 30 años", "señor de 40") o a la que "traen" es el paciente.
+  for (let i = 0; i < toks.length; i++) {
+    const w = toks[i];
+    if (AMBIGUOUS.has(w)) continue;
+    const sx = sexOf(w);
+    if (!sx) continue;
+    if (isAgeAfter(toks, i)) return sx;
+    if (['trae', 'traen', 'traigo', 'trajo', 'trajeron', 'lleva', 'llevan', 'llevo'].includes(toks[i - 3] ?? '') && toks[i - 2] === 'a') return sx;
+    if (['trae', 'traen', 'traigo', 'trajo', 'trajeron', 'lleva', 'llevan', 'llevo'].includes(toks[i - 2] ?? '') && toks[i - 1] === 'a') return sx;
+  }
   for (const w of toks) {
-    if (w === 'el' || w === 'ella' || w === 'mama' || w === 'madre' || w === 'papa' || w === 'padre' || w === 'seno') continue; // demasiado ambiguos
-    if (FEMALE.test(w)) return 'F';
-    if (MALE.test(w)) return 'M';
+    if (AMBIGUOUS.has(w)) continue; // demasiado ambiguos
+    const sx = sexOf(w);
+    if (sx) return sx;
   }
   return undefined;
+}
+
+/**
+ * Error típico de Whisper (reporte de uso real, 4-oct-2026): "Hombre de 21 años" → "Nombre de 21 años". Solo se
+ * corrige cuando sigue "de <número> años" (así "su nombre es…" no cambia).
+ */
+const NOMBRE_HOMBRE = /\bnombre(?=\s+de\s+[0-9a-záéíóúñ]+(?:\s+y\s+[a-záéíóúñ]+)?\s+a(?:ñ|n)(?:it)?os?\b)/giu;
+export function asrFixSex(text: string): string {
+  return text.replace(NOMBRE_HOMBRE, (m) => (m[0] === 'N' ? 'Hombre' : 'hombre'));
 }
 
 const PREG_PHRASES: string[][] = [
@@ -848,6 +909,7 @@ function findSymptomHits(toks: string[]): Hit[] {
 export function keywordExtract(text: string): Findings {
   const f: Findings = { sintomas: {} };
   if (!text || !text.trim()) return f;
+  text = asrFixSex(text);
   const normToks = toTokens(text);
   const toks = symptomTokens(text);
 
@@ -891,13 +953,20 @@ export function keywordExtract(text: string): Findings {
   else if (preg === 'neg') f.embarazada = false;
 
   // Sexo
-  const sex = f.embarazada === true || f.sintomas.posparto === true ? 'F' : detectSex(normToks);
+  const sex = f.embarazada === true || f.sintomas.posparto === true ? 'F' : detectSex(wordsToDigits(normToks));
   if (sex) f.sexo = sex;
 
   // "tiene 10 días de haberse aliviado" = posparto aunque no se diga "dio a luz"
   if (nums.posparto_dias !== undefined && nums.posparto_dias <= 42 && f.sintomas.posparto === undefined && f.embarazada !== true) f.sintomas.posparto = true;
   // "dio a luz hace 3 meses" ya no es puerperio (> 6 semanas)
   if (f.sintomas.posparto === true && nums.posparto_dias !== undefined && nums.posparto_dias > 42) delete f.sintomas.posparto;
+
+  // "dolor de muela y la cara hinchada": la hinchazón es por la muela (IITT "swelling of mouth, throat or neck"),
+  // no la hinchazón de cara del embarazo.
+  if (f.sintomas.dolor_muela === true && f.sintomas.hinchazon_cara_manos === true) {
+    delete f.sintomas.hinchazon_cara_manos;
+    f.sintomas.hinchazon_boca_cuello = true;
+  }
 
   // Embarazada adulta: "no se mueve el bebé" es movimiento fetal, no signo del recién nacido
   if (f.embarazada === true && f.sintomas.no_se_mueve === true && /\bbebe\b/.test(normToks.join(' '))) {

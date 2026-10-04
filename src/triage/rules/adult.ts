@@ -36,6 +36,8 @@ export const ADULT_RULES: Rule[] = [
     fuente: `${CITE.CDC_STROKE}: "Sudden numbness or weakness in the face, arm, or leg, especially on one side", "Sudden trouble seeing", "Sudden confusion, trouble speaking", "Sudden trouble walking, dizziness, loss of balance", "Sudden severe headache"… "Call 9-1-1 right away"`,
     fuente_url: SRC.CDC_STROKE,
     needs: ['cara_caida', 'debilidad_un_lado', 'dificultad_hablar', 'confusion', 'perdida_equilibrio', 'dolor_cabeza_subito', 'perdida_vision_subita'],
+    // Ronda 3: con mareo se preguntan los signos de derrame (CDC: "Sudden trouble walking, dizziness, loss of balance").
+    context: ['mareo'],
     fidelidad: 'verbatim',
   },
   {
@@ -48,7 +50,9 @@ export const ADULT_RULES: Rule[] = [
     fuente: `${CITE.CDC_HEART_ATTACK}: "Chest pain or discomfort"… "Call 9-1-1 if you notice symptoms of a heart attack"; ${CITE.IITT}: rojo "Acute chest or abdominal pain (>50 years old)"`,
     fuente_url: SRC.CDC_HEART_ATTACK,
     needs: ['dolor_pecho', 'edad_meses'],
-    context: ['dificultad_respirar', 'sudor_frio'],
+    // Ronda 3 (decisión provisional D13): agruras y nervios también hacen preguntar por el pecho (NHS Feeling sick, 999;
+    // NHS Panic disorder: los síntomas del pánico pueden ser de otra enfermedad).
+    context: ['dificultad_respirar', 'sudor_frio', 'agruras', 'nervios_ansiedad'],
     fidelidad: 'adaptado',
   },
   {
@@ -112,10 +116,10 @@ export const ADULT_RULES: Rule[] = [
     applies: (f) => has(f, 'mordedura_animal'),
     explicacion: { es: 'Mordedura o rasguño de animal (perro, gato, murciélago u otro).', nah: '' },
     accion: {
-      es: 'Lavar la herida con agua y jabón abundante durante 15 minutos. Llevar HOY a la unidad de salud: puede necesitar vacuna antirrábica, que es urgente en tiempo.',
+      es: 'Lavar la herida con agua y jabón, a chorro, durante 10 minutos. Llevar HOY a la unidad de salud: puede necesitar vacuna antirrábica, que es urgente en tiempo. Si la mordida fue en la cabeza, cara, cuello, manos o brazos, si fueron varias o profundas, o fue de murciélago o animal del monte, dígalo: es de riesgo grave.',
       nah: '',
     },
-    fuente: `${CITE.IITT}, criterio amarillo "Exposure requiring time-sensitive prophylaxis (eg. animal bite…)"`,
+    fuente: `${CITE.IITT}, criterio amarillo "Exposure requiring time-sensitive prophylaxis (eg. animal bite…)"; texto de primeros auxilios y riesgo grave (ronda 3, sin cambiar el nivel): ${CITE.SSA_RABIA_GUIA}, p. 18 del PDF ("jabón, agua a chorro durante 10 minutos") y p. 23 del PDF (riesgo grave: "cabeza, cara, cuello ó en miembros superiores", "profundas o múltiples")`,
     fuente_url: SRC.IITT_ADULT,
     needs: ['mordedura_animal'],
     fidelidad: 'verbatim',
@@ -279,7 +283,8 @@ export const ADULT_RULES: Rule[] = [
     fuente: `${CITE.WHO_MHGAP_2016}, módulo SUI: "Current thoughts or plan of self-harm/suicide" → "IMMINENT RISK OF SELF-HARM/SUICIDE is likely"; SUI 2: "Place the person in a secure and supportive environment at a health facility", "DO NOT leave the person alone"; ${PCPNC_D28_SHORT}`,
     fuente_url: SRC.WHO_MHGAP_2016,
     needs: ['ideas_suicidas'],
-    context: ['depresion_grave'],
+    // Ronda 3: con nervios o angustia también se pregunta (mhGAP OTH p. 152: primero descartar riesgo de suicidio).
+    context: ['depresion_grave', 'nervios_ansiedad'],
     fidelidad: 'adaptado',
   },
 ];
