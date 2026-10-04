@@ -107,3 +107,7 @@ Son las que más cambian qué pacientes salen de la comunidad. Le pedimos que la
 | #14 | `src/triage/rules/fever.ts` | `IITT-R-NEURO-01` en ≥12 años exige alteración mental o cuello tieso; pasa a `adaptado`. |
 
 Pruebas: `src/triage/engine.test.ts` actualizado (umbral de temperatura del lactante, aleteo nasal, nueva prueba de NEURO-01 en adultos). Eval: ninguna etiqueta cambió; ver `docs/eval.md`.
+
+## Pendiente adicional para la Dra. Ines (3-oct, revisión de textos)
+- **Plan A (diarrea), cantidad de Vida Suero Oral:** el texto sigue la NOM-031 7.2.6.1 ("media taza" en menores de 1 año, "una taza" en mayores). La OMS (*Treatment of diarrhoea*, 2005) divide a los **2 años** (50–100 ml y 100–200 ml por evacuación). Por el principio 2 se mantiene la NOM. **¿Lo confirma?**
+- **Ictericia del lactante:** la acción incluye "(OMS 2019: más de 3 semanas)". Se puede simplificar si a usted le parece confuso para la promotora.
