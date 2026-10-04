@@ -85,7 +85,7 @@ export default function About() {
       <TopBar title={t('about_title', lang)} onBack={() => (window.history.length > 1 ? window.history.back() : go('config'))} />
       <div className="mx-auto flex max-w-xl flex-col gap-4 px-4">
         <div className="rounded-3xl bg-ink p-5 text-white">
-          <p className="text-[22px] font-black leading-tight">Pahtli sugiere. Tú decides.</p>
+          <p className="text-[22px] font-black leading-tight">Pahtli sugiere. Usted decide.</p>
           <p className="mt-2 text-[15px] opacity-90">
             Pahtli ayuda a la promotora a ordenar lo que ve y a encontrar los signos de alarma de las guías oficiales.
             Todo corre en este celular, sin internet. La última palabra siempre es de una persona.
@@ -159,7 +159,7 @@ export default function About() {
           <ul className="list-disc pl-5">
             <li>No entendió ningún síntoma, o la descripción es muy corta o parece mal transcrita.</li>
             <li>Falta la edad y con alguna edad el nivel podría subir.</li>
-            <li>Respondiste “No sé” o se saltaron preguntas que podían subir el nivel.</li>
+            <li>Se respondió “No sé” o se saltaron preguntas que podían subir el nivel.</li>
             <li>La IA de lenguaje y las palabras clave no coinciden en un signo de alarma.</li>
             <li>Bebé de menos de 2 meses o embarazo con pocos datos (si no es ya urgencia).</li>
           </ul>
@@ -173,7 +173,7 @@ export default function About() {
             <Metric value={pct(test.referral_sensitivity?.rate)} label="Casos a referir que sí salieron" sub={`${test.referral_sensitivity?.hits ?? '—'}/${test.referral_sensitivity?.of ?? '—'}`} />
           </div>
           <p className="mt-3 text-[14px] text-muted">
-            Split de prueba test_v2: {test.n ?? 40} viñetas en español coloquial escritas antes de ajustar el extractor, sin LLM ni voz
+            Conjunto de prueba (test_v2): {test.n ?? 40} viñetas en español coloquial escritas antes de ajustar el extractor, sin LLM ni voz
             {fromFile && evalDate ? ` · eval/results.json del ${evalDate.slice(0, 10)}` : ' · docs/eval.md'}.
             Son <span className="font-bold">viñetas sintéticas, no pacientes reales</span>, y falta la validación clínica.
             El mismo equipo escribió las viñetas y el vocabulario nuevo, así que la cifra es optimista: sin las frases que aparecen
@@ -185,7 +185,7 @@ export default function About() {
         <Section title="Privacidad" icon={<Shield size={20} />}>
           <ul className="flex flex-col gap-2">
             <li><span className="font-bold">Dónde están los datos:</span> en este celular (IndexedDB del navegador). El audio no se guarda.</li>
-            <li><span className="font-bold">Qué sale del celular:</span> al haber señal se envían edad (en años desde los 2 años), sexo, síntomas, nivel sugerido, tu decisión (nivel y motivo de una lista), si Pahtli no estaba segura y las reglas. La transcripción, tus notas y tu nombre nunca salen. La ubicación viaja redondeada a ~1 km. No se pide nombre del paciente.</li>
+            <li><span className="font-bold">Qué sale del celular:</span> al haber señal se envían edad (en años desde los 2 años), sexo, síntomas, nivel sugerido, su decisión (nivel y motivo de una lista), si Pahtli no estaba segura y las reglas. La transcripción, sus notas y su nombre nunca salen. La ubicación viaja redondeada a ~1 km. No se pide nombre del paciente.</li>
             <li><span className="font-bold">Quién lo lee:</span> el equipo del centro de salud en el tablero. Los casos uno por uno requieren la clave del tablero; sin clave solo se ven conteos por día y comunidad. (Pendiente para un despliegue real: cuentas por persona en vez de una clave compartida.)</li>
             <li><span className="font-bold">Si se pierde o se presta el celular:</span> PIN opcional al abrir y tras {Math.round(LOCK_AFTER_MS / 60000)} minutos fuera; los casos ya enviados se borran solos a los {retention} días (por defecto {DEFAULT_RETENTION_DAYS}); y un botón borra todo.</li>
           </ul>

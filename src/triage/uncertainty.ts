@@ -181,7 +181,7 @@ export function assessUncertainty(input: UncertaintyInput): Uncertainty {
   if (!fromButtons && transcript) {
     if (!hasClinicalData(findings)) add('no_findings', 'No entendí ningún síntoma en lo que se dijo.');
     if (words(transcript).length < MIN_WORDS) add('short_transcript', 'La descripción es muy corta.');
-    if (looksGarbled(transcript)) add('garbled_transcript', 'El texto parece mal entendido (ruido o palabras repetidas). Revísalo.');
+    if (looksGarbled(transcript)) add('garbled_transcript', 'El texto parece mal entendido (ruido o palabras repetidas). Revíselo.');
   } else if (fromButtons && !hasClinicalData(findings)) {
     add('no_findings', 'No se marcó ningún síntoma.');
   }
@@ -191,7 +191,7 @@ export function assessUncertainty(input: UncertaintyInput): Uncertainty {
   const unknown = answered.filter((q) => !q.known && !q.skipped && !(q.campo === 'edad_meses' && codes.includes('age_missing')));
   if (unknown.length) {
     const list = unknown.map((q) => q.pregunta ?? q.campo).join(' · ');
-    add('answered_unknown', `Respondiste “No sé” a: ${list}`);
+    add('answered_unknown', `Respondió “No sé” a: ${list}`);
   }
   // Sin responder = tocó "Saltar", o quedaron preguntas antes de llegar al máximo (p. ej. volvió atrás).
   // Si ya contestó el máximo, las que el motor aún podría hacer no cuentan (si no, el aviso saldría siempre).
@@ -215,7 +215,7 @@ export function assessUncertainty(input: UncertaintyInput): Uncertainty {
     add('young_infant_few', 'Bebé de menos de 2 meses con pocos datos: puede enfermar grave sin muchos signos.');
   }
   if (canRise && findings.embarazada === true && n < FEW_FINDINGS) {
-    add('pregnancy_few', 'Embarazo con pocos datos: revisa los signos de alarma del embarazo.');
+    add('pregnancy_few', 'Embarazo con pocos datos: revise los signos de alarma del embarazo.');
   }
 
   return { uncertain: codes.length > 0, reasons, codes };

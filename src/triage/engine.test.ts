@@ -352,7 +352,8 @@ describe('preguntas de seguimiento', () => {
     for (const x of q) {
       expect(x.pregunta.es.length).toBeGreaterThan(5);
       expect(x.pregunta.nah).toBe('');
-      expect(x.porque).toMatch(/^[A-Z0-9-]+: /);
+      expect(x.porque.length).toBeGreaterThan(5);
+      expect(x.porque).not.toMatch(/^[A-Z0-9-]+: /); // sin ids internos en la interfaz
     }
   });
 });

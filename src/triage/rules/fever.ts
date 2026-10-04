@@ -38,7 +38,7 @@ export const FEVER_RULES: Rule[] = [
       return false;
     },
     explicacion: {
-      es: 'Combinación de alarma del triaje IITT: confusión o muy dormido, o cuello tieso, junto con otro de — fiebre o temperatura baja, dolor de cabeza, confusión, cuello tieso (en niños: confusión o muy dormido junto con fiebre, cuello tieso o temperatura baja). Puede ser una infección grave del cerebro o sus cubiertas.',
+      es: 'Combinación de alarma: confusión o mucho sueño, o cuello tieso, junto con otro signo (fiebre o temperatura baja, dolor de cabeza, confusión o cuello tieso). En niños: confusión o mucho sueño junto con fiebre, cuello tieso o temperatura baja. Puede ser una infección grave del cerebro (como meningitis).',
       nah: '',
     },
     accion: { es: REFER_NOW, nah: '' },
@@ -98,7 +98,7 @@ export const FEVER_RULES: Rule[] = [
     block: 'fever',
     level: 'urgencia',
     applies: (f) => hasFever(f) && has(f, 'petequias'),
-    explicacion: { es: 'Fiebre con puntitos rojos o manchas moradas que no se borran al apretar: posible infección grave (meningococo, sepsis), dengue grave o rickettsiosis.', nah: '' },
+    explicacion: { es: 'Fiebre con puntitos rojos o manchas moradas que no se borran al apretar: posible infección grave de la sangre o del cerebro (meningococo, sepsis), dengue grave o rickettsiosis (enfermedad por garrapata).', nah: '' },
     accion: { es: `${REFER_NOW} No dar aspirina ni antiinflamatorios.`, nah: '' },
     fuente: `${CITE.NICE_NG143}, tabla 2 (alto riesgo, "rojo": "Non-blanching rash") y rec. 1.2.18 ("Consider meningococcal disease in any child with fever and a non-blanching rash"); rec. 1.4.3 ("red" → referir urgentemente)`,
     fuente_url: SRC.NICE_NG143,

@@ -362,7 +362,7 @@ export default function Result() {
 
         <p className="mt-6 text-center text-[14px] font-semibold opacity-90">{t('disclaimer', lang)}</p>
         <p className="mt-1 text-center text-[12px] opacity-75">
-          {t('ondevice', lang, { ms })}{extraction ? ` · ${extraction.method}` : ''}
+          {t('ondevice', lang, { ms })}{extraction ? ` · ${extraction.method.includes('llm') ? 'IA + palabras clave' : 'palabras clave'}` : ''}
         </p>
         <p className="mt-2 text-center">
           <a href="#/acerca" className="inline-flex min-h-11 items-center gap-1.5 text-[14px] font-bold underline opacity-90">

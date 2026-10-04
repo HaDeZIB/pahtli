@@ -131,7 +131,7 @@ interface Candidate {
 function buildQuestion(field: FieldName, rule: Rule): FollowUpQuestion {
   const tipo: FollowUpQuestion['tipo'] = field === 'resp_por_min' ? 'contar_respiraciones' : NUMERIC.has(field) ? 'numero' : 'si_no';
   const es = PREGUNTAS[field] ?? (isSymptomKey(field) ? `¿${SYMPTOMS[field].es}?` : `¿${field}?`);
-  return { campo: field, tipo, pregunta: { es, nah: '' }, porque: `${rule.id}: ${rule.explicacion.es}` };
+  return { campo: field, tipo, pregunta: { es, nah: '' }, porque: rule.explicacion.es };
 }
 
 export function followUpQuestions(f: Findings, currentLevel: TriageLevel, max = MAX_QUESTIONS): FollowUpQuestion[] {

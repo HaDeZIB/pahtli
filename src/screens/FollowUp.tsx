@@ -137,7 +137,7 @@ export default function FollowUp() {
           )}
           <Button variant="ghost" onClick={skip}>{t('skip', lang)}</Button>
         </div>
-        <p className="mt-3 text-center text-[13px] text-muted">“{t('dont_know', lang)}” y “{t('skip', lang)}” están bien: Pahtli te avisará que no está segura.</p>
+        <p className="mt-3 text-center text-[13px] text-muted">“{t('dont_know', lang)}” y “{t('skip', lang)}” están bien: Pahtli le avisará que no está segura.</p>
       </div>
     </div>
   );

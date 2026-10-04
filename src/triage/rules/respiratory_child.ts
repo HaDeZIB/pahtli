@@ -19,7 +19,7 @@ const poorPrognosis = (f: Findings) =>
   (possiblyAge(f, 0, 12) && has(f, 'bajo_peso_nacer'));
 
 const CENTRO_HOY_RESP =
-  'Llevar HOY a la unidad de salud (necesita valoración y probablemente antibiótico que da el centro de salud). Seguir dándole pecho y líquidos. Si aparece tiraje, ruido al respirar, se pone morado o no puede beber: es URGENCIA.';
+  'Llevar HOY a la unidad de salud (necesita valoración y probablemente antibiótico que da el centro de salud). Seguir dándole pecho y líquidos. Si aparece tiraje (se le hunden las costillas), ruido al respirar, se pone morado o no puede beber: es URGENCIA.';
 
 export const RESPIRATORY_CHILD_RULES: Rule[] = [
   {
@@ -68,7 +68,7 @@ export const RESPIRATORY_CHILD_RULES: Rule[] = [
     block: 'respiratory_child',
     level: 'urgencia',
     applies: (f) => has(f, 'tiraje'),
-    explicacion: { es: 'Tiraje subcostal: se le hunde la parte baja del pecho al respirar. Dificultad respiratoria grave.', nah: '' },
+    explicacion: { es: 'Tiraje subcostal: se le hunden las costillas (la parte de abajo del pecho) al respirar. Es dificultad grave para respirar.', nah: '' },
     accion: { es: 'Referir URGENTE al hospital: conseguir transporte o llamar al 911 ahora. Mantenerlo abrigado y seguir dándole pecho si puede.', nah: '' },
     fuente: `${CITE.ICCM}, p. 6 ("Chest indrawing" = DANGER SIGN, "refer urgently"); ${CITE.NOM_031}, num. 8.2.3 y 8.2.5.3.1.1 (tiraje = neumonía grave, "Envío inmediato a un hospital"); ${CITE.IITT}, rojo "Respiratory distress"`,
     fuente_url: SRC.ICCM,
@@ -112,7 +112,7 @@ export const RESPIRATORY_CHILD_RULES: Rule[] = [
     block: 'respiratory_child',
     level: 'urgencia',
     applies: (f) => possiblyAge(f, 0, 60) && has(f, 'quejido'),
-    explicacion: { es: 'Niño menor de 5 años que se queja (quejido) al respirar: dificultad respiratoria grave.', nah: '' },
+    explicacion: { es: 'Niño menor de 5 años que se queja (quejido) al respirar: dificultad grave para respirar.', nah: '' },
     accion: { es: 'Referir URGENTE al hospital: conseguir transporte o llamar al 911 ahora. Mantenerlo abrigado y en la posición en que respire mejor.', nah: '' },
     fuente: `${CITE.NICE_NG143}, rec. 1.2.5 y tabla 2 (alto riesgo, "rojo": "grunting"; rec. 1.4.3: "red" → referir urgentemente)`,
     fuente_url: SRC.NICE_NG143,
@@ -127,7 +127,7 @@ export const RESPIRATORY_CHILD_RULES: Rule[] = [
     // Decisión provisional #12 (docs/decisiones-clinicas.md): se sigue el IITT (rojo), más protector que NICE (ámbar).
     level: 'urgencia',
     applies: (f) => possiblyAge(f, 0, 60) && has(f, 'aleteo_nasal'),
-    explicacion: { es: 'Niño menor de 5 años con aleteo nasal (se le abren las narices al respirar): signo de dificultad respiratoria.', nah: '' },
+    explicacion: { es: 'Niño menor de 5 años con aleteo nasal (se le abren las alitas de la nariz al respirar): signo de dificultad para respirar.', nah: '' },
     accion: { es: 'Referir URGENTE al hospital: conseguir transporte o llamar al 911 ahora. Mantenerlo abrigado, en la posición en que respire mejor, y seguir dándole pecho o líquidos si puede.', nah: '' },
     fuente: `${CITE.IITT} pediátrico (<12 años), rojo "Respiratory distress*"; tarjeta de referencia del IITT, "Signs of Respiratory Distress", niño: "Nasal flaring, grunting"; ${CITE.NICE_NG143}, rec. 1.2.6 y tabla 2 ("nasal flaring" = riesgo intermedio, ámbar: la guía británica es menos protectora)`,
     fuente_url: SRC.IITT_REFCARD,
@@ -167,7 +167,7 @@ export const RESPIRATORY_CHILD_RULES: Rule[] = [
     level: 'centro_hoy',
     applies: (f) => has(f, 'sibilancias'),
     explicacion: { es: 'Le silba el pecho (sibilancias).', nah: '' },
-    accion: { es: 'Llevar HOY a la unidad de salud (puede necesitar broncodilatador inhalado). Si hay tiraje o se pone morado: URGENCIA.', nah: '' },
+    accion: { es: 'Llevar HOY a la unidad de salud (puede necesitar medicina inhalada para abrir los bronquios). Si hay tiraje o se pone morado: URGENCIA.', nah: '' },
     fuente: `${CITE.IITT}, criterio amarillo "Wheezing (no red criteria)" (tablas adulto y pediátrica); ${CITE.IMCI_2014}, p. 6 del PDF (sibilancias → broncodilatador inhalado)`,
     fuente_url: SRC.IITT_PED,
     needs: ['sibilancias'],

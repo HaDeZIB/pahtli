@@ -272,7 +272,7 @@ export default function Dashboard() {
         await setSettings({ syncToken: value });
         setHasToken(!!value);
         setTokenDraft('');
-        setAccessMsg(value ? 'Token de inscripción guardado en este equipo.' : 'Token de inscripción borrado de este equipo.');
+        setAccessMsg(value ? 'Clave de inscripción guardada en este equipo.' : 'Clave de inscripción borrada de este equipo.');
       }
     } catch {
       setAccessMsg('No se pudo guardar en este equipo.');
@@ -316,7 +316,7 @@ export default function Dashboard() {
     try {
       const r = await syncNow();
       setSyncMsg(
-        !r.ok && r.error === 'no_inscrito' ? 'El servidor no reconoce este celular: falta o es incorrecto el token de inscripción (ver "Acceso al servidor").' :
+        !r.ok && r.error === 'no_inscrito' ? 'El servidor no reconoce este celular: falta la clave de inscripción o es incorrecta (ver “Acceso al servidor”).' :
         !r.ok ? 'No se pudo sincronizar; se reintentará solo.' : r.sent === 0 ? 'No hay casos pendientes.' : `${r.sent} caso(s) sincronizado(s)${r.demo ? ' (modo demo: el servidor no guarda)' : ''}.`,
       );
     } finally {
@@ -446,7 +446,7 @@ export default function Dashboard() {
               <>
                 <p className="mt-1 text-[13px] text-muted">
                   Este servidor no tiene clave del tablero configurada, así que solo comparte conteos por día, comunidad, síndrome y nivel: sin edad, sexo, ubicación ni hora de cada caso.
-                  Estos conteos pueden incluir casos que ya aparecen abajo como "Este celular".
+                  Estos conteos pueden incluir casos que ya aparecen abajo como “Este celular”.
                 </p>
                 {netByCommunity.length ? (
                   <div className="mt-3 overflow-x-auto">
@@ -593,7 +593,7 @@ export default function Dashboard() {
               }}
             >
               <label htmlFor="sync-token" className="font-semibold">
-                Token de inscripción del celular {hasToken ? <span className="font-normal text-brand-dark">· guardado</span> : null}
+                Clave de inscripción del celular {hasToken ? <span className="font-normal text-brand-dark">· guardada</span> : null}
               </label>
               <input
                 id="sync-token"

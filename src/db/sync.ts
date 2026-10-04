@@ -54,7 +54,8 @@ const UNCERTAINTY_PREFIXES: [string, string][] = [
   ['La descripción es muy corta', 'short_transcript'],
   ['El texto parece mal entendido', 'garbled_transcript'],
   ['Falta la edad', 'age_missing'],
-  ['Respondiste', 'answered_unknown'],
+  ['Respondió', 'answered_unknown'],
+  ['Respondiste', 'answered_unknown'], // frase anterior (casos guardados antes del cambio)
   ['Quedaron preguntas sin responder', 'questions_pending'],
   ['La IA y las palabras clave no coinciden', 'llm_disagree'],
   ['Bebé de menos de 2 meses', 'young_infant_few'],

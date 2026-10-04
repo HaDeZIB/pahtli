@@ -40,7 +40,7 @@ export const YOUNG_INFANT_RULES: Rule[] = [
     applies: (f) => YI(f) && (f.edad_meses as number) >= days(7) && isNum(f.resp_por_min) && f.resp_por_min >= 60,
     explicacion: { es: 'Bebé de 7 a 59 días con respiración rápida (60 o más por minuto).', nah: '' },
     accion: {
-      es: 'Según la OMS 2019 se trata en la unidad de salud, pero la NOM-031 cuenta "menor de dos meses" como factor de mal pronóstico y manda al hospital (ver NOM031-IRA-03): seguir la indicación URGENTE. Mantenerlo calientito y con pecho.',
+      es: 'La guía de la OMS (2019) lo trata en la unidad de salud, pero la norma mexicana NOM-031 manda al hospital a todo bebé menor de 2 meses con respiración rápida: seguir la indicación de URGENCIA. Mantenerlo calientito y con pecho.',
       nah: '',
     },
     fuente: `${CITE.IMCI_YI_2019}, p. 1 impresa / p. 5 del PDF ("Fast breathing (60 breaths per minute or more) in infants 7–59 days old" → PNEUMONIA, amoxicilina oral, control en 3 días)`,
@@ -95,7 +95,7 @@ export const YOUNG_INFANT_RULES: Rule[] = [
     level: 'urgencia',
     applies: (f) =>
       YI(f) && (has(f, 'palmas_plantas_amarillas') || (has(f, 'ictericia') && (f.edad_meses as number) < days(1))),
-    explicacion: { es: 'Ictericia grave: palmas y plantas amarillas, o color amarillo en las primeras 24 horas de vida.', nah: '' },
+    explicacion: { es: 'Ictericia grave (color amarillo): palmas y plantas amarillas, o color amarillo en las primeras 24 horas de vida.', nah: '' },
     accion: { es: REFER_YI, nah: '' },
     fuente: `${CITE.IMCI_2014}, p. 46 del PDF ("Any jaundice if age less than 24 hours or Yellow palms and soles at any age → SEVERE JAUNDICE, refer URGENTLY")`,
     fuente_url: SRC.IMCI_2014,

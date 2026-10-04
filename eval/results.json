@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-03T21:47:45.903Z",
+  "generated_at": "2026-10-04T01:36:57.665Z",
   "pipeline": "keywordExtract -> triage (no LLM) + assessUncertainty",
   "hidden_failures": [],
   "metrics": {
@@ -102,9 +102,9 @@
         }
       },
       "latency_ms": {
-        "mean": 0.56,
-        "p95": 2,
-        "max": 4
+        "mean": 0.55,
+        "p95": 1.89,
+        "max": 3.98
       },
       "ci": {
         "accuracy": [
@@ -242,9 +242,9 @@
         }
       },
       "latency_ms": {
-        "mean": 0.38,
-        "p95": 0.5,
-        "max": 0.63
+        "mean": 0.4,
+        "p95": 0.66,
+        "max": 0.69
       },
       "ci": {
         "accuracy": [
@@ -387,9 +387,9 @@
         }
       },
       "latency_ms": {
-        "mean": 0.38,
-        "p95": 0.69,
-        "max": 1.24
+        "mean": 0.4,
+        "p95": 1,
+        "max": 1.03
       },
       "ci": {
         "accuracy": [
@@ -537,9 +537,9 @@
         }
       },
       "latency_ms": {
-        "mean": 0.46,
-        "p95": 0.84,
-        "max": 4
+        "mean": 0.47,
+        "p95": 1,
+        "max": 3.98
       },
       "ci": {
         "accuracy": [
@@ -634,7 +634,7 @@
       "tags": [
         "demo"
       ],
-      "latency_ms": 4
+      "latency_ms": 3.98
     },
     {
       "id": "D02",
@@ -679,7 +679,7 @@
       "tags": [
         "regional:chamaco"
       ],
-      "latency_ms": 2.4
+      "latency_ms": 2.41
     },
     {
       "id": "D03",
@@ -776,7 +776,7 @@
         "pregnancy",
         "indirect"
       ],
-      "latency_ms": 0.53
+      "latency_ms": 0.27
     },
     {
       "id": "D05",
@@ -821,7 +821,7 @@
       "tags": [
         "pregnancy"
       ],
-      "latency_ms": 0.3
+      "latency_ms": 0.29
     },
     {
       "id": "D06",
@@ -872,7 +872,7 @@
       "tags": [
         "pregnancy"
       ],
-      "latency_ms": 0.48
+      "latency_ms": 0.49
     },
     {
       "id": "D07",
@@ -968,7 +968,7 @@
       "tags": [
         "young_infant"
       ],
-      "latency_ms": 0.5
+      "latency_ms": 0.51
     },
     {
       "id": "D09",
@@ -1017,7 +1017,7 @@
         "young_infant",
         "threshold"
       ],
-      "latency_ms": 2
+      "latency_ms": 1.89
     },
     {
       "id": "D10",
@@ -1063,7 +1063,7 @@
       "tags": [
         "young_infant"
       ],
-      "latency_ms": 0.33
+      "latency_ms": 0.38
     },
     {
       "id": "D11",
@@ -1106,7 +1106,7 @@
       "tags": [
         "adult"
       ],
-      "latency_ms": 0.34
+      "latency_ms": 0.39
     },
     {
       "id": "D12",
@@ -1287,7 +1287,7 @@
       "tags": [
         "postpartum"
       ],
-      "latency_ms": 1.2
+      "latency_ms": 1.23
     },
     {
       "id": "D16",
@@ -1375,7 +1375,7 @@
       "asks_expected": false,
       "symptom_checks": [],
       "tags": [],
-      "latency_ms": 0.7
+      "latency_ms": 0.72
     },
     {
       "id": "D18",
@@ -1416,7 +1416,7 @@
       "asks_expected": false,
       "symptom_checks": [],
       "tags": [],
-      "latency_ms": 0.5
+      "latency_ms": 0.51
     },
     {
       "id": "D19",
@@ -1460,7 +1460,7 @@
       "tags": [
         "indirect"
       ],
-      "latency_ms": 0.84
+      "latency_ms": 0.77
     },
     {
       "id": "D20",
@@ -1603,7 +1603,7 @@
       "tags": [
         "respiratory"
       ],
-      "latency_ms": 0.49
+      "latency_ms": 0.5
     },
     {
       "id": "D23",
@@ -1657,7 +1657,7 @@
       "tags": [
         "threshold:exact"
       ],
-      "latency_ms": 0.6
+      "latency_ms": 0.63
     },
     {
       "id": "D24",
@@ -1708,7 +1708,7 @@
       "tags": [
         "diarrhea"
       ],
-      "latency_ms": 0.41
+      "latency_ms": 0.39
     },
     {
       "id": "D25",
@@ -1856,7 +1856,7 @@
       "tags": [
         "adult"
       ],
-      "latency_ms": 0.27
+      "latency_ms": 0.28
     },
     {
       "id": "D28",
@@ -1904,7 +1904,7 @@
       "tags": [
         "adult"
       ],
-      "latency_ms": 0.31
+      "latency_ms": 0.32
     },
     {
       "id": "D29",
@@ -1990,7 +1990,7 @@
       "tags": [
         "missing:age"
       ],
-      "latency_ms": 0.22
+      "latency_ms": 0.23
     },
     {
       "id": "D31",
@@ -2136,7 +2136,7 @@
       "tags": [
         "young_infant"
       ],
-      "latency_ms": 0.23
+      "latency_ms": 0.21
     },
     {
       "id": "D34",
@@ -2184,7 +2184,7 @@
       "tags": [
         "young_infant"
       ],
-      "latency_ms": 0.25
+      "latency_ms": 0.23
     },
     {
       "id": "D35",
@@ -2235,7 +2235,7 @@
       "tags": [
         "dengue"
       ],
-      "latency_ms": 0.43
+      "latency_ms": 0.42
     },
     {
       "id": "D36",
@@ -2321,7 +2321,7 @@
       "tags": [
         "trauma"
       ],
-      "latency_ms": 0.24
+      "latency_ms": 0.23
     },
     {
       "id": "D38",
@@ -2369,7 +2369,7 @@
       "tags": [
         "adversarial:negated_danger"
       ],
-      "latency_ms": 0.79
+      "latency_ms": 0.77
     },
     {
       "id": "D39",
@@ -2425,7 +2425,7 @@
       "tags": [
         "threshold"
       ],
-      "latency_ms": 0.4
+      "latency_ms": 0.39
     },
     {
       "id": "D40",
@@ -2467,7 +2467,7 @@
         "regional:se_alivió",
         "postpartum"
       ],
-      "latency_ms": 0.48
+      "latency_ms": 0.56
     },
     {
       "id": "D41",
@@ -2516,7 +2516,7 @@
       "tags": [
         "young_infant"
       ],
-      "latency_ms": 0.32
+      "latency_ms": 0.33
     },
     {
       "id": "D42",
@@ -2566,7 +2566,7 @@
         "young_infant",
         "threshold:age"
       ],
-      "latency_ms": 0.38
+      "latency_ms": 0.3
     },
     {
       "id": "D43",
@@ -2623,7 +2623,7 @@
       "tags": [
         "threshold"
       ],
-      "latency_ms": 0.52
+      "latency_ms": 0.5
     },
     {
       "id": "D44",
@@ -2680,7 +2680,7 @@
       "tags": [
         "adversarial:negation"
       ],
-      "latency_ms": 0.58
+      "latency_ms": 0.57
     },
     {
       "id": "D45",
@@ -2724,7 +2724,7 @@
       "tags": [
         "mild"
       ],
-      "latency_ms": 0.23
+      "latency_ms": 0.24
     },
     {
       "id": "D46",
@@ -2780,7 +2780,7 @@
       "tags": [
         "adversarial:negation"
       ],
-      "latency_ms": 0.58
+      "latency_ms": 0.56
     },
     {
       "id": "D47",
@@ -2831,7 +2831,7 @@
       "tags": [
         "adversarial:negated_danger"
       ],
-      "latency_ms": 0.41
+      "latency_ms": 0.43
     },
     {
       "id": "D48",
@@ -2922,7 +2922,7 @@
       "tags": [
         "adversarial:ya_no"
       ],
-      "latency_ms": 0.59
+      "latency_ms": 0.58
     },
     {
       "id": "D50",
@@ -2974,7 +2974,7 @@
         "adversarial:negated_danger",
         "pregnancy"
       ],
-      "latency_ms": 0.48
+      "latency_ms": 0.55
     },
     {
       "id": "D51",
@@ -3064,7 +3064,7 @@
       "tags": [
         "mild"
       ],
-      "latency_ms": 0.27
+      "latency_ms": 0.26
     },
     {
       "id": "D53",
@@ -3107,7 +3107,7 @@
       "tags": [
         "mild"
       ],
-      "latency_ms": 0.2
+      "latency_ms": 0.17
     },
     {
       "id": "D54",
@@ -3164,7 +3164,7 @@
       "tags": [
         "mild"
       ],
-      "latency_ms": 0.64
+      "latency_ms": 0.5
     },
     {
       "id": "D55",
@@ -3214,7 +3214,7 @@
       "tags": [
         "adversarial:negated_danger"
       ],
-      "latency_ms": 0.46
+      "latency_ms": 0.44
     },
     {
       "id": "D56",
@@ -3307,7 +3307,7 @@
       "tags": [
         "adversarial:negated_danger"
       ],
-      "latency_ms": 0.53
+      "latency_ms": 0.42
     },
     {
       "id": "D58",
@@ -3358,7 +3358,7 @@
       "tags": [
         "adversarial:ya_se_quito"
       ],
-      "latency_ms": 0.56
+      "latency_ms": 0.57
     },
     {
       "id": "D59",
@@ -3489,7 +3489,7 @@
       "tags": [
         "regional:ataque"
       ],
-      "latency_ms": 0.5
+      "latency_ms": 0.48
     },
     {
       "id": "T02",
@@ -3538,7 +3538,7 @@
       "tags": [
         "young_infant"
       ],
-      "latency_ms": 0.41
+      "latency_ms": 0.4
     },
     {
       "id": "T03",
@@ -3668,7 +3668,7 @@
         "regional:picó",
         "missing:age"
       ],
-      "latency_ms": 0.34
+      "latency_ms": 0.69
     },
     {
       "id": "T06",
@@ -3713,7 +3713,7 @@
       "tags": [
         "respiratory"
       ],
-      "latency_ms": 0.39
+      "latency_ms": 0.32
     },
     {
       "id": "T07",
@@ -3759,7 +3759,7 @@
       "tags": [
         "adversarial:buried"
       ],
-      "latency_ms": 0.4
+      "latency_ms": 0.43
     },
     {
       "id": "T08",
@@ -3849,7 +3849,7 @@
         "adult",
         "regional:chueca"
       ],
-      "latency_ms": 0.36
+      "latency_ms": 0.37
     },
     {
       "id": "T10",
@@ -4005,7 +4005,7 @@
         "threshold",
         "adversarial:negated_danger"
       ],
-      "latency_ms": 0.45
+      "latency_ms": 0.47
     },
     {
       "id": "T13",
@@ -4060,7 +4060,7 @@
       "tags": [
         "threshold:exact"
       ],
-      "latency_ms": 0.33
+      "latency_ms": 0.31
     },
     {
       "id": "T14",
@@ -4204,7 +4204,7 @@
       "tags": [
         "duration"
       ],
-      "latency_ms": 0.37
+      "latency_ms": 0.41
     },
     {
       "id": "T17",
@@ -4261,7 +4261,7 @@
       "tags": [
         "pregnancy"
       ],
-      "latency_ms": 0.35
+      "latency_ms": 0.36
     },
     {
       "id": "T18",
@@ -4305,7 +4305,7 @@
       "tags": [
         "trauma"
       ],
-      "latency_ms": 0.33
+      "latency_ms": 0.3
     },
     {
       "id": "T19",
@@ -4358,7 +4358,7 @@
         "dengue",
         "adversarial:negated_danger"
       ],
-      "latency_ms": 0.63
+      "latency_ms": 0.66
     },
     {
       "id": "T20",
@@ -4401,7 +4401,7 @@
         "regional:se_alivió",
         "postpartum"
       ],
-      "latency_ms": 0.47
+      "latency_ms": 0.44
     },
     {
       "id": "T21",
@@ -4456,7 +4456,7 @@
       "tags": [
         "duration"
       ],
-      "latency_ms": 0.3
+      "latency_ms": 0.34
     },
     {
       "id": "T22",
@@ -4506,7 +4506,7 @@
       "tags": [
         "mild"
       ],
-      "latency_ms": 0.3
+      "latency_ms": 0.33
     },
     {
       "id": "T23",
@@ -4551,7 +4551,7 @@
         "mild",
         "adversarial:negation"
       ],
-      "latency_ms": 0.25
+      "latency_ms": 0.27
     },
     {
       "id": "T24",
@@ -4600,7 +4600,7 @@
       "tags": [
         "adversarial:ya_se_quito"
       ],
-      "latency_ms": 0.46
+      "latency_ms": 0.48
     },
     {
       "id": "T25",
@@ -4650,7 +4650,7 @@
       "tags": [
         "adversarial:negation"
       ],
-      "latency_ms": 0.48
+      "latency_ms": 0.6
     },
     {
       "id": "T26",
@@ -4694,7 +4694,7 @@
       "tags": [
         "mild"
       ],
-      "latency_ms": 0.27
+      "latency_ms": 0.26
     },
     {
       "id": "T27",
@@ -4750,7 +4750,7 @@
       "tags": [
         "adversarial:negation"
       ],
-      "latency_ms": 0.49
+      "latency_ms": 0.5
     },
     {
       "id": "T28",
@@ -4808,7 +4808,7 @@
         "threshold",
         "adversarial:negated_danger"
       ],
-      "latency_ms": 0.45
+      "latency_ms": 0.46
     },
     {
       "id": "T29",
@@ -4897,7 +4897,7 @@
       "tags": [
         "adversarial:negation"
       ],
-      "latency_ms": 0.43
+      "latency_ms": 0.42
     },
     {
       "id": "T2-V01",
@@ -5151,7 +5151,7 @@
         "posparto",
         "coloquial"
       ],
-      "latency_ms": 0.32
+      "latency_ms": 0.33
     },
     {
       "id": "T2-V05",
@@ -5216,7 +5216,7 @@
       "tags": [
         "adulto"
       ],
-      "latency_ms": 0.34
+      "latency_ms": 0.33
     },
     {
       "id": "T2-V06",
@@ -5282,7 +5282,7 @@
         "relleno",
         "adulto"
       ],
-      "latency_ms": 0.4
+      "latency_ms": 0.39
     },
     {
       "id": "T2-V07",
@@ -5365,7 +5365,7 @@
         "ya_no:capacidad",
         "regional:obrar"
       ],
-      "latency_ms": 0.34
+      "latency_ms": 0.46
     },
     {
       "id": "T2-V08",
@@ -5433,7 +5433,7 @@
         "coloquial",
         "diminutivos"
       ],
-      "latency_ms": 0.37
+      "latency_ms": 0.35
     },
     {
       "id": "T2-V09",
@@ -5496,7 +5496,7 @@
       "tags": [
         "adulto"
       ],
-      "latency_ms": 0.35,
+      "latency_ms": 0.32,
       "reason": "SUB-TRIAJE (extracción incompleta): no disparó IITT-R-POISON-01 [intoxicacion=?]"
     },
     {
@@ -5559,7 +5559,7 @@
         "recien_nacido",
         "numeros_en_palabras"
       ],
-      "latency_ms": 0.34
+      "latency_ms": 0.31
     },
     {
       "id": "T2-V11",
@@ -5628,7 +5628,7 @@
         "embarazo",
         "coloquial"
       ],
-      "latency_ms": 0.28
+      "latency_ms": 0.26
     },
     {
       "id": "T2-V12",
@@ -5699,7 +5699,7 @@
         "dengue",
         "relleno"
       ],
-      "latency_ms": 0.33
+      "latency_ms": 0.38
     },
     {
       "id": "T2-V13",
@@ -5758,7 +5758,7 @@
       "tags": [
         "relleno"
       ],
-      "latency_ms": 0.35,
+      "latency_ms": 0.36,
       "reason": "SUB-TRIAJE (negación errónea): no disparó IITT-R-RESP-01 [dificultad_respirar=false, edad_meses=96]"
     },
     {
@@ -5812,7 +5812,7 @@
         "ya_no:capacidad",
         "salud_mental"
       ],
-      "latency_ms": 0.3
+      "latency_ms": 0.33
     },
     {
       "id": "T2-V15",
@@ -5881,7 +5881,7 @@
         "trauma",
         "coloquial"
       ],
-      "latency_ms": 0.36
+      "latency_ms": 0.34
     },
     {
       "id": "T2-V16",
@@ -5927,7 +5927,7 @@
       "tags": [
         "edad_desconocida"
       ],
-      "latency_ms": 0.26
+      "latency_ms": 0.24
     },
     {
       "id": "T2-C01",
@@ -6005,7 +6005,7 @@
         "negacion",
         "numeros_en_palabras"
       ],
-      "latency_ms": 0.41
+      "latency_ms": 0.42
     },
     {
       "id": "T2-C02",
@@ -6082,7 +6082,7 @@
         "coloquial",
         "diminutivos"
       ],
-      "latency_ms": 0.39
+      "latency_ms": 0.37
     },
     {
       "id": "T2-C03",
@@ -6146,7 +6146,7 @@
       "tags": [
         "relleno"
       ],
-      "latency_ms": 0.3
+      "latency_ms": 0.29
     },
     {
       "id": "T2-C04",
@@ -6315,7 +6315,7 @@
         "embarazo",
         "regional:hacer_del_uno"
       ],
-      "latency_ms": 0.35
+      "latency_ms": 0.33
     },
     {
       "id": "T2-C07",
@@ -6379,7 +6379,7 @@
         "relleno",
         "ambiguo:pecho"
       ],
-      "latency_ms": 0.4
+      "latency_ms": 0.39
     },
     {
       "id": "T2-C08",
@@ -6442,7 +6442,7 @@
       "tags": [
         "duracion"
       ],
-      "latency_ms": 0.39
+      "latency_ms": 0.4
     },
     {
       "id": "T2-C09",
@@ -6520,7 +6520,7 @@
         "dengue",
         "diminutivos"
       ],
-      "latency_ms": 0.45
+      "latency_ms": 0.46
     },
     {
       "id": "T2-C10",
@@ -6633,7 +6633,7 @@
       "tags": [
         "adulto"
       ],
-      "latency_ms": 0.29
+      "latency_ms": 0.28
     },
     {
       "id": "T2-C12",
@@ -6818,7 +6818,7 @@
       "tags": [
         "edad_desconocida"
       ],
-      "latency_ms": 0.31
+      "latency_ms": 0.33
     },
     {
       "id": "T2-A01",
@@ -6896,7 +6896,7 @@
       "tags": [
         "negacion"
       ],
-      "latency_ms": 0.44
+      "latency_ms": 1.03
     },
     {
       "id": "T2-A02",
@@ -6960,7 +6960,7 @@
       "tags": [
         "negacion"
       ],
-      "latency_ms": 1.24
+      "latency_ms": 1
     },
     {
       "id": "T2-A03",
@@ -7009,7 +7009,7 @@
       "tags": [
         "ya_no:resuelto"
       ],
-      "latency_ms": 0.47
+      "latency_ms": 0.51
     },
     {
       "id": "T2-A04",
@@ -7073,7 +7073,7 @@
       "tags": [
         "negacion"
       ],
-      "latency_ms": 0.34
+      "latency_ms": 0.35
     },
     {
       "id": "T2-A05",
@@ -7116,7 +7116,7 @@
       "tags": [
         "adulto"
       ],
-      "latency_ms": 0.27
+      "latency_ms": 0.29
     },
     {
       "id": "T2-A06",
@@ -7178,7 +7178,7 @@
       "tags": [
         "negacion"
       ],
-      "latency_ms": 0.35
+      "latency_ms": 0.36
     },
     {
       "id": "T2-A07",
@@ -7244,7 +7244,7 @@
         "negacion",
         "embarazo"
       ],
-      "latency_ms": 0.45
+      "latency_ms": 0.49
     },
     {
       "id": "T2-A08",
@@ -7287,7 +7287,7 @@
       "tags": [
         "ya_no:resuelto"
       ],
-      "latency_ms": 0.28
+      "latency_ms": 0.3
     },
     {
       "id": "T2-A09",
@@ -7358,7 +7358,7 @@
         "umbral",
         "negacion"
       ],
-      "latency_ms": 0.42
+      "latency_ms": 0.43
     },
     {
       "id": "T2-A10",
@@ -7403,7 +7403,7 @@
         "incertidumbre",
         "recien_nacido"
       ],
-      "latency_ms": 0.33
+      "latency_ms": 0.38
     }
   ]
 }

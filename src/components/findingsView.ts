@@ -22,10 +22,10 @@ export function findingsSummary(f: Findings | null | undefined, lang: Lang = 'es
   const age = formatAge(f.edad_meses);
   if (age) out.push(age);
   if (f.sexo) out.push(f.sexo === 'F' ? 'Mujer' : 'Hombre');
-  if (f.embarazada) out.push(f.semanas_embarazo ? `Embarazada (${f.semanas_embarazo} sem)` : 'Embarazada');
+  if (f.embarazada) out.push(f.semanas_embarazo ? `Embarazada (${f.semanas_embarazo} semanas)` : 'Embarazada');
   if (f.duracion_dias !== undefined) out.push(`${f.duracion_dias} ${f.duracion_dias === 1 ? 'día' : 'días'}`);
   if (f.temperatura_c !== undefined) out.push(`${f.temperatura_c} °C`);
-  if (f.resp_por_min !== undefined) out.push(`${f.resp_por_min} resp/min`);
+  if (f.resp_por_min !== undefined) out.push(`${f.resp_por_min} resp. por minuto`);
   for (const [k, v] of Object.entries(f.sintomas ?? {})) if (v) out.push(symptomLabel(k, lang));
   return out;
 }

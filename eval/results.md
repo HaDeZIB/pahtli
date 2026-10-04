@@ -1,6 +1,6 @@
 # Resultados de la evaluación de Pahtli
 
-> Generado por `npm run eval` el 2026-10-03T21:47:45.903Z. Pipeline: texto → `keywordExtract` → `triage` (Node, sin LLM) + fail-safe `assessUncertainty`.
+> Generado por `npm run eval` el 2026-10-04T01:36:57.665Z. Pipeline: texto → `keywordExtract` → `triage` (Node, sin LLM) + fail-safe `assessUncertainty`.
 > Viñetas sintéticas escritas por el equipo, **pendientes de validación clínica por la Dra. Ines**.
 > `dev` se usó para ajustar. `test_v1` (held-out original) ya se vio y se usó en la ronda 2: ahora es solo regresión. **`test_v2` es el held-out vigente**: se escribió y congeló antes de los cambios de la ronda 2.
 
@@ -25,7 +25,7 @@
 | Casos `expected_uncertain`: aviso "no estoy segura" · pregunta algo · pregunta el dato esperado | 2/2 · 2/2 · 1/2 | 2/2 · 2/2 · 2/2 | 4/4 · 3/4 · 2/4 | 8/8 · 7/8 · 5/8 |
 | Aviso "no estoy segura" en casos sin falta de datos (ruido) — si salta las preguntas | 30/58 | 11/28 | 20/36 | 61/122 |
 | …ruido si contesta las preguntas como en la app (hasta 4; Sí/No según lo anotado o "No") | 11/58 | 4/28 | 9/36 | 24/122 |
-| Latencia extracción+triaje (media / p95, ms) | 0.56 / 2 | 0.38 / 0.5 | 0.38 / 0.69 | 0.46 / 0.84 |
+| Latencia extracción+triaje (media / p95, ms) | 0.55 / 1.89 | 0.4 / 0.66 | 0.4 / 1 | 0.47 / 1 |
 
 ### Matriz de confusión — dev
 

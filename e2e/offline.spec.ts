@@ -62,7 +62,7 @@ test('triaje completo sin internet y sincronización al volver la señal', async
   await page.goto('/#/');
   await page.reload();
   await expect(page.getByRole('heading', { name: 'Nuevo paciente' })).toBeVisible();
-  await expect(page.getByText('Sin internet — todo corre en tu celular')).toBeVisible();
+  await expect(page.getByText('Sin internet — todo funciona en este celular')).toBeVisible();
 
   // 3) Triaje por texto.
   await page.getByRole('tab', { name: 'Escribir' }).click();
@@ -86,8 +86,8 @@ test('triaje completo sin internet y sincronización al volver la señal', async
   // Referencia offline (catálogo CLUES precacheado): hospital más cercano.
   await expect(page.getByTestId('referral')).toContainText('Hospital más cercano');
 
-  // 5) La promotora confirma la sugerencia ("Pahtli sugiere. Tú decides.") → queda en la cola local.
-  await expect(page.getByTestId('decision')).toContainText('Pahtli sugiere. Tú decides.');
+  // 5) La promotora confirma la sugerencia ("Pahtli sugiere. Usted decide.") → queda en la cola local.
+  await expect(page.getByTestId('decision')).toContainText('Pahtli sugiere. Usted decide.');
   await page.getByRole('button', { name: 'Estoy de acuerdo · Guardar caso' }).click();
   await expect(page.getByRole('button', { name: 'Caso guardado' })).toBeVisible();
   await page.getByRole('button', { name: 'Nuevo paciente' }).click();
@@ -168,7 +168,7 @@ test('"No sé" → aviso "No estoy segura", la promotora decide antes de guardar
   await expect(page.getByTestId('result-uncertain')).toBeVisible();
   await expect(page.getByRole('heading', { level: 1 })).toHaveText(/no estoy segura/i);
   const unc = page.getByTestId('uncertainty');
-  await expect(unc).toContainText('No estoy segura — consulta al personal de salud');
+  await expect(unc).toContainText('No estoy segura — consulte al personal de salud');
   await expect(unc).toContainText('“No sé”');
   await expect(page.getByText('Con los datos que hay, las reglas dicen:')).toBeVisible();
 
@@ -180,17 +180,17 @@ test('"No sé" → aviso "No estoy segura", la promotora decide antes de guardar
   // La promotora decide: no se guarda nada hasta que confirma o cambia el nivel.
   expect(await storedCases(page)).toHaveLength(0);
   const decision = page.getByTestId('decision');
-  await expect(decision).toContainText('Pahtli sugiere. Tú decides.');
+  await expect(decision).toContainText('Pahtli sugiere. Usted decide.');
   await decision.getByRole('button', { name: 'Cambiar nivel' }).click();
   await decision.getByRole('radio', { name: 'Centro hoy' }).click();
   await decision.getByRole('button', { name: 'Guardar con mi decisión' }).click();
-  await expect(decision.getByRole('alert')).toHaveText('Elige un motivo.');
+  await expect(decision.getByRole('alert')).toHaveText('Elija un motivo.');
   expect(await storedCases(page)).toHaveLength(0);
   await decision.getByLabel('¿Por qué? (obligatorio)').selectOption('indicacion_personal');
   await decision.getByLabel('Nota (opcional, sin nombres del paciente)').fill('Rosa, casa junto a la iglesia');
   await decision.getByRole('button', { name: 'Guardar con mi decisión' }).click();
   await expect(decision.getByRole('button', { name: 'Caso guardado' })).toBeVisible();
-  await expect(decision).toContainText('Tu decisión');
+  await expect(decision).toContainText('Su decisión');
 
   const saved = await storedCases(page);
   expect(saved).toHaveLength(1);
@@ -204,7 +204,7 @@ test('"No sé" → aviso "No estoy segura", la promotora decide antes de guardar
   // Historial: nivel cambiado + etiqueta "No segura". Al enviar, la nota y el texto libre se quedan en el celular.
   await page.getByRole('button', { name: 'Nuevo paciente' }).click();
   await page.goto('/#/historial');
-  await expect(page.getByText('No segura')).toBeVisible();
+  await expect(page.getByText('⚪ No estoy segura', { exact: true })).toBeVisible();
   await expect(page.getByText('Nivel cambiado por la promotora', { exact: false })).toBeVisible();
   await page.getByRole('button', { name: 'Enviar ahora' }).click();
   await expect.poll(() => syncBodies.flatMap((b) => b.cases).length).toBe(1);

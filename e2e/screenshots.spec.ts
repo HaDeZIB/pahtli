@@ -96,7 +96,7 @@ test('capturas de pantalla (390×844)', async ({ page, context }) => {
   await expect(page.getByRole('button', { name: 'Caso guardado' })).toBeVisible();
 
   await page.goto('/#/historial');
-  await expect(page.getByText('No segura')).toBeVisible();
+  await expect(page.getByText('⚪ No estoy segura', { exact: true })).toBeVisible();
   await shot(page, '08-historial');
 
   await page.goto('/#/config');
