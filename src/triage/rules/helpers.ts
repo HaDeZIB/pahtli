@@ -48,3 +48,19 @@ export const isPostpartum = (f: Findings) => has(f, 'posparto');
 export const coughOrDB = (f: Findings) => anyOf(f, 'tos', 'dificultad_respirar', 'respira_rapido');
 
 export const EMPTY = { nah: '' } as const;
+
+/**
+ * ¿Puede estar embarazada o en el puerperio? No si es hombre o si la edad conocida está fuera de 10–49 años
+ * ("mujeres en edad fértil (de 15 a 49 años)": PEF 2019, Ramo 12 Salud, Estrategia programática, p. 3; el mismo
+ * documento cuenta el embarazo adolescente desde los 12 años, así que se amplía hacia abajo hasta los 10).
+ * Con la edad desconocida, sí. Si ya se dijo que está embarazada o en la cuarentena, se respeta.
+ */
+export function pregnancyPossible(f: Findings): boolean {
+  // Ronda 4: de 2 meses a 9 años no hay embarazo posible aunque el relato lo diga (es de otra persona). Con menos de
+  // 2 meses y embarazo o cuarentena, el caso es de la mamá (la edad es la del recién nacido).
+  if (isNum(f.edad_meses) && f.edad_meses >= 2 && f.edad_meses < years(10)) return false;
+  if (f.embarazada === true || has(f, 'posparto')) return true;
+  if (f.sexo === 'M') return false;
+  return !(isNum(f.edad_meses) && (f.edad_meses < years(10) || f.edad_meses >= years(50)));
+}
+

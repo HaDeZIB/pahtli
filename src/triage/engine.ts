@@ -6,7 +6,7 @@ import {
   NO_DANGER_OLDER_RULE, NO_DANGER_RULE, olderNoDangerAccion,
 } from './rules';
 import type { Rule } from './rules';
-import { coughOrDB, days, has, isNum, possiblyAge, years } from './rules/helpers';
+import { coughOrDB, days, has, isNum, possiblyAge, pregnancyPossible, years } from './rules/helpers';
 import { SCREENING_KEY, SCREENING_WHY, screeningApplies, screeningQuestionText } from './screening';
 
 export { ALL_RULES, NO_DANGER_DIARRHEA, NO_DANGER_OLDER_RULE, NO_DANGER_RULE } from './rules';
@@ -16,8 +16,21 @@ const MAX_QUESTIONS = 2;
 const maxLevel = (a: TriageLevel, b?: TriageLevel): TriageLevel =>
   b !== undefined && LEVEL_RANK[b] > LEVEL_RANK[a] ? b : a;
 
+/**
+ * Ronda 4 (revisión ENGINE-PREG-AGE): con la edad CONOCIDA de 2 meses a menos de 10 años, "embarazada" y "cuarentena" no son de
+ * este paciente (p. ej. "mi hija de 3 años tiene diarrea, yo estoy embarazada"): se ignoran. Así un "Sí" pensado para
+ * la mamá no dispara reglas de urgencia obstétrica en una niña de 3 años.
+ */
 function normalize(f: Findings): Findings {
-  return { ...f, sintomas: { ...(f?.sintomas ?? {}) } };
+  const out: Findings = { ...f, sintomas: { ...(f?.sintomas ?? {}) } };
+  // Menor de 2 meses + embarazo/cuarentena: el caso es de la MAMÁ y la edad es la del recién nacido (las reglas del
+  // lactante ya lo excluyen); eso no se toca.
+  if (isNum(out.edad_meses) && out.edad_meses >= 2 && out.edad_meses < years(10)) {
+    delete out.embarazada;
+    delete out.semanas_embarazo;
+    delete out.sintomas.posparto;
+  }
+  return out;
 }
 
 function safeApplies(r: Rule, f: Findings): boolean {
@@ -107,20 +120,10 @@ function canFire(r: Rule, f: Findings, fill: FieldName[]): boolean {
 
 const PREGNANCY_FIELDS = new Set(['embarazada', 'posparto', 'semanas_embarazo', 'movimientos_fetales_disminuidos', 'contracciones', 'salida_liquido_vaginal', 'sangrado_vaginal']);
 
-/**
- * ¿Puede estar embarazada o en el puerperio? No si es hombre o si la edad conocida está fuera de 10–49 años
- * ("mujeres en edad fértil (de 15 a 49 años)": PEF 2019, Ramo 12 Salud, Estrategia programática, p. 3; el mismo
- * documento cuenta el embarazo adolescente desde los 12 años, así que se amplía hacia abajo hasta los 10).
- * Con la edad desconocida, sí. Si ya se dijo que está embarazada o en la cuarentena, se respeta.
- */
-function pregnancyPossible(f: Findings): boolean {
-  if (f.embarazada === true || has(f, 'posparto')) return true;
-  if (f.sexo === 'M') return false;
-  return !(isNum(f.edad_meses) && (f.edad_meses < years(10) || f.edad_meses >= years(50)));
-}
-
 /** ¿Tiene sentido preguntar este campo a este paciente? */
 function askable(field: FieldName, f: Findings): boolean {
+  // En la cuarentena no se pregunta "¿Está embarazada?" (ya dio a luz).
+  if (field === 'embarazada' && has(f, 'posparto')) return false;
   if (PREGNANCY_FIELDS.has(field)) {
     if (!pregnancyPossible(f)) return false;
     if (field === 'semanas_embarazo' || field === 'movimientos_fetales_disminuidos' || field === 'contracciones' || field === 'salida_liquido_vaginal') return f.embarazada === true;
@@ -135,6 +138,8 @@ const FIELD_PRIORITY = [
   // Ronda 3: la pregunta que resume los signos de cada molestia común va primero dentro de su nivel.
   'alacran_sintomas', 'arana_peligrosa', 'no_obra_ni_gases', 'dolor_al_moverse', 'cauda_equina', 'no_traga_saliva',
   'hinchazon_labios_lengua', 'objeto_clavado', 'herida_profunda', 'quemadura_grave',
+  // Ronda 4
+  'golpe_cabeza_alto_riesgo', 'quemadura_grande_profunda', 'herida_cara_palma', 'vomito_verde',
   'edad_meses', 'tiraje', 'lejos_unidad', 'resp_por_min', 'embarazada', 'sangrado_vaginal', 'dolor_cabeza_intenso', 'vision_borrosa',
   'movimientos_fetales_disminuidos', 'convulsiones', 'no_puede_beber', 'vomita_todo', 'letargico', 'estridor',
   'cianosis', 'ojos_hundidos', 'pliegue_muy_lento', 'rigidez_nuca', 'sangrado_mucosas', 'dolor_abdominal_intenso',
@@ -148,6 +153,11 @@ const prio = (field: string) => {
 interface Candidate {
   field: FieldName;
   rank: number;
+  /**
+   * Ronda 4: regla del embarazo cuyo `context` es una molestia que SÍ se dijo (dolor de cintura → contracciones; dolor de
+   * cabeza → ¿muy fuerte?; y "¿Está embarazada?" para saberlo). Solo en el bloque de embarazo: no cambia el orden de AIEPI.
+   */
+  ctx: number;
   ruleIndex: number;
   rule: Rule;
 }
@@ -183,7 +193,8 @@ export function needsScreening(f: Findings, currentLevel: TriageLevel): boolean 
   return currentLevel === 'aqui' && screeningApplies(f) && f.sintomas?.[SCREENING_KEY] === undefined;
 }
 
-export function followUpQuestions(f: Findings, currentLevel: TriageLevel, max = MAX_QUESTIONS): FollowUpQuestion[] {
+export function followUpQuestions(findings: Findings, currentLevel: TriageLevel, max = MAX_QUESTIONS): FollowUpQuestion[] {
+  const f = normalize(findings);
   const cur = LEVEL_RANK[currentLevel];
   const cands: Candidate[] = [];
   ALL_RULES.forEach((r, ruleIndex) => {
@@ -192,18 +203,21 @@ export function followUpQuestions(f: Findings, currentLevel: TriageLevel, max = 
     // Si no puede haber embarazo (hombre, o edad fuera de 10–49 años), una regla que lo exige no motiva preguntas.
     const missing = needs.filter((n) => !isKnown(f, n) && !((n === 'embarazada' || n === 'posparto') && !pregnancyPossible(f)));
     if (missing.length === 0) return;
-    const evidence = (r.trigger ?? needs).some((n) => isPositive(f, n)) || (r.context ?? []).some((k) => f.sintomas[k] === true);
+    const ctxHit = (r.context ?? []).some((k) => f.sintomas[k] === true);
+    const evidence = (r.trigger ?? needs).some((n) => isPositive(f, n)) || ctxHit;
     if (!evidence) return;
     if (!canFire(r, f, missing)) return;
     const necessary = missing.filter((m) => !canFire(r, f, missing.filter((x) => x !== m)));
     let ask = necessary.length ? necessary : missing.filter((m) => canFire(r, f, [m]));
     if (!ask.length) ask = missing;
     for (const field of ask) {
-      if (askable(field, f)) cands.push({ field, rank: LEVEL_RANK[r.level], ruleIndex, rule: r });
+      if (askable(field, f)) cands.push({ field, rank: LEVEL_RANK[r.level], ctx: ctxHit && r.block === 'pregnancy' && (field === 'embarazada' || f.embarazada === true || has(f, 'posparto')) ? 1 : 0, ruleIndex, rule: r });
     }
   });
 
-  cands.sort((a, b) => b.rank - a.rank || prio(a.field) - prio(b.field) || a.ruleIndex - b.ruleIndex);
+  // Dentro del mismo nivel: primero lo que pregunta por la molestia que se dijo (embarazada con dolor de cintura →
+  // contracciones; con dolor de cabeza → ¿muy fuerte?), luego el orden de FIELD_PRIORITY.
+  cands.sort((a, b) => b.rank - a.rank || b.ctx - a.ctx || prio(a.field) - prio(b.field) || a.ruleIndex - b.ruleIndex);
 
   const out: FollowUpQuestion[] = [];
   const seen = new Set<string>();

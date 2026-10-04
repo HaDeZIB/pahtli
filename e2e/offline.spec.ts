@@ -279,3 +279,42 @@ test('sexo desconocido: primero "¿Es hombre o mujer?"; con "Hombre" ya no pregu
   expect(seen.some((h) => h.includes('¿Es hombre o mujer?'))).toBe(true);
   for (const h of seen) expect(h).not.toMatch(/embaraz|dio a luz/i);
 });
+
+// Ronda 4 (revisión externa): sin descartar el embarazo no hay "cuidados en casa" de dolor de cabeza; con "No" sí.
+// Con "No sé" sale "No estoy segura" y los cuidados no se muestran (igual que en la voz).
+async function answerFlow(page: import('@playwright/test').Page, text: string, pregnant: 'No' | 'No sé') {
+  await page.goto('/#/');
+  await page.getByRole('tab', { name: 'Escribir' }).click();
+  await page.locator('#transcript').fill(text);
+  await page.getByRole('main').getByRole('button', { name: 'Evaluar', exact: true }).click();
+  await page.waitForURL(/#\/preguntas/);
+  const seen: string[] = [];
+  for (let i = 0; i < 6 && page.url().includes('#/preguntas'); i++) {
+    const h = (await page.getByRole('heading', { level: 2 }).first().textContent()) ?? '';
+    seen.push(h);
+    await page.getByRole('button', { name: /embaraz/i.test(h) ? pregnant : 'No', exact: true }).click();
+    await page.waitForTimeout(150);
+  }
+  await page.waitForURL(/#\/resultado/);
+  return seen;
+}
+
+test('mujer de 25 años con dolor de cabeza: pregunta embarazo; con "No" da cuidados, con "No sé" no', async ({ page }) => {
+  const seen = await answerFlow(page, 'mujer de 25 años con dolor de cabeza desde ayer', 'No');
+  expect(seen.some((h) => /embaraz/i.test(h))).toBe(true);
+  await expect(page.getByTestId('advice').getByTestId('advice-ADV-CABEZA')).toBeVisible();
+
+  await answerFlow(page, 'mujer de 25 años con dolor de cabeza desde ayer', 'No sé');
+  await expect(page.getByTestId('advice')).toHaveCount(0);
+});
+
+test('embarazada con presión alta: urgencia, sin cuidados de presión', async ({ page }) => {
+  await page.goto('/#/');
+  await page.getByRole('tab', { name: 'Escribir' }).click();
+  await page.locator('#transcript').fill('mujer de 25 años embarazada de 30 semanas con presión alta');
+  await page.getByRole('main').getByRole('button', { name: 'Evaluar', exact: true }).click();
+  await page.waitForURL(/#\/(resultado|preguntas)/);
+  await page.waitForURL(/#\/resultado/);
+  await expect(page.getByTestId('result-urgencia')).toBeVisible();
+  await expect(page.getByTestId('advice')).toHaveCount(0);
+});

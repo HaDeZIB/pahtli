@@ -129,7 +129,17 @@ export default function Result() {
   }, [result, lang]);
 
   // Cuidados según la molestia: no cambian el nivel; con urgencia no se muestran (manda la acción de la regla).
-  const advice = useMemo(() => (result && findings ? selectAdvice(findings, result.level) : []), [result, findings]);
+  // Ronda 4: (1) con "No estoy segura" no se muestran (igual que en la voz): unos cuidados en casa junto a un resultado
+  // que no es confiable tranquilizan de más; (2) se usan con el nivel de referencia (el más alto entre lo sugerido y lo
+  // que decidió la promotora): si ella sube a urgencia, ya no salen "cuidados en casa".
+  const decided = session.decision;
+  const advice = useMemo(() => {
+    if (!result || !findings) return [];
+    const lv: TriageLevel = decided && LEVEL_RANK[decided.final_level] > LEVEL_RANK[result.level] ? decided.final_level : result.level;
+    const all = selectAdvice(findings, lv);
+    // Con "No estoy segura" solo queda la lista de señales de alarma del embarazo (no tranquiliza: dice cuándo ir).
+    return showUnc ? all.filter((a) => a.id === 'ADV-EMBARAZO') : all;
+  }, [result, findings, showUnc, decided]);
 
   const speech = useMemo(() => {
     if (!result) return '';
@@ -142,7 +152,11 @@ export default function Result() {
     if (showUnc) {
       return `${t('unc_title', 'es')}. ${t('unc_sub', 'es')}. ${uncWhy} ${t('unc_rules_say', 'es')} ${levelLabel(result.level, 'es')}. Qué hacer: ${todo}`;
     }
-    const care = advice[0] ? ` ${advice[0].modo === 'casa' ? 'Cuidados' : 'Mientras llega'}: ${advice[0].cuidados.join(' ')}` : '';
+    // Ronda 4: la voz también dice cuándo ir a la unidad (antes solo decía los cuidados, sin los signos de regreso).
+    const a0 = advice[0];
+    const care = a0
+      ? ` ${a0.modo === 'casa' ? 'Cuidados' : 'Mientras llega'}: ${a0.cuidados.join(' ')}${a0.regrese.length ? ` ${t('adv_go_if', 'es')} ${a0.regrese.join('; ')}.` : ''}${advice.length > 1 ? ' Hay más cuidados escritos en la pantalla.' : ''}`
+      : '';
     const base = `${levelLabel(result.level, 'es')}. ${levelSub(result.level, 'es')}. ${why ? `Por qué: ${why}.` : ''} Qué hacer: ${todo}${care}`;
     return unc.uncertain ? `${base}. ${t('unc_also', 'es').replace('⚪ ', '')}: ${uncWhy}` : base;
   }, [result, unc, showUnc, advice]);

@@ -5,7 +5,7 @@ import { t } from '../i18n/strings';
 import { BreathCounter } from '../components/BreathCounter';
 import { Button, Card, TopBar } from '../components/ui';
 import { go } from '../components/router';
-import { MAX_FOLLOWUP_QUESTIONS as MAX_QUESTIONS } from '../triage/uncertainty';
+import { maxFollowUps } from '../triage/uncertainty';
 const NUMERIC_TOP = new Set(['edad_meses', 'semanas_embarazo', 'duracion_dias', 'temperatura_c', 'resp_por_min']);
 const BOOL_TOP = new Set(['embarazada']);
 
@@ -25,6 +25,7 @@ export default function FollowUp() {
   const { lang, session, setSession, retriage } = useApp();
   const { result, findings, asked } = session;
   const pending = (result?.preguntas ?? []).filter((q) => !asked.includes(q.campo));
+  const MAX_QUESTIONS = maxFollowUps(asked);
   const q = asked.length < MAX_QUESTIONS ? pending[0] : undefined;
 
   const [num, setNum] = useState('');
@@ -48,7 +49,7 @@ export default function FollowUp() {
     const answers = [...(session.answers ?? []).filter((a) => a.campo !== q.campo), { campo: q.campo, known: value !== undefined, pregunta: q.pregunta.es }];
     setSession({ ...session, findings: f, result: r, asked: nextAsked, answers });
     const remaining = r.preguntas.filter((x) => !nextAsked.includes(x.campo));
-    if (!remaining.length || nextAsked.length >= MAX_QUESTIONS) go('resultado', true);
+    if (!remaining.length || nextAsked.length >= maxFollowUps(nextAsked)) go('resultado', true);
   };
 
   // "Saltar": queda registrado para que el resultado avise "No estoy segura" (preguntas sin responder).

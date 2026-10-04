@@ -186,6 +186,9 @@ const IMPLIES: Partial<Record<SymptomKeyStrict, SymptomKeyStrict[]>> = {
   tos_sangre: ['tos'],
   placas_garganta: ['dolor_garganta'],
   arana_sintomas: [],
+  // Ronda 4
+  quemadura_grande_profunda: ['quemadura'],
+  herida_cara_palma: ['herida'],
 };
 
 /**
@@ -199,7 +202,7 @@ const SUPPRESSED_INSIDE: Partial<Record<SymptomKeyStrict, SymptomKeyStrict[]>> =
   letargico: ['inconsciente'],
   sangrado: ['sangrado_mucosas', 'sangrado_vaginal', 'sangre_heces', 'vomito_sangre', 'sangrado_abundante', 'flujo_mal_olor', 'sangre_oido', 'orina_sangre', 'tos_sangre', 'arana_sintomas'],
   // "le sale agua del oído" no es "se le rompió la fuente" (que implica embarazo).
-  salida_liquido_vaginal: ['pus_oido'],
+  salida_liquido_vaginal: ['pus_oido', 'liquido_oido_nariz'],
   // "angina de pecho" (DEM acep. 3) es dolor de pecho, no de garganta.
   dolor_garganta: ['dolor_pecho'],
   // "se le hinchó la cara por la muela" no es la hinchazón de cara del embarazo.
@@ -355,6 +358,29 @@ const PERSIST_VERBS = new Set(['quita', 'quito', 'baja', 'bajo', 'para', 'paro',
 /** Tras una negación, la palabra "si" de "no sé si" marca incertidumbre. */
 const UNCERTAIN_AFTER_NO = new Set(['se', 'sabe', 'sabemos', 'saben', 'estoy', 'esta', 'recuerdo', 'acuerdo']);
 
+/**
+ * Ronda 4 (revisión EXTRACT-NEG-SCOPE): palabras que abren una frase nueva ("con", "tiene", "está"…). Después de una
+ * negación que ya nombró su objeto ("sin calentura", "no tiene tos", "no está embarazada"), una de estas palabras cierra
+ * el alcance de la negación: "sin calentura CON convulsiones" = convulsiones SÍ. Si entre la negación y la palabra solo
+ * hay verbos o palabras de relleno ("no ANDA con calentura", "no tiene"), la negación sigue: "no anda con calentura" = no.
+ */
+const PRED_START = new Set(['con', 'tiene', 'tenia', 'esta', 'estaba', 'anda', 'andaba', 'trae', 'traia', 'presenta', 'le', 'les', 'amanecio', 'siente', 'sentia'].map(phonetic));
+const LIGHT = new Set(
+  ['anda', 'andaba', 'esta', 'estaba', 'ha', 'han', 'he', 'tiene', 'tenia', 'trae', 'traia', 'presenta', 'se', 'le', 'les', 'lo', 'la', 'los', 'las', 'me', 'te', 'nos',
+    'ya', 'muy', 'mucho', 'mucha', 'tan', 'tanto', 'el', 'un', 'una', 'su', 'sus', 'mi', 'mis', 'da', 'dio', 'dan', 'daba', 'hay', 'habia', 'siente', 'sentia', 'puede', 'pudo',
+    'quiere', 'quiso', 'ido', 'tenido', 'sido', 'dado', 'notado', 'visto', 'nota', 'noto', 've', 'vio']
+    .map(phonetic),
+);
+function negationClosedBefore(toks: string[], cue: number, start: number): boolean {
+  let content = false;
+  for (let k = cue + 1; k < start; k++) {
+    const w = toks[k];
+    if (content && PRED_START.has(w)) return true;
+    if (!LIGHT.has(w) && !NEG_CUES.has(w)) content = true;
+  }
+  return false;
+}
+
 /** 'resolved' = lo tuvo y ya se le quitó ("ya no vomita"): no se marca (la fiebre resuelta → fiebre_reciente). */
 type Polarity = 'pos' | 'neg' | 'unknown' | 'resolved';
 
@@ -375,6 +401,9 @@ function polarityAt(toks: string[], start: number, end: number): Polarity {
     const w = toks[i];
     if (BREAKERS.has(w)) break;
     if (NEG_CUES.has(w)) {
+      // Ronda 4: "sin calentura CON convulsiones", "no tiene tos TIENE dolor de pecho", "no está embarazada TIENE
+      // dolor": la negación ya nombró su objeto y un "con / tiene / está…" abre otra frase. No niega lo que sigue.
+      if (negationClosedBefore(toks, i, start)) break;
       // "ya no" = ya se resolvió (antes sí lo tenía): no marcar.
       if (w === 'no' && i >= 1 && toks[i - 1] === 'ya') return 'unknown';
       // "no se le quita la calentura" / "no le baja"
@@ -437,6 +466,8 @@ const EVENT_KEYS = new Set<SymptomKeyStrict>([
   // Ronda 3: el piquete, la mordedura, el golpe o la herida cuentan aunque "ya se le pasó" el dolor.
   'picadura_alacran', 'mordedura_arana', 'arana_peligrosa', 'golpe_cabeza', 'herida', 'herida_sucia', 'herida_profunda',
   'quemadura_grave', 'quemadura_quimica_electrica', 'tos_sangre', 'orina_sangre', 'hinchazon_labios_lengua', 'azucar_baja',
+  // Ronda 4
+  'quemadura_grande_profunda', 'herida_cara_palma', 'golpe_cabeza_alto_riesgo', 'liquido_oido_nariz', 'tomado_alcohol', 'vomito_verde',
 ]);
 const RESOLVE_VERBS = new Set(['quito', 'paso', 'bajo', 'calmo', 'compuso', 'corto', 'sano', 'curo', 'alibio'].map(phonetic));
 
@@ -515,6 +546,12 @@ const FRAMES: Frame[] = ([
   { key: 'dolor_espalda_baja', a: ['espalda', 'cintura'], b: ['duele', 'dolor'], dist: 3 },
   { key: 'dolor_oido', a: ['oido', 'oidos', 'oreja'], b: ['duele', 'dolor'], dist: 3 },
   { key: 'dolor_garganta', a: ['garganta'], b: ['duele', 'dolor', 'arde'], dist: 3 },
+  // Ronda 4: "dolor muy fuerte de cabeza" (el sustantivo después del adjetivo).
+  { key: 'dolor_cabeza', order: 'ab', a: ['dolor', 'dolores'], b: ['cabeza'], dist: 3 },
+  // Ronda 4 (NHS Cuts and grazes, 999: "a bad cut on your face or the palm of your hand"). Solo cortadas, no raspones.
+  { key: 'herida_cara_palma', a: ['corto', 'cortada', 'cortadura', 'cortaron', 'rajo', 'machetazo', 'navajazo'], b: ['cara', 'palma', 'palmas'], dist: 4 },
+  // Ronda 4 (NHS Burns and scalds, 999: "very large or deep"): "quemadura grande y profunda", "se quemó y es muy profunda".
+  { key: 'quemadura_grande_profunda', a: ['quemo', 'quemada', 'quemado', 'quemadura', 'quemaduras'], b: ['profunda', 'profundo', 'honda', 'hondo', 'grandota', 'grandote'], dist: 4 },
 ] as Frame[]).map((f) => ({ ...f, a: f.a.map(phonetic), b: f.b.map(phonetic) }));
 
 const NEG_INSIDE = new Set(['no', 'sin', 'ni', 'nunca']);
@@ -533,6 +570,8 @@ function frameHits(toks: string[]): Hit[] {
         if (!other.includes(toks[j])) continue;
         if (!isA && fr.guardA && !fr.guardA(toks, j)) continue;
         const between = toks.slice(i + 1, j);
+        // "sin diarrea con VÓMITO de sangre": la sangre es del vómito, no de la popó.
+        if (fr.key === 'sangre_heces' && between.some((w) => /^(bomito|bomita|bomitos|bomitando|bomitado|debolbio|arroja)$/.test(w))) break;
         const pol: Polarity = between.some((w) => NEG_INSIDE.has(w)) ? 'neg' : polarityFor(fr.key, toks, i, j + 1);
         out.push({ key: fr.key, start: i, end: j + 1, pol });
         break;
@@ -802,38 +841,238 @@ const AMBIGUOUS = new Set(['el', 'ella', 'mama', 'madre', 'papa', 'padre', 'seno
 const sexOf = (w: string): 'F' | 'M' | undefined => (FEMALE.test(w) ? 'F' : MALE.test(w) ? 'M' : undefined);
 const isAgeAfter = (toks: string[], i: number) => toks[i + 1] === 'de' && /^\d/.test(toks[i + 2] ?? '');
 
-function detectSex(toks: string[]): 'F' | 'M' | undefined {
+function detectSex(toks: string[], pf?: PatientFocus): 'F' | 'M' | undefined {
+  const skip = new Set(pf?.reporterIdx ?? []);
+  // Ronda 4 (revisión EXTRACT-SEX-CHILD-OVERRIDE): la persona de la que se da la edad va ANTES que cualquier
+  // sustantivo de niño ("mujer de 25 años, su hijo la trajo" = mujer). Si hay dos con edad y sexos distintos, no se sabe.
+  const agedSexes = [...new Set((pf?.aged ?? []).map((a) => a.sex).filter(Boolean))];
+  if (agedSexes.length === 1) return agedSexes[0];
+  if (agedSexes.length > 1) return undefined;
   // Si se habla de un niño/a, la paciente es la criatura (no "la señora" que la trae)
   for (let i = 0; i < toks.length; i++) {
+    if (skip.has(i)) continue;
     const w = toks[i];
     if (BY_ARTICLE.test(w) && (toks[i - 1] === 'la' || toks[i - 1] === 'una')) return 'F';
     if (BY_ARTICLE.test(w) && w !== 'paciente' && w !== 'criatura' && (toks[i - 1] === 'el' || toks[i - 1] === 'un')) return 'M';
     if (CHILD_F.test(w)) return 'F';
     if (CHILD_M.test(w)) return 'M';
   }
-  // La persona de la que se da la edad ("su esposa de 30 años", "señor de 40") o a la que "traen" es el paciente.
+  // La persona a la que "traen" es el paciente.
   for (let i = 0; i < toks.length; i++) {
     const w = toks[i];
-    if (AMBIGUOUS.has(w)) continue;
+    if (AMBIGUOUS.has(w) || skip.has(i)) continue;
     const sx = sexOf(w);
     if (!sx) continue;
     if (isAgeAfter(toks, i)) return sx;
     if (['trae', 'traen', 'traigo', 'trajo', 'trajeron', 'lleva', 'llevan', 'llevo'].includes(toks[i - 3] ?? '') && toks[i - 2] === 'a') return sx;
     if (['trae', 'traen', 'traigo', 'trajo', 'trajeron', 'lleva', 'llevan', 'llevo'].includes(toks[i - 2] ?? '') && toks[i - 1] === 'a') return sx;
   }
-  for (const w of toks) {
-    if (AMBIGUOUS.has(w)) continue; // demasiado ambiguos
+  for (let i = 0; i < toks.length; i++) {
+    const w = toks[i];
+    if (AMBIGUOUS.has(w) || skip.has(i)) continue; // demasiado ambiguos
     const sx = sexOf(w);
     if (sx) return sx;
   }
   return undefined;
 }
 
+// ─────────────────────────────────────────────────────────────────────────────
+// Ronda 4: ¿quién es el paciente? (revisión EXTRACT-PATIENT-AGE, EXTRACT-SEX-CHILD-OVERRIDE, EXTRACT-SEX-THIRD-PARTY)
+// ─────────────────────────────────────────────────────────────────────────────
+// En el relato suele haber dos personas: quien habla o trae al paciente ("la señora de 30 años trae a su bebé") y el
+// paciente. Antes se tomaba la PRIMERA edad y el sexo del primer sustantivo, así que la edad o el sexo de la mamá se le
+// ponían al bebé, o el embarazo de la esposa se le ponía al esposo. Pistas, de más fuerte a más débil:
+//  1. Sujeto del síntoma: la persona justo antes de "tiene / está / anda / le duele / se…" ("su esposo TIENE dolor",
+//     "el niño de 3 años TIENE tos", "ella tiene 25 años y dolor"). "ella" / "él" se refieren a la última persona
+//     adulta de ese sexo que se nombró. Si la frase es de embarazo ("su esposa está embarazada") no cuenta como
+//     sujeto del síntoma: el embarazo es de esa persona, no del paciente.
+//  2. Persona a la que traen ("trae a su bebé", "le traigo a mi hijo").
+//  3. Quien "dice que…", "trae a…", "viene con su…" es quien acompaña: su edad y su sexo no son los del paciente.
+// Si las pistas se contradicen, se deja el dato SIN llenar para que la app pregunte ("¿Es hombre o mujer?", la edad):
+// un dato desconocido nunca dispara una regla y sí genera la pregunta.
+const BRING = new Set(['trae', 'traen', 'traigo', 'trajo', 'trajeron', 'lleva', 'llevan', 'llevo', 'traemos', 'llevamos']);
+const SUBJ_NEXT = new Set(['tiene', 'tenia', 'esta', 'estaba', 'anda', 'andaba', 'presenta', 'amanecio', 'se', 'le', 'vomita', 'tose', 'siente', 'sufre', 'padece', 'trae', 'traia', 'tuvo', 'ha', 'no']);
+const REPORT_NEXT = new Set(['dice', 'dijo', 'comenta', 'cuenta', 'platica', 'refiere', 'avisa', 'pregunta']);
+const SKIP_NEXT = new Set(['ya', 'todavia', 'tambien', 'ahora', 'hoy', 'apenas']);
+const CHILD_NOUN = /^(nino|nina|ninito|ninita|bebe|bebito|bebita|nene|nena|criatura|chamaco|chamaca|chamaquito|chamaquita|chiquito|chiquita|escuincle|muchachito|muchachita|chiquillo|chiquilla|recien)$/;
+const PERSON_NOUN = new RegExp(`^(?:${PERSON.slice(3, -1)}|esposa|esposo|marido|hermana|hermano|tia|tio|suegra|suegro|cunada|cunado|sobrina|sobrino|nieta|nieto|comadre|compadre|prima|primo|mama|madre|papa|padre|varon|caballero|adolescente)$`);
+const UNIT_MONTHS = (n: number, unit: string | undefined, babyish: boolean): number | undefined => {
+  if (!unit) return babyish && n <= 24 ? n : n * 12;
+  if (/^an/.test(unit)) return n * 12;
+  if (/^mes/.test(unit)) return n;
+  if (/^semana/.test(unit)) return round1((n * 7) / DAYS_PER_MONTH);
+  if (/^dia|^diita/.test(unit)) return round1(n / DAYS_PER_MONTH);
+  return undefined;
+};
+
+interface Mention {
+  i: number;
+  end: number;
+  word: string;
+  sex?: 'F' | 'M';
+  child: boolean;
+  months?: number;
+  subject: boolean;
+  /** Sujeto de una frase de embarazo ("su esposa ESTÁ EMBARAZADA"). */
+  pregSubject: boolean;
+  reporter: boolean;
+  brought: boolean;
+  pronoun?: boolean;
+  /** Pronombre: persona a la que se refiere. */
+  ref?: Mention;
+  /** Sujeto que solo dice su edad ("la mamá tiene 19 años"). */
+  ageOnly?: boolean;
+}
+
+export interface PatientFocus {
+  /** true = las pistas de quién es el paciente decidieron (aunque sexo o edad queden sin llenar por contradicción). */
+  decided: boolean;
+  sex?: 'F' | 'M';
+  months?: number;
+  /** Las edades del relato se contradicen y ninguna es claramente del paciente: no llenar la edad. */
+  ageConflict: boolean;
+  /** Embarazo dicho de OTRA persona (no del paciente): ignorarlo. */
+  pregnancyOfOther: boolean;
+  /** Edades que son de quien acompaña (no del paciente). */
+  otherAges: number[];
+  /** Posiciones (tokens) de quien acompaña o reporta: su sexo no es el del paciente. */
+  reporterIdx: number[];
+  /** Personas nombradas con su edad ("señora de 30 años"), sin contar a quien acompaña: [posición, sexo]. */
+  aged: { i: number; sex?: 'F' | 'M' }[];
+}
+
+const isDigitTok = (t: string | undefined) => !!t && /^\d+(?:\.\d+)?$/.test(t);
+/** "5 meses DE EMBARAZO", "30 semanas embarazada": es tiempo de embarazo, no la edad (k = posición de la unidad). */
+const isPregDuration = (toks: string[], k: number) =>
+  /^(embarazada|encinta|gestante|de)$/.test(toks[k + 1] ?? '') && (toks[k + 1] !== 'de' || /^(embarazo|gestacion|embarazada|encinta)$/.test(toks[k + 2] ?? ''));
+const isPregAt = (toks: string[], k: number) =>
+  toks[k] === 'embarazada' || toks[k] === 'encinta' || (toks[k] === 'esperando' && /^(bebe|un|familia)$/.test(toks[k + 1] ?? ''));
+
+export function findPatient(toks: string[]): PatientFocus {
+  const ms: Mention[] = [];
+  for (let i = 0; i < toks.length; i++) {
+    const w = toks[i];
+    const isPron = w === 'ella' || w === 'yo' || (w === 'el' && SUBJ_NEXT.has(toks[i + 1] ?? ''));
+    if (!isPron && !PERSON_NOUN.test(w)) continue;
+    let sex = isPron ? (w === 'ella' ? 'F' : w === 'el' ? 'M' : undefined) : sexOf(w);
+    if (BY_ARTICLE.test(w)) sex = toks[i - 1] === 'la' || toks[i - 1] === 'una' ? 'F' : (toks[i - 1] === 'el' || toks[i - 1] === 'un') && w !== 'paciente' && w !== 'criatura' ? 'M' : undefined;
+    const babyish = /^(bebe|bebito|bebita|nene|nena|criatura|recien)$/.test(w);
+    let end = i + 1;
+    let months: number | undefined;
+    // "señora de 30 años", "doña María de 32 años", "bebé de 8 meses"
+    // Con nombre en medio solo después de don/doña/señor/señora ("doña María de 32 años").
+    for (const off of /^(don|dona|senor|senora|senorita)$/.test(w) && !/^(embarazada|encinta|que|con|y|se|le|no|ya|muy|esta|tiene)$/.test(toks[i + 1] ?? '') ? [1, 2] : [1]) {
+      if (toks[i + off] === 'de' && isDigitTok(toks[i + off + 1])) {
+        const unit = UNIT_WORD.test(toks[i + off + 2] ?? '') ? toks[i + off + 2] : undefined;
+        if (unit && /^hora/.test(unit)) break;
+        if (isPregDuration(toks, i + off + 2 + (unit ? 0 : -1))) break;
+        months = UNIT_MONTHS(parseFloat(toks[i + off + 1]), unit, babyish);
+        end = i + off + 2 + (unit ? 1 : 0);
+        // "de 2 años y 3 meses"
+        if (months !== undefined && unit && /^an/.test(unit) && /^(y|con)$/.test(toks[end] ?? '') && isDigitTok(toks[end + 1]) && /^mes/.test(toks[end + 2] ?? '')) {
+          months += parseFloat(toks[end + 1]);
+          end += 3;
+        }
+        break;
+      }
+    }
+    let k = end;
+    while (SKIP_NEXT.has(toks[k] ?? '')) k++;
+    const next = toks[k] ?? '';
+    const pregSubject = (next === 'esta' || next === 'estoy' || next === 'anda') && isPregAt(toks, k + 1);
+    const subject = !pregSubject && (SUBJ_NEXT.has(next) || next === 'tengo' || next === 'estoy' || next === 'ando' || next === 'me') &&
+      !(next === 'trae' && /^(a|al)$/.test(toks[k + 1] ?? '')) && !(next === 'no' && REPORT_NEXT.has(toks[k + 1] ?? ''));
+    // "la mamá tiene 19 años" (y nada más): solo dice la edad de esa persona, no que tenga la molestia.
+    const ageOnly = next === 'tiene' && isDigitTok(toks[k + 1]) && UNIT_WORD.test(toks[k + 2] ?? '') && (toks[k + 3] === undefined || toks[k + 3] === '|');
+    // "tiene 25 años" justo después del sujeto
+    if (subject && months === undefined && (next === 'tiene' || next === 'tengo') && isDigitTok(toks[k + 1]) && /^(an|mes)/.test(toks[k + 2] ?? '') && !isPregDuration(toks, k + 2)) {
+      months = UNIT_MONTHS(parseFloat(toks[k + 1]), toks[k + 2], babyish);
+      if (months !== undefined && /^an/.test(toks[k + 2]) && /^(y|con)$/.test(toks[k + 3] ?? '') && isDigitTok(toks[k + 4]) && /^mes/.test(toks[k + 5] ?? '')) months += parseFloat(toks[k + 4]);
+    }
+    const pre = toks.slice(Math.max(0, i - 3), i);
+    // "niña de 1 año con SU MAMÁ": la mamá acompaña. ("señora de 30 con su bebé" es ambiguo: no se marca; si las dos
+    // edades chocan, la edad se pregunta.)
+    const reporter = REPORT_NEXT.has(next) || (BRING.has(next) && /^(a|al)$/.test(toks[k + 1] ?? '')) ||
+      (/^(la|lo|le|me|nos)$/.test(next) && BRING.has(toks[k + 1] ?? '')) ||
+      (/^(su|sus)$/.test(pre[pre.length - 1] ?? '') && pre[pre.length - 2] === 'con' && /^(mama|madre|papa|padre|abuela|abuelo|abuelita|abuelito)$/.test(w));
+    const brought = (/^(a|al)$/.test(pre[pre.length - 1] ?? '') && BRING.has(pre[pre.length - 2] ?? '')) ||
+      (/^(su|mi|el|la|al)$/.test(pre[pre.length - 1] ?? '') && pre[pre.length - 2] === 'a' && BRING.has(pre[pre.length - 3] ?? ''));
+    const m: Mention = { i, end, word: w, sex, child: CHILD_NOUN.test(w), months, subject: subject && !reporter, pregSubject, reporter, brought, pronoun: isPron, ageOnly };
+    if (isPron && w !== 'yo') {
+      // "ella" / "él": la última persona adulta de ese sexo que se nombró.
+      for (let j = ms.length - 1; j >= 0; j--) if (!ms[j].pronoun && !ms[j].child && ms[j].sex === sex) { m.ref = ms[j]; break; }
+    }
+    ms.push(m);
+    i = Math.max(i, end - 1);
+  }
+  // "El señor dice que le duele el pecho": si no se nombra a otra persona, quien "dice que…" es el paciente.
+  for (const m of ms) {
+    if (!m.reporter || m.brought) continue;
+    let k = m.end;
+    while (SKIP_NEXT.has(toks[k] ?? '')) k++;
+    if (!REPORT_NEXT.has(toks[k] ?? '')) continue;
+    if (!ms.some((o) => o !== m && !o.pronoun)) { m.reporter = false; m.subject = true; }
+  }
+  const resolve = (m: Mention) => m.ref ?? m;
+  const ageOf = (m: Mention): number | undefined => {
+    const r = resolve(m);
+    if (m.months !== undefined) return m.months;
+    if (r.months !== undefined) return r.months;
+    const same = ms.find((x) => x !== r && !x.pronoun && x.word === r.word && x.months !== undefined);
+    return same?.months;
+  };
+  const agesAll = ms.filter((m) => m.months !== undefined && !m.pronoun).map((m) => m.months!);
+  const out: PatientFocus = {
+    decided: false, ageConflict: false, pregnancyOfOther: false, otherAges: [],
+    reporterIdx: ms.filter((m) => m.reporter).map((m) => m.i),
+    aged: ms.filter((m) => !m.pronoun && !m.reporter && m.months !== undefined).map((m) => ({ i: m.i, sex: m.sex })),
+  };
+
+  const firstPerson = ms.some((m) => m.word === 'yo' && m.subject) || /\b(me duele|me siento|tengo dolor|tengo calentura)\b/.test(toks.join(' '));
+  let focus = ms.filter((m) => m.subject && !m.ageOnly && !(m.word === 'yo' && !firstPerson));
+  if (!focus.length) focus = ms.filter((m) => m.subject && !(m.word === 'yo' && !firstPerson));
+  if (!focus.length) focus = ms.filter((m) => m.brought && !firstPerson);
+  // "le traigo a mi hijo, yo tengo dolor…": quien habla dice SUS molestias; si además trae a alguien, no se sabe de quién se habla.
+  if (firstPerson && ms.some((m) => m.brought) && !ms.some((m) => m.subject && m.word !== 'yo')) {
+    const soy = toks.findIndex((t, k) => t === 'soy' && /^(mujer|hombre|senora|senor)$/.test(toks[k + 1] ?? ''));
+    out.decided = true;
+    out.sex = soy >= 0 ? sexOf(toks[soy + 1]) : undefined;
+    const tengo = toks.findIndex((t, k) => t === 'tengo' && isDigitTok(toks[k + 1]) && /^an/.test(toks[k + 2] ?? ''));
+    out.months = tengo >= 0 ? parseFloat(toks[tengo + 1]) * 12 : undefined;
+    out.ageConflict = out.months === undefined && agesAll.length > 0;
+    out.otherAges = agesAll;
+    out.pregnancyOfOther = false;
+    return out;
+  }
+  if (focus.length) {
+    out.decided = true;
+    const people = [...new Set(focus.map(resolve))];
+    const sexes = [...new Set(people.map((m) => m.sex ?? resolve(m).sex).filter(Boolean))] as ('F' | 'M')[];
+    out.sex = sexes.length === 1 ? sexes[0] : undefined;
+    const ages = [...new Set(focus.map(ageOf).filter((a): a is number => a !== undefined))];
+    if (ages.length === 1) out.months = ages[0];
+    const focusSet = new Set(people);
+    out.otherAges = ms.filter((m) => !m.pronoun && m.months !== undefined && !focusSet.has(m) && m.months !== out.months).map((m) => m.months!);
+    out.ageConflict = ages.length > 1;
+    // Embarazo dicho de alguien que no es el paciente ("su esposa está embarazada, él tiene dolor"; "yo estoy embarazada").
+    out.pregnancyOfOther = ms.some((m) => m.pregSubject && !focusSet.has(resolve(m)) && !(m.word === 'yo' && firstPerson));
+    return out;
+  }
+  // Sin sujeto claro: dos personas con edades distintas (ninguna es quien acompaña) = no se sabe la edad del paciente.
+  const cand = ms.filter((m) => !m.pronoun && !m.reporter && m.months !== undefined);
+  const distinct = [...new Set(cand.map((m) => m.months))];
+  out.otherAges = ms.filter((m) => !m.pronoun && m.reporter && m.months !== undefined).map((m) => m.months!);
+  if (distinct.length > 1) out.ageConflict = true;
+  else if (distinct.length === 1 && out.otherAges.length) out.months = distinct[0];
+  out.pregnancyOfOther = ms.some((m) => m.pregSubject && m.reporter);
+  return out;
+}
+
 /**
  * Error típico de Whisper (reporte de uso real, 4-oct-2026): "Hombre de 21 años" → "Nombre de 21 años". Solo se
  * corrige cuando sigue "de <número> años" (así "su nombre es…" no cambia).
  */
-const NOMBRE_HOMBRE = /\bnombre(?=\s+de\s+[0-9a-záéíóúñ]+(?:\s+y\s+[a-záéíóúñ]+)?\s+a(?:ñ|n)(?:it)?os?\b)/giu;
+const NOMBRE_HOMBRE = /\bnombre(?=\s*,?\s*(?:de\s+)?[0-9a-záéíóúñ]+(?:\s+y\s+[a-záéíóúñ]+)?\s+a(?:ñ|n)(?:it)?os?\b)/giu;
 export function asrFixSex(text: string): string {
   return text.replace(NOMBRE_HOMBRE, (m) => (m[0] === 'N' ? 'Hombre' : 'hombre'));
 }
@@ -923,13 +1162,26 @@ export function keywordExtract(text: string): Findings {
     // "ya no tiene calentura" / "la calentura ya se le quitó": fiebre en los últimos días (cuenta para dengue)
     else if (h.pol === 'resolved' && h.key === 'fiebre') pos.add('fiebre_reciente');
   }
+  // Ronda 4 (revisión NHS-BLOAT-01): "panza hinchada y dolor muy fuerte" = el dolor fuerte es de la panza, si no se
+  // nombra otro lugar que duela.
+  const OTHER_PAIN: SymptomKeyStrict[] = ['dolor_cabeza', 'dolor_cabeza_intenso', 'dolor_pecho', 'dolor_espalda_baja', 'dolor_oido', 'dolor_muela', 'dolor_garganta', 'dolor_testiculo',
+    'dolor_muscular_articular', 'dolor_pantorrilla', 'dolor_fosa_renal', 'fractura', 'quemadura', 'herida', 'golpe_cabeza', 'golpe_caida', 'trauma_grave', 'pechos_rojos_dolorosos', 'contracciones'];
+  if (pos.has('dolor_intenso') && (pos.has('dolor_abdominal') || pos.has('distension_abdominal')) && !OTHER_PAIN.some((k) => pos.has(k))) pos.add('dolor_abdominal_intenso');
+  // Igual con la cabeza: "dolor muy fuerte de cabeza" = dolor de cabeza muy fuerte (si no duele también la panza).
+  if (pos.has('dolor_intenso') && pos.has('dolor_cabeza') && !pos.has('dolor_abdominal') && !pos.has('distension_abdominal') && !OTHER_PAIN.some((k) => k !== 'dolor_cabeza' && k !== 'dolor_cabeza_intenso' && pos.has(k))) pos.add('dolor_cabeza_intenso');
   for (const k of [...pos]) for (const p of IMPLIES[k] ?? []) pos.add(p);
   for (const k of neg) if (!pos.has(k)) f.sintomas[k] = false;
   for (const k of pos) f.sintomas[k] = true;
 
   // Números
   const nums = parseNumbers(text);
-  if (nums.edad_meses !== undefined) f.edad_meses = nums.edad_meses;
+  // Ronda 4: ¿de quién es la edad? (la de quien acompaña no es la del paciente; si se contradicen, se pregunta)
+  const digitToks = wordsToDigits(normToks);
+  const pf = findPatient(digitToks);
+  const near = (a: number, b: number) => Math.abs(a - b) <= Math.max(0.25, b * 0.05);
+  if (pf.months !== undefined) f.edad_meses = pf.months;
+  else if (pf.ageConflict) { /* sin edad: la app la pregunta */ }
+  else if (nums.edad_meses !== undefined && !pf.otherAges.some((a) => near(nums.edad_meses!, a))) f.edad_meses = nums.edad_meses;
   if (nums.temperatura_c !== undefined) f.temperatura_c = nums.temperatura_c;
   if (nums.resp_por_min !== undefined) f.resp_por_min = nums.resp_por_min;
   if (nums.duracion_dias !== undefined) f.duracion_dias = nums.duracion_dias;
@@ -949,11 +1201,19 @@ export function keywordExtract(text: string): Findings {
   }
   // Signos que solo existen en el embarazo implican embarazo (salvo negación explícita)
   const impliesPreg = f.sintomas.salida_liquido_vaginal === true || f.sintomas.contracciones === true || f.sintomas.movimientos_fetales_disminuidos === true;
-  if (preg === 'pos' || nums.embarazo_por_numero || (impliesPreg && preg !== 'neg')) f.embarazada = true;
+  // Ronda 4: "su esposa está embarazada, él tiene dolor" / "yo estoy embarazada" (habla la mamá de la niña): ese embarazo no es del paciente.
+  if (pf.pregnancyOfOther && preg === 'pos') preg = null;
+  if (preg === 'pos' || (nums.embarazo_por_numero && !pf.pregnancyOfOther) || (impliesPreg && preg !== 'neg')) f.embarazada = true;
   else if (preg === 'neg') f.embarazada = false;
 
   // Sexo
-  const sex = f.embarazada === true || f.sintomas.posparto === true ? 'F' : detectSex(wordsToDigits(normToks));
+  // Signos que solo tiene una mujer (sangrado por la vagina, flujo, embarazo) la hacen mujer si las pistas no lo decidieron.
+  const femaleOnly = f.sintomas.flujo_mal_olor === true || f.sintomas.pechos_rojos_dolorosos === true;
+  let sex: 'F' | 'M' | undefined;
+  if (f.embarazada === true || f.sintomas.posparto === true) sex = 'F';
+  else if (pf.decided) sex = pf.sex;
+  else sex = detectSex(digitToks, pf);
+  if (sex === undefined && (femaleOnly || (f.sintomas.sangrado_vaginal === true && /\bvagina|\bregla\b/.test(normToks.join(' '))))) sex = 'F';
   if (sex) f.sexo = sex;
 
   // "tiene 10 días de haberse aliviado" = posparto aunque no se diga "dio a luz"

@@ -271,7 +271,9 @@ describe('cuidados según la molestia (advice.ts)', () => {
     expect(adviceApplies(uti, F({ ardor_orinar: true }, { sexo: 'M', edad_meses: years(30) }))).toBe(false);
     expect(adviceApplies(uti, F({ ardor_orinar: true }, { sexo: 'F', edad_meses: years(30), embarazada: true }))).toBe(false);
     expect(adviceApplies(uti, F({ ardor_orinar: true }, { sexo: 'F' }))).toBe(false);
-    expect(adviceApplies(uti, F({ ardor_orinar: true }, { sexo: 'F', edad_meses: years(30) }))).toBe(true);
+    // Ronda 4: sin un "No" a "¿Está embarazada?" tampoco (el embarazo no se ha descartado).
+    expect(adviceApplies(uti, F({ ardor_orinar: true }, { sexo: 'F', edad_meses: years(30) }))).toBe(false);
+    expect(adviceApplies(uti, F({ ardor_orinar: true }, { sexo: 'F', edad_meses: years(30), embarazada: false }))).toBe(true);
   });
 
   it('sin molestia reconocida no hay cuidados específicos (queda el texto general de la regla por defecto)', () => {

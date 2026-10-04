@@ -242,7 +242,7 @@ Los ID que empiezan con una fuente nueva (`NHS-`, `SSA-`, `IMSS0xx-`, etc.) son 
 | vomita todo | (existe) | `IITT-Y-CIRC-01` | NHS diarrhoea-and-vomiting, 111: "cannot keep fluid down" | (existe) | Sí |
 | sangre | (existe) | `IITT-Y-BLEED-01` | NHS 111: "bloody diarrhoea" | (existe) | Sí |
 | `NHS-DIAR-01` | centro_hoy [DECIDIR D3] | ¿Lleva **más de 7 días** con diarrea, o **más de 2 días** vomitando? | NHS diarrhoea-and-vomiting, 111: "diarrhoea for more than 7 days or vomiting for more than 2 days" | adaptado | **No** (hoy `IMCI-DIAR-03` usa 14 días) |
-| `NHS-DIAR-02` | urgencia | ¿Vomita **verde**? (adulto) | NHS diarrhoea-and-vomiting, 999: "green vomit (adults)" | verbatim | **No** |
+| `NHS-DIAR-02` | urgencia | ¿Vomita **verde**? (adulto **y niño**) | NHS diarrhoea-and-vomiting, 999: "green vomit (adults)" y "yellow-green or green vomit (children)" (**corregido en la ronda 4**: la primera versión de esta tabla omitió la línea de niños; implementado como `NHS-VOM-GREEN-01` a toda edad) | verbatim | **No** |
 | `NHS-DM-VOM-01` | urgencia [D4] | Diabético que vomita | NHS stomach-ache 999 | adaptado | No |
 | embarazo | (existe) | `WHO-PCPNC-EMB-01`, `IMSS-EMB-04` | — | — | Sí |
 
@@ -721,7 +721,7 @@ Ya existe `IITT-Y-BITE-01` (`centro_hoy`). Se proponen el texto de primeros auxi
 | `dolor_migra_derecha` | digestivo | Patrón de apendicitis | `IMSS031-APEND-01` (urgencia) |
 | `dolor_testiculo` | urinario | Solo hombres | `IITT-R/Y-TESTIS-01` |
 | `agruras` | digestivo | Pirosis | Pregunta de dolor de pecho en adultos (D13) |
-| `vomito_verde` | digestivo | Vómito de bilis en adulto | `NHS-DIAR-02` |
+| `vomito_verde` | digestivo | Vómito verde (en niños también amarillo verdoso), a cualquier edad (corregido en la ronda 4) | `NHS-DIAR-02` → `NHS-VOM-GREEN-01` |
 | `dolor_garganta`, `no_puede_tragar_babea` | respiratorio | Garganta | `NHS-THROAT-01`, `IMSS062-STREP-01` |
 | `hinchazon_boca_cuello` | respiratorio | Separarla de la hinchazón del embarazo | `IITT-Y-NECK-01`, `NHS-TOOTH-01` |
 | `dolor_oido`, `pus_oido`, `hinchazon_detras_oreja` | respiratorio | Oído | `IMCI-EAR-01/02`, `NHS-EAR-*` |

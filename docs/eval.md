@@ -2,7 +2,7 @@
 
 > Estado: **viñetas sintéticas, pendientes de validación clínica por la Dra. Ines.** Las métricas miden si el software reproduce el nivel que dictan las guías para un relato dado. No miden si el triaje es clínicamente correcto en pacientes reales.
 >
-> Última corrida: **ronda 3** (4-oct-2026, molestias comunes y sexo antes que embarazo; sección 3.4), `npm run eval`. test_v3 se corrió visible **una sola vez, con el código ya congelado**; sus fallos no se corrigieron. Detalle por caso en `eval/results.md` y `eval/results.json`. La línea base de la ronda 2 (antes de tocar el extractor) está en `eval/baseline-r2-pre/`.
+> Última corrida: **ronda 4** (4-oct-2026, revisión externa de la ronda 3; sección 0.2), `npm run eval`. Antes: **ronda 3** (molestias comunes y sexo antes que embarazo; sección 3.4). test_v3 se corrió visible **una sola vez, con el código ya congelado**; sus fallos no se corrigieron. Detalle por caso en `eval/results.md` y `eval/results.json`. La línea base de la ronda 2 (antes de tocar el extractor) está en `eval/baseline-r2-pre/`.
 
 ## 0. Resumen
 
@@ -33,6 +33,28 @@ IC95 = intervalo de Wilson. **La cifra que hay que citar es la de test_v2, y con
 | Aviso "no estoy segura" en casos completos, contestando como en la app | 9/58 (antes 11) | 3/28 (antes 4) | 7/36 (antes 9) | 16/73 → 5/73 |
 
 "Antes" = código de la ronda 2 (commit `de209a0`) corrido con el mismo `eval/lib.ts` y los fallos de test_v3 ocultos. dev, test_v1 y test_v2: **sin cambio de nivel en ningún caso**. El caso reportado (T3-49, "Hombre de 21 años con dolor de estómago, gases y estreñido…") sale `aqui`, no pregunta embarazo y pregunta: revisión de signos de peligro, "¿lleva horas o días sin poder hacer del baño ni echar gases?" y "¿el dolor está abajo a la derecha…?".
+
+### 0.2 Ronda 4 (4-oct-2026, noche): revisión externa de la ronda 3
+
+Cambios: `docs/decisiones-clinicas.md`, "Revisión ronda 3" (R1–R23). **33 casos nuevos en `dev`** (D61–D93, etiqueta `r4`): las frases de la revisión y variantes de contexto (quién es el paciente cuando habla o acompaña otra persona, negación "sin X con Y", embarazo de un tercero, vómito verde en niños, quemadura grande, cortada en la palma, golpe en la cabeza por escaleras o estando tomado, presión alta en el embarazo y la cuarentena). Se usaron para ajustar: **no son held-out**. Durante el trabajo todas las corridas ocultaron los fallos por caso de test_v2 y test_v3 (`EVAL_HIDE_FAILURES=test_v2,test_v3`); las pistas de sexo se probaron con frases nuevas escritas para esta ronda, no con textos de test_v3. La corrida final (abajo) es la única con todo visible y **sus fallos no se corrigieron**.
+
+| Métrica | dev (93; 60 + 33 nuevos) | test_v1 (30) | test_v2 (40) | test_v3 (80) ronda 3 → **ronda 4** |
+|---|---:|---:|---:|---:|
+| Exactitud | 100 % (93/93), IC95 96–100 % | 100 % | 92.5 % (37/40) | 80.0 % → **80.0 % (64/80)**, IC95 70–87 % |
+| **Urgencias sub-triadas** | 0/37, IC95 0–9 % | 0/11 | 3/16 | 6/20 → **6/20 (30 %)**, IC95 15–52 % |
+| …en silencio | 0/37 | 0/11 | 1/16 | 0/20 → **0/20** |
+| Sobre-triaje | 0 % | 0 % | 0 % | 5.0 % → **5.0 % (4)** |
+| Sensibilidad de referencia | 100 % (62/62) | 100 % | 96.7 % | 83.3 % → **83.3 % (40/48)** |
+| Pregunta prohibida (`expected_not_ask`) | 0/15 | — | — | 0/54 → **0/54** |
+| Sexo extraído = anotado | 28/28 | — | — | 78/80 → **78/80** |
+| Casos `expected_uncertain` que preguntan el dato esperado | 1/2 | 2/2 | 2/4 | 4/7 → **5/7** |
+| Aviso "no estoy segura" en casos completos, contestando como en la app | 10/91 | 3/28 | 7/36 | 5/73 → **6/73** |
+
+Lectura honesta:
+- **test_v3 no cambió de nivel en ningún caso.** Los arreglos de la ronda 4 atacan errores que test_v3 casi no tiene (dos personas en el relato, "sin X con Y", vómito verde en niños, embarazo con presión alta). Que no haya mejora ahí es lo esperado; que no empeore es lo que se puede afirmar. Los 33 casos `r4` dan 33/33, pero se escribieron junto con los arreglos: miden que el arreglo existe, no cuánto generaliza.
+- El aviso con preguntas contestadas subió 1 caso en test_v3 (5 → 6 de 73): ahora la app pregunta "¿Está embarazada?" a más mujeres de 10 a 49 años (dolor de cabeza, de cintura, mareo, náusea, presión alta), y el eval contesta "No sé" cuando el relato no trae el dato.
+- El eval sigue sin medir lo que más cambió en esta ronda: **qué cuidados se muestran** (ahora ninguno sin descartar embarazo ni con "No estoy segura") y la voz. Eso lo cubren `src/triage/round4.test.ts` y dos pruebas nuevas de Playwright (`e2e/offline.spec.ts`).
+- Para una medida limpia hace falta un test_v4 escrito por otra persona (la Dra. Ines o transcripciones reales de promotoras).
 
 ## 1. Qué se mide
 

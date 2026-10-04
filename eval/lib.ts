@@ -4,7 +4,7 @@
  */
 import { keywordExtract, explainKeywords } from '../src/ai/keywords';
 import { triage } from '../src/triage/engine';
-import { assessUncertainty, MAX_FOLLOWUP_QUESTIONS, type AnsweredQuestion } from '../src/triage/uncertainty';
+import { assessUncertainty, maxFollowUps, type AnsweredQuestion } from '../src/triage/uncertainty';
 import { RULES_BY_ID } from '../src/triage/rules';
 import { LEVEL_RANK, type Findings, type TriageLevel, type TriageResult } from '../src/types';
 
@@ -205,7 +205,7 @@ function simulateFollowUp(c: EvalCase, findings: Findings): { findings: Findings
   let f: Findings = { ...findings, sintomas: { ...findings.sintomas } };
   let r = triage(f);
   const answered: AnsweredQuestion[] = [];
-  while (answered.length < MAX_FOLLOWUP_QUESTIONS) {
+  while (answered.length < maxFollowUps(answered.map((a) => a.campo))) {
     const q = r.preguntas.find((p) => !answered.some((a) => a.campo === p.campo));
     if (!q) break;
     f = { ...f, sintomas: { ...f.sintomas } };

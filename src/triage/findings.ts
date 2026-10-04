@@ -199,7 +199,8 @@ export const SYMPTOMS = {
   },
   vomito_sangre: {
     es: 'Vomita sangre',
-    synonyms: ['vomita sangre', 'vómito con sangre', 'vómito como café', 'arroja sangre'],
+    // Ronda 4: "vómito de sangre", "vomitó sangre" (revisión EXTRACT-SYN vomito_sangre).
+    synonyms: ['vomita sangre', 'vómito con sangre', 'vómito como café', 'arroja sangre', 'vómito de sangre', 'vomitó sangre', 'vomitando sangre', 'devolvió sangre', 'devuelve sangre'],
     group: 'digestivo',
   },
   heces_negras: {
@@ -640,7 +641,9 @@ export const SYMPTOMS = {
   },
   vomito_verde: {
     es: 'Vomita verde',
-    synonyms: ['vomita verde', 'vómito verde', 'vomitó verde', 'vomitando verde', 'vómitos verdes'],
+    // Ronda 4: NHS "yellow-green or green vomit (children)". "bilis" NO se incluye: en el habla de México "vomitar
+    // bilis" describe el vómito amarillo y amargo con el estómago vacío, no el color del criterio (docs/decisiones-clinicas.md #34).
+    synonyms: ['vomita verde', 'vómito verde', 'vomitó verde', 'vomitando verde', 'vómitos verdes', 'vomita amarillo verdoso', 'vómito amarillo verdoso', 'vomitó amarillo verdoso', 'vomita verdoso', 'vómito verdoso', 'vomita verde amarillo', 'vomita como verde'],
     group: 'digestivo',
   },
   agruras: {
@@ -783,9 +786,22 @@ export const SYMPTOMS = {
     synonyms: ['se quemó la cara', 'quemadura en la cara', 'se quemó el cuello', 'quemadura en el cuello', 'respiró humo', 'respiró mucho humo', 'se quemó todo el brazo', 'se quemó toda la pierna'],
     group: 'trauma',
   },
+  // Ronda 4 (revisión NHS-BURN-01): NHS Burns and scalds, 999: "is very large or deep". Sin la regla de la palma
+  // (1 %): no está verificada en las fuentes leídas.
+  quemadura_grande_profunda: {
+    es: 'Quemadura muy grande o profunda',
+    synonyms: ['quemadura grande', 'quemadura muy grande', 'quemadura profunda', 'quemadura honda', 'se quemó mucho', 'se quemó todo el cuerpo', 'se quemó toda la espalda', 'se quemó todo el pecho', 'se quemó toda la panza', 'quemadura grande y profunda'],
+    group: 'trauma',
+  },
   quemadura_quimica_electrica: {
     es: 'Quemadura por ácido, químico o electricidad, o en sus partes o nalgas',
     synonyms: ['se quemó con ácido', 'quemadura con ácido', 'se quemó con químico', 'quemadura química', 'le dio la luz', 'le dieron toques', 'se electrocutó', 'descarga eléctrica', 'le pegó la corriente', 'se quemó sus partes', 'quemadura en las nalgas'],
+    group: 'trauma',
+  },
+  // Ronda 4 (revisión NHS-WOUND-01): NHS Cuts and grazes, 999: "you have a bad cut on your face or the palm of your hand".
+  herida_cara_palma: {
+    es: 'Cortada fuerte en la cara o en la palma de la mano',
+    synonyms: ['cortada en la cara', 'se cortó la cara', 'cortada en la palma', 'se cortó la palma', 'se cortó la palma de la mano', 'cortada en la palma de la mano', 'machetazo en la mano', 'machetazo en la cara'],
     group: 'trauma',
   },
   picadura_alacran: {
@@ -820,6 +836,22 @@ export const SYMPTOMS = {
     // DEM "chichón".
     synonyms: ['se pegó en la cabeza', 'golpe en la cabeza', 'se golpeó la cabeza', 'se dio en la cabeza', 'chichón', 'chipote', 'se dio un golpe en la cabeza', 'le pegaron en la cabeza'],
     group: 'trauma',
+  },
+  // Ronda 4 (revisión NHS-HEAD-01): NHS Head injury, "Call 999 if someone has hit their head and…" (lo que faltaba).
+  golpe_cabeza_alto_riesgo: {
+    es: 'Golpe en la cabeza de alto riesgo: cayó de más de un metro o de 5 escalones, golpe a mucha velocidad, hundimiento o algo clavado en la cabeza, ojo morado sin golpe en el ojo, o cambió su comportamiento',
+    synonyms: ['se cayó de las escaleras', 'se cayó de la escalera', 'rodó por las escaleras', 'se rodó las escaleras', 'se le hundió la cabeza', 'tiene un hundimiento en la cabeza', 'hundimiento en la cabeza', 'tiene algo clavado en la cabeza', 'se le enterró algo en la cabeza', 'ojo morado', 'se le puso morado el ojo', 'cambió su comportamiento', 'anda raro desde el golpe', 'está raro desde el golpe', 'no es el mismo desde el golpe'],
+    group: 'trauma',
+  },
+  liquido_oido_nariz: {
+    es: 'Le sale líquido claro (como agua) por el oído o la nariz',
+    synonyms: ['le sale agua por la nariz', 'le sale líquido por la nariz', 'le escurre agua clara de la nariz', 'líquido claro por la nariz', 'líquido claro por el oído', 'agua clarita del oído', 'agua clarita de la nariz'],
+    group: 'trauma',
+  },
+  tomado_alcohol: {
+    es: 'Había tomado alcohol o drogas',
+    synonyms: ['estaba tomado', 'andaba tomado', 'andaba tomada', 'estaba tomada', 'estaba borracho', 'estaba borracha', 'andaba borracho', 'andaba borracha', 'había bebido', 'andaba pedo', 'estaba pedo', 'andaba drogado', 'estaba drogado', 'en estado de ebriedad'],
+    group: 'general',
   },
   anticoagulante: {
     es: 'Toma medicina para adelgazar la sangre (anticoagulante)',
@@ -1008,7 +1040,7 @@ export const PREGUNTAS: Record<string, string> = {
   dolor_derecha_baja: '¿El dolor de panza está abajo a la derecha, o empezó en el ombligo y se pasó a la derecha?',
   dolor_al_moverse: '¿El dolor de panza aumenta al caminar o al toser?',
   dolor_testiculo: '¿Le duele o se le hinchó un testículo?',
-  vomito_verde: '¿Vomita verde?',
+  vomito_verde: '¿Vomita verde o amarillo verdoso?',
   agruras: '¿Tiene agruras o acidez?',
   dolor_garganta: '¿Le duele la garganta?',
   placas_garganta: 'Pídale que abra la boca: ¿se ven placas blancas o pus en la garganta?',
@@ -1037,6 +1069,11 @@ export const PREGUNTAS: Record<string, string> = {
   herida_sin_sensibilidad: 'Junto a la herida, ¿no siente o no puede mover el dedo, la mano o el pie?',
   quemadura_grave: '¿La quemadura está en la cara o el cuello, le da toda la vuelta a un brazo, pierna o al cuerpo, o respiró humo?',
   quemadura_quimica_electrica: '¿La quemadura fue por ácido, químico o electricidad, o está en sus partes o las nalgas?',
+  quemadura_grande_profunda: '¿La quemadura es muy grande o profunda?',
+  herida_cara_palma: '¿Es una cortada fuerte (no un rasguño) en la cara o en la palma de la mano?',
+  golpe_cabeza_alto_riesgo: '¿Se cayó de más de un metro o de 5 escalones, el golpe fue a mucha velocidad (choque), tiene un hundimiento o algo clavado en la cabeza, un ojo morado sin haberse pegado en el ojo, o cambió su comportamiento desde el golpe?',
+  liquido_oido_nariz: '¿Le sale líquido claro, como agua, por el oído o la nariz?',
+  tomado_alcohol: '¿Había tomado alcohol o drogas cuando se golpeó?',
   picadura_alacran: '¿Le picó un alacrán?',
   alacran_sintomas: '¿Babea, siente algo atorado en la garganta, los ojos se le mueven solos, le tiembla la lengua, suda mucho, vomita, ve borroso o rojo, o le falta el aire?',
   mordedura_arana: '¿Le mordió una araña?',

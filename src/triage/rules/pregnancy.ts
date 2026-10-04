@@ -35,6 +35,8 @@ export const PREGNANCY_RULES: Rule[] = [
     fuente: `${NOM007_5313}: "cefalea intensa"; ${PCPNC_C15}: "severe headaches with blurred vision"; ${CITE.IITT}: embarazada con "Severe headache" = rojo; ${IMSS_GRR}: "Fuerte dolor de cabeza"`,
     fuente_url: SRC.NOM_007,
     needs: [...EMB, 'dolor_cabeza_intenso'],
+    // Ronda 4: con dolor de cabeza (cualquiera) en una mujer que puede estar embarazada, se pregunta embarazo y si es muy fuerte.
+    context: ['dolor_cabeza'],
     fidelidad: 'verbatim',
   },
   {
@@ -120,6 +122,9 @@ export const PREGNANCY_RULES: Rule[] = [
     fuente: `${IMSS_GRR}: "Contracciones uterinas… antes de las 37 semanas"; ${CITE.NOM_007}, num. 5.3.1.13.3 (amenaza de parto pretérmino = urgencia obstétrica); ${CITE.IITT}: embarazada con "Active labour" = rojo`,
     fuente_url: SRC.IMSS_GPC_PRENATAL,
     needs: [...EMB, 'contracciones'],
+    // Ronda 4 (revisión ADV-ESPALDA): el dolor de cintura o de panza en el embarazo puede ser contracciones (parto antes de
+    // tiempo): se pregunta embarazo y contracciones.
+    context: ['dolor_espalda_baja', 'dolor_abdominal'],
     fidelidad: 'adaptado',
   },
   {
@@ -132,6 +137,7 @@ export const PREGNANCY_RULES: Rule[] = [
     fuente: `${CITE.WHO_PCPNC_2015}, cuadro B2 "Quick check" (p. 22 del PDF): "severe vomiting" → EMERGENCY FOR WOMAN`,
     fuente_url: SRC.WHO_PCPNC_2015,
     needs: [...EMB, 'vomita_todo'],
+    context: ['nauseas', 'vomito'],
     fidelidad: 'verbatim',
   },
   {
@@ -147,6 +153,8 @@ export const PREGNANCY_RULES: Rule[] = [
     fuente: `${PCPNC_C15}: "swelling of fingers, face, legs" → "go to the health centre as soon as possible"; ${IMSS_GRR}: "Hinchazón de pies, manos o cara" (la GPC dice "inmediatamente": ver docs 4.1); posparto: ${CITE.NOM_007}, num. 5.6.2.2 (vigilar la presión arterial en el puerperio)`,
     fuente_url: SRC.WHO_PCPNC_2015,
     needs: [...EMB, 'posparto', 'hinchazon_cara_manos'],
+    // Ronda 4: con dolor de cabeza o presión alta se pregunta por la hinchazón (signo de alarma IMSS-028 p. 9).
+    context: ['dolor_cabeza', 'hipertension'],
     // adaptado: IMSS GRR dice "inmediatamente" y OMS "lo antes posible"; se extiende al posparto.
     fidelidad: 'adaptado',
   },
@@ -246,6 +254,7 @@ export const PREGNANCY_RULES: Rule[] = [
     fuente: `${NOM007_5313}: "pérdida de la conciencia"; ${CITE.IITT} (≥12 años), rojo "PREGNANT WITH ANY OF: Seizures or altered mental status"`,
     fuente_url: SRC.NOM_007,
     needs: [...EMB, 'desmayo', 'confusion'],
+    context: ['mareo'],
     fidelidad: 'verbatim',
   },
   {
@@ -262,5 +271,32 @@ export const PREGNANCY_RULES: Rule[] = [
     fuente_url: SRC.IITT_ADULT,
     needs: [...EMB, 'golpe_caida', 'trauma_grave'],
     fidelidad: 'verbatim',
+  },
+  // ── Ronda 4 (revisión ADV-PRESION): presión alta en el embarazo y la cuarentena ──────────────────────
+  {
+    id: 'NOM007-EMB-09',
+    block: 'pregnancy',
+    level: 'urgencia',
+    applies: (f) => isPregnant(f) && has(f, 'hipertension'),
+    explicacion: { es: 'Embarazada con presión alta (puede ser preeclampsia: presión alta del embarazo).', nah: '' },
+    accion: { es: `${REFER_OBS} Que vaya acostada sobre su lado izquierdo.`, nah: '' },
+    fuente: `${NOM007_5313}: "hipertensión arterial" (primero de la lista de signos y síntomas de urgencia obstétrica); ${CITE.NOM_007}, num. 5.3.1.13.3 ("trastornos hipertensivos del embarazo" = urgencia obstétrica)`,
+    fuente_url: SRC.NOM_007,
+    needs: [...EMB, 'hipertension'],
+    fidelidad: 'verbatim',
+  },
+  {
+    id: 'NOM007-PP-HTA-01',
+    block: 'pregnancy',
+    level: 'centro_hoy',
+    applies: (f) => isPostpartum(f) && !isPregnant(f) && has(f, 'hipertension'),
+    explicacion: { es: 'Recién parida (en la cuarentena) con presión alta.', nah: '' },
+    accion: { es: 'Llevar HOY a la unidad de salud para tomarle la presión. Si tiene dolor de cabeza fuerte, ve borroso o lucecitas, le zumban los oídos o le duele la boca del estómago: URGENCIA.', nah: '' },
+    fuente: `${CITE.NOM_007}, num. 5.6.2.2 (en el puerperio, vigilar "la presión arterial"); la lista de urgencia obstétrica de 5.3.1.3 ("hipertensión arterial") está en la sección del embarazo`,
+    fuente_url: SRC.NOM_007,
+    needs: ['posparto', 'hipertension'],
+    // adaptado: la NOM no fija el nivel en el puerperio; se usa centro_hoy como la fiebre posparto (decisión #3) y
+    // los signos de preeclampsia ya son urgencia (NOM007-EMB-02, IMSS-EMB-01, NOM007-EMB-07). Pendiente Dra. Ines (#37).
+    fidelidad: 'adaptado',
   },
 ];

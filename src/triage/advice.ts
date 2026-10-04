@@ -22,7 +22,7 @@
  * PROVISIONAL: pendiente de revisión de la Dra. Ines.
  */
 import type { Findings, TriageLevel } from '../types';
-import { isNum, years } from './rules/helpers';
+import { hasFever, isNum, pregnancyPossible, years } from './rules/helpers';
 import { CITE, SRC } from './rules/sources';
 
 export interface AdviceEntry {
@@ -36,8 +36,17 @@ export interface AdviceEntry {
   edadMax?: number;
   /** Solo para este sexo (conocido). */
   sexo?: 'F' | 'M';
-  /** No se muestra en embarazo ni en la cuarentena (tienen sus propias reglas y cuidados). */
+  /**
+   * No se muestra en embarazo ni en la cuarentena (tienen sus propias reglas y cuidados), NI cuando el embarazo es
+   * posible y no se ha descartado (mujer o sexo desconocido de 10 a 49 años sin un "No" a "¿Está embarazada?").
+   * Ronda 4 (revisión ADV-PRESION / ADV-ESPALDA): "siga moviéndose" o "la presión alta sin molestias no es urgencia"
+   * son lo contrario de lo que dice la NOM-007 para una embarazada.
+   */
   noEmbarazo?: boolean;
+  /** Solo en el embarazo (embarazada === true), con cualquier molestia: `sintomas` se ignora. */
+  soloEmbarazo?: boolean;
+  /** No se muestra si tiene calentura (p. ej. ronchas con calentura no son un piquete: revisión ADV-RONCHAS). */
+  noFiebre?: boolean;
   /** Cuidados en casa (nivel "aqui"). */
   cuidados: string[];
   /** Ir de inmediato / hoy a la unidad si… (nivel "aqui"). */
@@ -54,6 +63,28 @@ export const MAX_ADVICE = 3;
 const Y = years;
 
 export const ADVICE: AdviceEntry[] = [
+  // ── Embarazo (ronda 4): va primero; las demás molestias del embarazo no reciben cuidados generales ─────────────
+  {
+    id: 'ADV-EMBARAZO',
+    titulo: 'Embarazo: señales de alarma',
+    sintomas: [],
+    soloEmbarazo: true,
+    cuidados: [
+      'Acuda a todas sus consultas de control del embarazo (por lo menos 5) y lleve siempre su carnet perinatal.',
+      'Tenga listo cómo llegar al hospital si aparece una señal de alarma: quién la lleva y en qué.',
+    ],
+    regrese: [
+      'tiene dolor de cabeza fuerte, le zumban los oídos, ve borroso o lucecitas, o le duele la boca del estómago (es URGENCIA)',
+      'le sale líquido o sangre por la vagina, tiene contracciones antes de las 37 semanas, o dolor de panza que no se quita (es URGENCIA)',
+      'tiene calentura, se pone muy pálida, le falta el aire o convulsiona (es URGENCIA)',
+      'después de las 28 semanas el bebé se mueve menos o no se mueve en más de 2 horas (es URGENCIA)',
+      'tiene la presión alta (es URGENCIA)',
+      'se le hinchan los pies, las manos o la cara, vomita seguido, o le arde al orinar u orina muy seguido',
+    ],
+    mientras: ['Llévela acompañada y con su carnet perinatal.'],
+    fuente: `${CITE.IMSS_GPC_PRENATAL}, p. 9 del PDF (signos de alarma: "debe acudir inmediatamente a un hospital o centro de salud": "Fuerte dolor de cabeza", "Zumbido en el oído", "Visión borrosa con puntos de lucecitas", "Náuseas y vómitos frecuentes", movimientos fetales "por más de 2 horas" después de la semana 28, "Palidez marcada", "Hinchazón de pies, manos o cara", "Pérdida de líquido o sangre por la vagina", "Fiebre", "Contracciones uterinas… antes de las 37 semanas", "Dolor abdominal persistente", "Dificultad para respirar", "molestia al orinar", "Convulsiones"; "Preparación al parto y los preparativos en caso de posibles complicaciones"); ${CITE.NOM_007}, num. 5.2.1.15 ("como mínimo cinco consultas prenatales"), 5.3.1.3 ("hipertensión arterial", "epigastralgia") y 5.3.1.14 (carnet perinatal)`,
+    fuente_url: SRC.IMSS_GPC_PRENATAL,
+  },
   // ── Primeros auxilios (sirven también camino al centro de salud) ─────────────────────────────────
   {
     id: 'ADV-ALACRAN',
@@ -167,10 +198,14 @@ export const ADVICE: AdviceEntry[] = [
     regrese: [
       'no se mantiene despierto, convulsiona, se confunde o habla raro',
       'le duele la cabeza, vomita o anda mareado',
-      've o escucha mal, o le sale líquido o sangre del oído',
+      've o escucha mal, o le sale líquido o sangre del oído o líquido claro por la nariz',
       'toma medicina para adelgazar la sangre',
+      'se cayó de más de un metro o de 5 escalones, o el golpe fue a mucha velocidad (choque) (es URGENCIA)',
+      'tiene un hundimiento o algo clavado en la cabeza, o un ojo morado sin haberse pegado en el ojo (es URGENCIA)',
+      'cambió su comportamiento: más irritable, distraído o sin interés en nada (es URGENCIA)',
+      'había tomado alcohol o drogas cuando se golpeó',
     ],
-    fuente: `${CITE.NHS} Head injury and concussion (revisada 29-05-2025): "hold an ice pack… wrapped in a tea towel", "make sure an adult stays with you… for at least the first 24 hours", "do not drink alcohol"; señales de "Call 999" y "NHS 111" (reglas NHS-HEAD-01 y NHS-HEAD-02)`,
+    fuente: `${CITE.NHS} Head injury and concussion (revisada 29-05-2025): "hold an ice pack… wrapped in a tea towel", "make sure an adult stays with you… for at least the first 24 hours", "do not drink alcohol"; señales de "Call 999" ("fallen from a height of more than 1 metre or 5 stairs", "hit their head at high speed", "a dent in their head", "a black eye, but did not hit their eye", "their behaviour has changed") y "NHS 111" ("were drinking alcohol or taking drugs") (reglas NHS-HEAD-01 y NHS-HEAD-02)`,
     fuente_url: SRC.NHS_HEAD_INJURY,
   },
   // ── Digestivo ─────────────────────────────────────────────────────────────────────────────────
@@ -243,6 +278,7 @@ export const ADVICE: AdviceEntry[] = [
     id: 'ADV-NAUSEA',
     titulo: 'Náusea o vómito',
     sintomas: ['nauseas', 'vomito'],
+    noEmbarazo: true,
     edadMin: Y(12),
     cuidados: [
       'Tome traguitos de agua o suero seguido, aunque sea poquito. Puede tomar té de jengibre o de menta.',
@@ -262,6 +298,7 @@ export const ADVICE: AdviceEntry[] = [
     id: 'ADV-DOLOR-PANZA',
     titulo: 'Dolor de panza',
     sintomas: ['dolor_abdominal'],
+    noEmbarazo: true,
     edadMin: Y(12),
     cuidados: [
       'Descanse. Tome líquidos a traguitos y coma poco y sencillo cuando tenga hambre.',
@@ -359,6 +396,7 @@ export const ADVICE: AdviceEntry[] = [
     id: 'ADV-CABEZA',
     titulo: 'Dolor de cabeza',
     sintomas: ['dolor_cabeza'],
+    noEmbarazo: true,
     edadMin: Y(12),
     cuidados: [
       'Tome bastante agua. Descanse, sobre todo si también tiene gripa.',
@@ -379,6 +417,7 @@ export const ADVICE: AdviceEntry[] = [
     id: 'ADV-ESPALDA',
     titulo: 'Dolor de espalda baja (cintura)',
     sintomas: ['dolor_espalda_baja'],
+    noEmbarazo: true,
     edadMin: Y(12),
     cuidados: [
       'Siga moviéndose y haciendo sus actividades como el dolor se lo permita: así se recupera más rápido.',
@@ -400,6 +439,8 @@ export const ADVICE: AdviceEntry[] = [
     id: 'ADV-RONCHAS',
     titulo: 'Ronchas, comezón o piquete',
     sintomas: ['comezon', 'sarpullido'],
+    // Ronda 4: con calentura, las ronchas no son un piquete (sarampión, dengue): sin estos cuidados.
+    noFiebre: true,
     cuidados: [
       'Si fue un piquete: lave con agua y jabón y ponga algo frío envuelto en un trapo unos 20 minutos. Si es en un brazo o pierna, súbalo.',
       'No se rasque: se puede infectar.',
@@ -418,6 +459,7 @@ export const ADVICE: AdviceEntry[] = [
     id: 'ADV-MAREO',
     titulo: 'Mareo',
     sintomas: ['mareo', 'mareo_al_pararse'],
+    noEmbarazo: true,
     edadMin: Y(12),
     cuidados: [
       'Acuéstese hasta que se le pase y luego levántese despacio.',
@@ -479,6 +521,7 @@ export const ADVICE: AdviceEntry[] = [
     id: 'ADV-PRESION',
     titulo: 'Presión alta',
     sintomas: ['hipertension'],
+    noEmbarazo: true,
     edadMin: Y(12),
     cuidados: [
       'Siga tomando sus medicinas como se las indicó su médico. No tome pastillas de otra persona.',
@@ -498,12 +541,15 @@ const PREGNANCY_TEXT = /embaraz|regla|menstru|lactan|amamant|dar pecho|mamar/i;
 
 /** ¿La entrada aplica a estos hallazgos? */
 export function adviceApplies(a: AdviceEntry, f: Findings): boolean {
+  if (a.soloEmbarazo) return f.embarazada === true && pregnancyPossible(f);
   if (!a.sintomas.some((k) => f.sintomas?.[k] === true)) return false;
   const age = f.edad_meses;
   if (a.edadMin !== undefined && !(isNum(age) && age >= a.edadMin)) return false;
   if (a.edadMax !== undefined && !(isNum(age) && age < a.edadMax)) return false;
   if (a.sexo && f.sexo !== a.sexo) return false;
-  if (a.noEmbarazo && (f.embarazada === true || f.sintomas?.posparto === true)) return false;
+  // Ronda 4: también cuando el embarazo es posible y no se descartó con un "No" (no se sabe si está embarazada).
+  if (a.noEmbarazo && (f.embarazada === true || f.sintomas?.posparto === true || (pregnancyPossible(f) && f.embarazada !== false))) return false;
+  if (a.noFiebre && hasFever(f)) return false;
   return true;
 }
 

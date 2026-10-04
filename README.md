@@ -46,7 +46,7 @@ flowchart TD
     T --> K["Keyword extractor<br/>src/ai/keywords.ts<br/>colloquial MX Spanish → structured findings"]
     T -.->|"optional, experimental<br/>WebGPU phones only"| L["Small LLM (Llama-3.2-1B)<br/>can only ADD findings"]
     L -.-> K
-    K --> R["Cited rule engine<br/>src/triage · 133 rules"]
+    K --> R["Cited rule engine<br/>src/triage · 136 rules"]
     R -->|"missing data that could raise the level"| Q["Follow-up questions (max 4)"]
     Q --> R
     R --> U["Uncertainty check<br/>src/triage/uncertainty.ts"]
@@ -90,7 +90,7 @@ Details: [`docs/ai.md`](docs/ai.md) (models), [`docs/clinical-sources.md`](docs/
 
 ## Responsible AI & safety
 
-**1. Rules decide; the model can only escalate.** `final_level = max(rules, model hint)`. The 133 rules are deterministic TypeScript, each linked to a guideline page. Unit tests check that the model never lowers a level, that an unknown never fires a rule, and that no rule contains a drug dose.
+**1. Rules decide; the model can only escalate.** `final_level = max(rules, model hint)`. The 136 rules are deterministic TypeScript, each linked to a guideline page. Unit tests check that the model never lowers a level, that an unknown never fires a rule, and that no rule contains a drug dose.
 
 **2. "No estoy segura — consulta al personal de salud" (the fail-safe).** A fourth, grey result appears instead of a confident colour when:
 - nothing was recognised (`no_findings`);
@@ -119,7 +119,7 @@ The reasons are shown in plain Spanish. The rules' level stays visible: the fail
 
 ## Clinical sources
 
-- **133 rules** (94 from 15 primary sources, plus 39 added in round 3 for common complaints on the `dev` branch: Secretaría de Salud scorpion/spider guide 2026, rabies guide, NOM-006/015/030, six IMSS GPC quick guides and NHS health pages; all provisional), each source downloaded and read before writing the rules that use it: WHO/UNICEF IMCI 2014 and the 2019 young-infant booklet, WHO/UNICEF *Caring for the sick child in the community* (iCCM), NOM-031-SSA2-1999 (child health), NOM-007-SSA2-2016 (pregnancy, birth, newborn), IMSS GPC prenatal care, WHO PCPNC 2015, PAHO dengue algorithms 2020, WHO/ICRC/MSF IITT (adult and paediatric), CDC stroke and heart-attack, NICE NG143, WHO diarrhoea manual 2005, WHO mhGAP 2.0 (suicide risk) and IMSS measles.
+- **136 rules** (94 from 15 primary sources, plus 39 added in round 3 and 3 in round 4 for common complaints on the `dev` branch: Secretaría de Salud scorpion/spider guide 2026, rabies guide, NOM-006/015/030, six IMSS GPC quick guides and NHS health pages; all provisional), each source downloaded and read before writing the rules that use it: WHO/UNICEF IMCI 2014 and the 2019 young-infant booklet, WHO/UNICEF *Caring for the sick child in the community* (iCCM), NOM-031-SSA2-1999 (child health), NOM-007-SSA2-2016 (pregnancy, birth, newborn), IMSS GPC prenatal care, WHO PCPNC 2015, PAHO dengue algorithms 2020, WHO/ICRC/MSF IITT (adult and paediatric), CDC stroke and heart-attack, NICE NG143, WHO diarrhoea manual 2005, WHO mhGAP 2.0 (suicide risk) and IMSS measles.
 - Each rule is marked **verbatim** or **adapted**, with the page and a short quote. The rule-to-source table is generated from the code: [`docs/clinical-sources.md`](docs/clinical-sources.md).
 - Where sources disagree, the team made a provisional recommendation for each of the 19 open decisions using written principles (Mexican NOM first; community-level guideline over clinic-level; the more protective level only when that source applies to community care). See `docs/decisiones-clinicas.md`; all are pending the physician's review.
 - **Pending review by a physician: Dra. Ines.** Until she signs off, nothing here should be called "clinically validated".
@@ -129,14 +129,14 @@ The reasons are shown in plain Spanish. The rules' level stays visible: the fail
 
 ### Triage evaluation (`npm run eval`)
 
-210 **synthetic** vignettes in colloquial Mexican Spanish (130 by the team; test_v3, 80 more, written blind by another session before the round-3 changes and frozen by hash), labelled from the guidelines. The pipeline is the same one every phone has, with no LLM: text → keyword extractor → rules → uncertainty check. 95 % CIs are Wilson.
+243 **synthetic** vignettes in colloquial Mexican Spanish (163 by the team, 33 of them added in round 4 for context errors; test_v3, 80 more, written blind by another session before the round-3 changes and frozen by hash), labelled from the guidelines. The pipeline is the same one every phone has, with no LLM: text → keyword extractor → rules → uncertainty check. 95 % CIs are Wilson.
 
 | Split | Role | Accuracy | **Urgent cases under-triaged** | …silently (no question, no warning) | Over-triage | Referral sensitivity |
 |---|---|---|---|---|---|---|
-| dev (60) | used for tuning | 98.3 % (CI 91–100) | 0/22 (CI 0–15 %) | 0/22 | 1.7 % | 100 % (42/42) |
+| dev (93) | used for tuning (33 added in round 4) | 100 % (CI 96–100) | 0/37 (CI 0–9 %) | 0/37 | 0 % | 100 % (62/62) |
 | test_v1 (30) | old held-out, now regression | 100 % (CI 89–100) | 0/11 (CI 0–26 %) | 0/11 | 0 % | 100 % (21/21) |
 | **test_v2 (40)** | held-out of round 2 | **92.5 % (CI 80–97)** | **3/16 = 18.8 % (CI 7–43 %)** | **1/16** | 0 % | 96.7 % (29/30, CI 83–99) |
-| **test_v3 (80)** | **current held-out (round 3, written blind)** | 66.3 % → **80.0 % (CI 70–87)** | 9/20 → **6/20 = 30 % (CI 15–52 %)** | 1/20 → **0/20** | 2.5 % → 5 % | 56.3 % → 83.3 % (40/48) |
+| **test_v3 (80)** | **current held-out (round 3, written blind)** | 66.3 % → **80.0 % (CI 70–87)**, unchanged in round 4 | 9/20 → **6/20 = 30 % (CI 15–52 %)** | 1/20 → **0/20** | 2.5 % → 5 % | 56.3 % → 83.3 % (40/48) |
 
 **How to read test_v2, honestly:**
 - It was written and **frozen by hash before** the round-2 extractor changes, and its per-case failures were hidden during development. Before those changes it scored **62.5 % with 10/16 urgent cases under-triaged**, the worst number in the project.
@@ -154,7 +154,7 @@ On 12 synthetic Mexican-Spanish clips (macOS TTS, 2 voices), Whisper base gave *
 
 ### Automated tests
 
-- `npx vitest run`: **423 tests in 11 files** pass. They cover the rules (at least one positive case per rule, plus a coverage guard), the extractor (including adversarial negations), uncertainty, sync whitelist, PIN, retention, DHIS2 export and eval integrity.
+- `npx vitest run`: **629 tests in 13 files** pass. They cover the rules (at least one positive case per rule, plus a coverage guard), the extractor (including adversarial negations), uncertainty, sync whitelist, PIN, retention, DHIS2 export and eval integrity.
 - `npm run e2e` (Playwright, Pixel 7 profile):
   1. **Full triage in airplane mode**, then sync when the signal returns.
   2. **"No sé" → the grey "No estoy segura" screen**, no save before she confirms, an override blocked without a reason, and the nearest facility shown. The test also checks the payload that reaches the server: no note, no transcript, rounded location.

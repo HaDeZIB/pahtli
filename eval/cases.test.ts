@@ -11,13 +11,15 @@ const here = dirname(fileURLToPath(import.meta.url));
 const cases = parseCases(readFileSync(join(here, 'cases.jsonl'), 'utf8'));
 
 describe('eval/cases.jsonl', () => {
-  it('tiene 210 casos: 60 dev, 30 test_v1, 40 test_v2 y 80 test_v3, ids únicos', () => {
-    expect(cases).toHaveLength(210);
-    expect(cases.filter((c) => c.split === 'dev')).toHaveLength(60);
+  // Ronda 4: +33 casos dev (D61–D93, etiqueta "r4"): frases de la revisión externa y variantes de contexto
+  // (quién es el paciente, negación, embarazo). Son casos de ajuste, no held-out.
+  it('tiene 243 casos: 93 dev, 30 test_v1, 40 test_v2 y 80 test_v3, ids únicos', () => {
+    expect(cases).toHaveLength(243);
+    expect(cases.filter((c) => c.split === 'dev')).toHaveLength(93);
     expect(cases.filter((c) => c.split === 'test_v1')).toHaveLength(30);
     expect(cases.filter((c) => c.split === 'test_v2')).toHaveLength(40);
     expect(cases.filter((c) => c.split === 'test_v3')).toHaveLength(80);
-    expect(new Set(cases.map((c) => c.id)).size).toBe(210);
+    expect(new Set(cases.map((c) => c.id)).size).toBe(243);
   });
 
   it('test_v2 sigue congelado (mismo contenido que al escribirlo, antes de los cambios al extractor)', async () => {

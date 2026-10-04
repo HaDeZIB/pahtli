@@ -32,7 +32,7 @@ export const COMMON_RULES: Rule[] = [
       es: `${CALL_911} Si en su comunidad hay un promotor capacitado con antídoto (suero antialacrán), avísele ya. Mantenga al niño tranquilo y quieto. Lave el piquete con agua y jabón y ponga algo frío envuelto en un trapo. ${NO_CORTAR}`,
       nah: '',
     },
-    fuente: `${CITE.DGE_ALACRAN_2012}, p. 32 impresa / p. 33 del PDF: "más del 80 % de las defunciones… se presentan en menores de 5 años"; antídoto "en todo menor de cinco años… ya sea que presente, o no presente, síntomas"; ${CITE.SSA_IAVYS_2026}, p. 13 (menores de 5 años: antídoto "de forma inmediata" y traslado a segundo nivel)`,
+    fuente: `${CITE.DGE_ALACRAN_2012}, p. 32 impresa / p. 33 del PDF: "más del 80 % de las defunciones… se presentan en menores de 5 años"; antídoto "en todo menor de cinco años… ya sea que presente, o no presente, síntomas". (${CITE.SSA_IAVYS_2026}, p. 13, dice antídoto "de forma inmediata" y traslado en menores de 5 años, pero en la tabla de "Intoxicación Moderada": no se usa como apoyo para el niño sin síntomas.)`,
     fuente_url: SRC.DGE_ALACRAN_2012,
     trigger: ['picadura_alacran'],
     needs: ['picadura_alacran', 'edad_meses'],
@@ -69,10 +69,13 @@ export const COMMON_RULES: Rule[] = [
       es: `${CALL_911} Si hay un promotor capacitado con antídoto (suero antialacrán), avísele ya. Mantenga a la persona tranquila y en reposo. ${NO_CORTAR}`,
       nah: '',
     },
-    fuente: `${CITE.SSA_IAVYS_2026}, p. 13 ("Mayores de 65 años, mujeres embarazadas y pacientes con cardiopatía, asma o insuficiencia renal, desnutrición, cirrosis, alcoholismo, diabetes, hipertensión arterial": antídoto "de forma inmediata" y traslado) y p. 29 (el promotor "canalizará al paciente a la unidad médica más cercana")`,
+    fuente: `${CITE.SSA_IAVYS_2026}, p. 29: "En caso de pacientes con antecedentes de diabetes, hipertensión arterial, asmáticos, mujeres embarazadas y lactantes, el promotor comunitario administrará el antídoto específico y canalizará al paciente a la unidad médica más cercana"; p. 13, tabla "Intoxicación Moderada" ("Mayores de 65 años, mujeres embarazadas y pacientes con cardiopatía, asma o insuficiencia renal, desnutrición, cirrosis, alcoholismo, diabetes, hipertensión arterial": antídoto "de forma inmediata" y traslado). Nivel urgencia SIN síntomas: adaptación de Pahtli (decisión provisional #36)`,
     fuente_url: SRC.SSA_IAVYS_2026,
     trigger: ['picadura_alacran'],
     needs: ['picadura_alacran', 'edad_meses', 'embarazada', 'diabetes', 'hipertension', 'enfermedad_cronica'],
+    // adaptado (revisión ronda 4): p. 29 dice "canalizará a la unidad médica más cercana" (sin decir urgencia) y la tabla
+    // de p. 13 es para intoxicación MODERADA. Pahtli lo pone en urgencia aunque no tenga síntomas porque la promotora no
+    // da antídoto: el antídoto que la fuente pide "de inmediato" solo se consigue saliendo ya. Pendiente Dra. Ines (#36).
     fidelidad: 'adaptado',
   },
   {
@@ -289,15 +292,16 @@ export const COMMON_RULES: Rule[] = [
     id: 'NHS-VOM-GREEN-01',
     block: 'common',
     level: 'urgencia',
-    applies: (f) => possiblyAge(f, years(12)) && has(f, 'vomito_verde'),
-    explicacion: { es: 'Adulto o adolescente que vomita verde.', nah: '' },
-    accion: { es: `${CALL_911} Que tome solo traguitos de agua si los tolera.`, nah: '' },
-    fuente: `${CITE.NHS} Diarrhoea and vomiting (revisada 21-12-2023), "Call 999 if": "have green vomit (adults)"`,
+    // Revisión ronda 4: la misma lista de la NHS trae "yellow-green or green vomit (children)": aplica a TODA edad
+    // (antes solo desde los 12 años; un niño que vomita verde salía "Atender aquí").
+    applies: (f) => has(f, 'vomito_verde'),
+    explicacion: { es: 'Vomita verde (o amarillo verdoso, en un niño).', nah: '' },
+    accion: { es: `${CALL_911} No le dé de comer.`, nah: '' },
+    fuente: `${CITE.NHS} Diarrhoea and vomiting (revisada 21-12-2023), "Call 999 or go to A&E if you or your child": "have green vomit (adults)", "have yellow-green or green vomit (children)"`,
     fuente_url: SRC.NHS_DIARRHOEA_VOMITING,
     trigger: ['vomito_verde'],
-    needs: ['vomito_verde', 'edad_meses'],
-    // adaptado: la NHS dice "adultos"; se aplica desde los 12 años (el corte de adulto del IITT).
-    fidelidad: 'adaptado',
+    needs: ['vomito_verde'],
+    fidelidad: 'verbatim',
   },
   {
     id: 'NHS-DM-VOM-01',
@@ -381,7 +385,11 @@ export const COMMON_RULES: Rule[] = [
     fuente_url: SRC.NHS_UTI,
     trigger: ['ardor_orinar'],
     needs: ['ardor_orinar', 'sexo', 'edad_meses', 'orina_sangre', 'diabetes'],
-    fidelidad: 'verbatim',
+    // adaptado (revisión ronda 4): es un SUBCONJUNTO de la lista urgente de la NHS. No se implementan "you use a catheter",
+    // "weakened immune system", "symptoms get worse quickly, or do not improve within 48 hours" (va como signo de regreso
+    // en ADV-ORINA-MUJER) ni las infecciones repetidas. El embarazo lo cubre IMSS-EMB-04; la fiebre y el dolor bajo las
+    // costillas, IMSS077-PIELO-01. Ver docs/clinical-sources.md.
+    fidelidad: 'adaptado',
   },
   // ── Espalda ──────────────────────────────────────────────────────────────────────────────────────
   {
@@ -429,13 +437,13 @@ export const COMMON_RULES: Rule[] = [
     id: 'NHS-WOUND-01',
     block: 'common',
     level: 'urgencia',
-    applies: (f) => anyOf(f, 'objeto_clavado', 'herida_profunda') || (herida(f) && has(f, 'herida_sin_sensibilidad')),
-    explicacion: { es: 'Herida muy grande o profunda, con algo clavado, o que deja sin sentir o sin mover la parte de abajo.', nah: '' },
+    applies: (f) => anyOf(f, 'objeto_clavado', 'herida_profunda', 'herida_cara_palma') || (herida(f) && has(f, 'herida_sin_sensibilidad')),
+    explicacion: { es: 'Herida muy grande o profunda, con algo clavado, cortada fuerte en la cara o en la palma de la mano, o que deja sin sentir o sin mover la parte de abajo.', nah: '' },
     accion: { es: `${CALL_911} Apriete alrededor con un trapo limpio para parar la sangre. NO saque lo que esté clavado. Si es en brazo o pierna, súbalo más arriba del corazón.`, nah: '' },
-    fuente: `${CITE.NHS} Cuts and grazes (revisada 02-04-2026), "Call 999 or go to A&E if": "you lose feeling near the wound or have trouble moving it", "the wound is very large or deep", "there's something stuck in the cut… do not try to take it out yourself"`,
+    fuente: `${CITE.NHS} Cuts and grazes (revisada 02-04-2026), "Call 999 or go to A&E if": "you lose feeling near the wound or have trouble moving it", "you have a bad cut on your face or the palm of your hand", "the wound is very large or deep", "there's something stuck in the cut… do not try to take it out yourself"`,
     fuente_url: SRC.NHS_CUTS,
-    trigger: ['objeto_clavado', 'herida_profunda', 'herida_sin_sensibilidad'],
-    needs: ['objeto_clavado', 'herida_profunda', 'herida_sin_sensibilidad'],
+    trigger: ['objeto_clavado', 'herida_profunda', 'herida_sin_sensibilidad', 'herida_cara_palma'],
+    needs: ['objeto_clavado', 'herida_profunda', 'herida_sin_sensibilidad', 'herida_cara_palma'],
     context: ['herida'],
     fidelidad: 'verbatim',
   },
@@ -466,8 +474,25 @@ export const COMMON_RULES: Rule[] = [
     fuente_url: SRC.IITT_REFCARD,
     trigger: ['quemadura', 'quemadura_grave'],
     needs: ['quemadura_grave', 'quemadura', 'edad_meses'],
-    // adaptado: no se usa el criterio ">15 % de la superficie" (no hay forma verificada de explicárselo a la promotora).
+    // adaptado: (1) no se usa el criterio ">15 % de la superficie" (no hay forma verificada de explicárselo a la promotora;
+    // lo cubre en parte NHS-BURN-02, "muy grande o profunda"); (2) la tarjeta dice que estos criterios son para quemaduras
+    // "de espesor parcial o total" (con ampollas o más hondas). Pahtli NO exige ese dato: la promotora no puede graduar
+    // la profundidad de una quemadura en un bebé o en un anciano. Sobre-triaje aceptado; pendiente Dra. Ines (#35).
     fidelidad: 'adaptado',
+  },
+  {
+    id: 'NHS-BURN-02',
+    block: 'common',
+    level: 'urgencia',
+    applies: (f) => has(f, 'quemadura_grande_profunda'),
+    explicacion: { es: 'Quemadura muy grande o profunda.', nah: '' },
+    accion: { es: `${CALL_911} Tápela con una sábana o trapo limpio y abrigue a la persona para que no se enfríe. No ponga pomadas, aceite, pasta de dientes ni remedios. No reviente las ampollas.`, nah: '' },
+    fuente: `${CITE.NHS} Burns and scalds (revisada 31-03-2026), "Call 999 or go to A&E if you have a burn or scald that": "is very large or deep"; ${CITE.WHO_BURNS_FS} ("Wrap the patient in a clean cloth", no aplicar nada, evitar el enfriamiento prolongado)`,
+    fuente_url: SRC.NHS_BURNS,
+    trigger: ['quemadura_grande_profunda'],
+    needs: ['quemadura_grande_profunda'],
+    context: ['quemadura'],
+    fidelidad: 'verbatim',
   },
   {
     id: 'NHS-BURN-01',
@@ -489,28 +514,30 @@ export const COMMON_RULES: Rule[] = [
     level: 'urgencia',
     applies: (f) =>
       has(f, 'golpe_cabeza') &&
-      (anyOf(f, 'inconsciente', 'letargico', 'convulsiones', 'vision_borrosa', 'pus_oido', 'sangre_oido', 'debilidad_un_lado', 'confusion', 'dificultad_hablar', 'perdida_equilibrio', 'dolor_cabeza', 'anticoagulante') ||
+      (anyOf(f, 'inconsciente', 'letargico', 'convulsiones', 'vision_borrosa', 'pus_oido', 'liquido_oido_nariz', 'sangre_oido', 'debilidad_un_lado', 'confusion', 'dificultad_hablar', 'perdida_equilibrio', 'dolor_cabeza', 'anticoagulante', 'golpe_cabeza_alto_riesgo') ||
         knownAge(f, 0, 12)),
-    explicacion: { es: 'Golpe en la cabeza con señas de peligro: no despierta o no se mantiene despierto, convulsión, ve o escucha mal, sale líquido o sangre del oído, debilidad, confusión, dolor de cabeza, toma medicina para adelgazar la sangre, o es un bebé menor de 1 año.', nah: '' },
+    explicacion: { es: 'Golpe en la cabeza con señas de peligro: no despierta o no se mantiene despierto, convulsión, ve o escucha mal, sale líquido por el oído o la nariz o sangre del oído, debilidad, confusión, dolor de cabeza, cayó de más de un metro o de 5 escalones, golpe a mucha velocidad, hundimiento o algo clavado en la cabeza, ojo morado sin golpe en el ojo, cambió su comportamiento, toma medicina para adelgazar la sangre, o es un bebé menor de 1 año.', nah: '' },
     accion: { es: `${CALL_911} No mueva el cuello si cayó de altura. Si no despierta, acuéstelo de lado.`, nah: '' },
-    fuente: `${CITE.NHS} Head injury and concussion (revisada 29-05-2025), "Call 999 if someone has hit their head and": "cannot stay awake", "has a fit (seizure)", "problems with their vision or hearing", "clear fluid coming from their ears or nose", "bleeding from their ears", "new numbness or weakness", "a bruise, swelling or large cut on their head and they are under 1 year old"; ${CITE.NHS} Headaches (revisada 17-04-2024), 999: "has had a head injury within the last 3 months"; ${CITE.IITT}, tarjeta "High-risk trauma": "Patient with bleeding disorder or on anticoagulation"`,
+    fuente: `${CITE.NHS} Head injury and concussion (revisada 29-05-2025), "Call 999 if someone has hit their head and": "cannot stay awake", "has a fit (seizure)", "has fallen from a height of more than 1 metre or 5 stairs", "problems with their vision or hearing", "has a black eye, but did not hit their eye", "clear fluid coming from their ears or nose", "bleeding from their ears", "new numbness or weakness", "hit their head at high speed", "has a head wound with something inside it or has a dent in their head", "a bruise, swelling or large cut on their head and they are under 1 year old", "their behaviour has changed"; ${CITE.NHS} Headaches (revisada 17-04-2024), 999: "has had a head injury within the last 3 months"; ${CITE.IITT}, tarjeta "High-risk trauma": "Patient with bleeding disorder or on anticoagulation"`,
     fuente_url: SRC.NHS_HEAD_INJURY,
     trigger: ['golpe_cabeza'],
-    needs: ['golpe_cabeza', 'letargico', 'vision_borrosa', 'dolor_cabeza', 'anticoagulante', 'pus_oido', 'edad_meses'],
+    needs: ['golpe_cabeza', 'golpe_cabeza_alto_riesgo', 'letargico', 'vision_borrosa', 'dolor_cabeza', 'anticoagulante', 'liquido_oido_nariz', 'edad_meses'],
     // Decisión provisional D11: anticoagulante con golpe → urgencia (IITT), no centro_hoy (NHS 111).
+    // Revisión ronda 4: "pus_oido" ("le sale pus o líquido del oído") se deja por si el líquido es claro (sobre-triaje
+    // aceptado); la NHS dice "clear fluid… ears or nose", que ahora tiene su propia clave (liquido_oido_nariz).
     fidelidad: 'adaptado',
   },
   {
     id: 'NHS-HEAD-02',
     block: 'common',
     level: 'centro_hoy',
-    applies: (f) => has(f, 'golpe_cabeza') && anyOf(f, 'vomito', 'mareo'),
-    explicacion: { es: 'Golpe en la cabeza y después vomitó o anda mareado.', nah: '' },
+    applies: (f) => has(f, 'golpe_cabeza') && anyOf(f, 'vomito', 'mareo', 'tomado_alcohol'),
+    explicacion: { es: 'Golpe en la cabeza y después vomitó o anda mareado, o había tomado alcohol o drogas.', nah: '' },
     accion: { es: 'Llevar HOY a la unidad de salud. Un adulto debe quedarse con la persona. Si no se mantiene despierta, convulsiona o le sale líquido del oído: URGENCIA.', nah: '' },
-    fuente: `${CITE.NHS} Head injury and concussion (revisada 29-05-2025), "Get help from NHS 111 if you or someone else recently had a head injury and": "are being sick (vomiting)", "feel dizzy"`,
+    fuente: `${CITE.NHS} Head injury and concussion (revisada 29-05-2025), "Get help from NHS 111 if you or someone else recently had a head injury and": "are being sick (vomiting)", "feel dizzy", "were drinking alcohol or taking drugs at the time of the injury"`,
     fuente_url: SRC.NHS_HEAD_INJURY,
     trigger: ['golpe_cabeza'],
-    needs: ['golpe_cabeza', 'vomito', 'mareo'],
+    needs: ['golpe_cabeza', 'vomito', 'mareo', 'tomado_alcohol'],
     fidelidad: 'verbatim',
   },
   {

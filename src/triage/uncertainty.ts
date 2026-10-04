@@ -65,6 +65,14 @@ export interface Uncertainty {
  */
 export const MAX_FOLLOWUP_QUESTIONS = 4;
 
+/**
+ * Ronda 4 (revisión FLOW-SEX-GATE-CAP): "¿Es hombre o mujer?" es una compuerta, no una pregunta clínica (el motor ya no
+ * la cuenta). Si se hizo, la app permite una pregunta más; si no, la pregunta de sexo le quitaba el lugar a una clínica.
+ */
+export function maxFollowUps(asked: readonly string[]): number {
+  return MAX_FOLLOWUP_QUESTIONS + (asked.includes('sexo') ? 1 : 0);
+}
+
 /** Menos de estas palabras con letras = descripción demasiado corta para confiar. */
 export const MIN_WORDS = 4;
 /** Con menos de estos hallazgos positivos, un bebé < 2 meses o una embarazada se marcan como inciertos. */
@@ -211,7 +219,7 @@ export function assessUncertainty(input: UncertaintyInput): Uncertainty {
   const answeredSet = new Set(answered.filter((q) => !q.skipped).map((q) => q.campo));
   const pending = (triageResult.preguntas ?? []).filter((q) => !answeredSet.has(q.campo));
   const skipped = answered.some((q) => q.skipped);
-  if (skipped || (pending.length && answeredSet.size < MAX_FOLLOWUP_QUESTIONS)) {
+  if (skipped || (pending.length && answeredSet.size < maxFollowUps([...answeredSet]))) {
     add('questions_pending', 'Quedaron preguntas sin responder que podrían subir el nivel.');
   }
 
