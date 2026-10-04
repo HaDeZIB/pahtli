@@ -155,7 +155,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }));
     return res.status(200).json({ mode, cases, days, source: 'supabase' });
   } catch (e) {
-    console.error('cases query failed', (e as { message?: string })?.message ?? 'error');
-    return res.status(200).json({ mode, ...empty, days, source: 'error' });
+    const err = e as { message?: string; code?: string };
+    console.error('cases query failed', err?.code ?? '', err?.message ?? 'error');
+    return res.status(200).json({ mode, ...empty, days, source: 'error', error_code: err?.code ?? 'unknown' });
   }
 }
