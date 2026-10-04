@@ -150,12 +150,19 @@ test('"No sé" → aviso "No estoy segura", la promotora decide antes de guardar
   await page.getByRole('button', { name: 'Guardar', exact: true }).click();
   await expect(page.getByRole('button', { name: 'Guardado' })).toBeVisible();
 
-  // Caso sin signos de alarma: el motor pregunta. A la primera pregunta Sí/No se responde "No sé".
+  // Caso sin signos de alarma: antes de "Atender aquí" el motor revisa los signos de peligro (lista para 5 años o más,
+  // sin palabras de bebé). A esa revisión y a la siguiente pregunta Sí/No se responde "No sé".
   await page.goto('/#/');
   await page.getByRole('tab', { name: 'Escribir' }).click();
   await page.locator('#transcript').fill('Niña de 5 años con calentura desde ayer, dice su mamá que comió poquito.');
   await page.getByRole('main').getByRole('button', { name: 'Evaluar', exact: true }).click();
   await page.waitForURL(/#\/preguntas/);
+  await expect(page.getByRole('heading', { name: '¿Tiene alguno de estos signos de peligro?' })).toBeVisible();
+  const signs = page.getByTestId('question-list');
+  await expect(signs).toContainText('Le cuesta mucho trabajo respirar');
+  await expect(signs).not.toContainText('mamar');
+  await page.getByRole('button', { name: 'No sé', exact: true }).click();
+  await expect(signs).toHaveCount(0);
   await page.getByRole('button', { name: 'No sé', exact: true }).click();
   // Las demás preguntas (si las hay) se contestan "No".
   for (let i = 0; i < 4 && page.url().includes('#/preguntas'); i++) {
@@ -169,6 +176,7 @@ test('"No sé" → aviso "No estoy segura", la promotora decide antes de guardar
   await expect(page.getByRole('heading', { level: 1 })).toHaveText(/no estoy segura/i);
   const unc = page.getByTestId('uncertainty');
   await expect(unc).toContainText('No estoy segura — consulte al personal de salud');
+  await expect(unc).toContainText('No se confirmó si tiene signos de peligro.');
   await expect(unc).toContainText('“No sé”');
   await expect(page.getByText('Con los datos que hay, las reglas dicen:')).toBeVisible();
 
@@ -199,7 +207,7 @@ test('"No sé" → aviso "No estoy segura", la promotora decide antes de guardar
     result: { level: 'aqui' },
     decision: { final_level: 'centro_hoy', overridden: true, reason: 'indicacion_personal', note: 'Rosa, casa junto a la iglesia' },
   });
-  expect(saved[0].uncertainty_codes).toContain('answered_unknown');
+  expect(saved[0].uncertainty_codes).toEqual(expect.arrayContaining(['answered_unknown', 'danger_signs_unchecked']));
 
   // Historial: nivel cambiado + etiqueta "No segura". Al enviar, la nota y el texto libre se quedan en el celular.
   await page.getByRole('button', { name: 'Nuevo paciente' }).click();
@@ -214,7 +222,7 @@ test('"No sé" → aviso "No estoy segura", la promotora decide antes de guardar
     decision: { final_level: 'centro_hoy', overridden: true, reason: 'indicacion_personal' },
     uncertain: true,
   });
-  expect(sent.uncertainty_reasons).toContain('answered_unknown');
+  expect(sent.uncertainty_reasons).toEqual(expect.arrayContaining(['answered_unknown', 'danger_signs_unchecked']));
   const wire = JSON.stringify(sent);
   expect(wire).not.toContain('Rosa');
   expect(wire).not.toContain('calentura');

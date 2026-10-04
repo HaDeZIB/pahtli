@@ -60,6 +60,7 @@ const UNCERTAINTY_PREFIXES: [string, string][] = [
   ['La IA y las palabras clave no coinciden', 'llm_disagree'],
   ['Bebé de menos de 2 meses', 'young_infant_few'],
   ['Embarazo con pocos datos', 'pregnancy_few'],
+  ['No se confirmó si tiene signos de peligro', 'danger_signs_unchecked'],
 ];
 
 export function uncertaintyCode(reason: string): string {

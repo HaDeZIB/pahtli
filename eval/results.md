@@ -1,6 +1,6 @@
 # Resultados de la evaluación de Pahtli
 
-> Generado por `npm run eval` el 2026-10-04T01:36:57.665Z. Pipeline: texto → `keywordExtract` → `triage` (Node, sin LLM) + fail-safe `assessUncertainty`.
+> Generado por `npm run eval` el 2026-10-04T08:02:49.856Z. Pipeline: texto → `keywordExtract` → `triage` (Node, sin LLM) + fail-safe `assessUncertainty`.
 > Viñetas sintéticas escritas por el equipo, **pendientes de validación clínica por la Dra. Ines**.
 > `dev` se usó para ajustar. `test_v1` (held-out original) ya se vio y se usó en la ronda 2: ahora es solo regresión. **`test_v2` es el held-out vigente**: se escribió y congeló antes de los cambios de la ronda 2.
 
@@ -23,9 +23,9 @@
 | Síntomas anotados extraídos bien (afirmados · negados) | — | — | 94.6% (70/74) · 63/67 · 7/7 | 94.6% (70/74) · 63/67 · 7/7 |
 | Nivel con hallazgos anotados (extracción perfecta) | — | — | 100.0% (36/36) | 100.0% (36/36) |
 | Casos `expected_uncertain`: aviso "no estoy segura" · pregunta algo · pregunta el dato esperado | 2/2 · 2/2 · 1/2 | 2/2 · 2/2 · 2/2 | 4/4 · 3/4 · 2/4 | 8/8 · 7/8 · 5/8 |
-| Aviso "no estoy segura" en casos sin falta de datos (ruido) — si salta las preguntas | 30/58 | 11/28 | 20/36 | 61/122 |
+| Aviso "no estoy segura" en casos sin falta de datos (ruido) — si salta las preguntas | 31/58 | 14/28 | 20/36 | 65/122 |
 | …ruido si contesta las preguntas como en la app (hasta 4; Sí/No según lo anotado o "No") | 11/58 | 4/28 | 9/36 | 24/122 |
-| Latencia extracción+triaje (media / p95, ms) | 0.55 / 1.89 | 0.4 / 0.66 | 0.4 / 1 | 0.47 / 1 |
+| Latencia extracción+triaje (media / p95, ms) | 0.58 / 2.05 | 0.38 / 0.62 | 0.39 / 0.67 | 0.48 / 0.9 |
 
 ### Matriz de confusión — dev
 
@@ -83,7 +83,7 @@ Síntomas anotados no extraídos (o con polaridad equivocada):
 
 - **T2-V02** (test_v2) esperado `urgencia`, predicho `aqui` — SUB-TRIAJE (extracción incompleta): no disparó IMCI-RESP-03 [tiraje=?]
   - Texto: "Oiga, el niño de Lupita tiene dos años, trae tos y calentura desde hace tres días, y ahorita que le levanté la camisa se le mete bien la piel entre las costillas cuando jala aire."
-  - Reglas disparadas: IMCI-NOSIGNS-01 · preguntas de seguimiento: resp_por_min, tiraje · **la app pregunta el dato faltante** · aviso "no estoy segura" (questions_pending)
+  - Reglas disparadas: IMCI-NOSIGNS-01 · preguntas de seguimiento: signo_peligro_general, resp_por_min, tiraje · **la app pregunta el dato faltante** · aviso "no estoy segura" (danger_signs_unchecked, questions_pending)
 - **T2-V09** (test_v2) esperado `urgencia`, predicho `centro_hoy` — SUB-TRIAJE (extracción incompleta): no disparó IITT-R-POISON-01 [intoxicacion=?]
   - Texto: "La señora de 40 años se tomó un frasco entero de pastillas de su mamá, la encontraron muy dormida en su cuarto."
   - Reglas disparadas: IITT-Y-WEAK-01 · preguntas de seguimiento: rigidez_nuca, dolor_cabeza · la app NO pregunta el dato faltante · aviso "no estoy segura" (questions_pending)

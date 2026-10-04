@@ -1,7 +1,9 @@
 import type { Findings, Lang } from '../types';
 import { SYMPTOMS } from '../triage/findings';
+import { SCREENING_KEY, SCREENING_LABEL } from '../triage/screening';
 
 export function symptomLabel(key: string, lang: Lang = 'es'): string {
+  if (key === SCREENING_KEY) return SCREENING_LABEL;
   const s = (SYMPTOMS as Record<string, { es: string; nah?: string } | undefined>)[key];
   if (!s) return key.replace(/_/g, ' ');
   return lang === 'nah' && s.nah ? s.nah : s.es;

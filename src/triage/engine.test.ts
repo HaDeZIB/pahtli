@@ -3,6 +3,13 @@ import type { Findings, TriageLevel } from '../types';
 import { LEVEL_RANK } from '../types';
 import { ALL_RULES, MODEL_ESCALATION_ID, NO_DANGER_RULE, evaluateRules, followUpQuestions, triage } from './engine';
 import { NUMERIC_FIELDS, PREGUNTAS, SYMPTOMS, isSymptomKey } from './findings';
+import { SIGNOS_MAYOR, SIGNOS_NINO, SIGNOS_SIN_EDAD, isScreeningKey, screeningSigns, type SignoConRegla } from './screening';
+import {
+  NO_DANGER_DIARRHEA, NO_DANGER_NEUTRAL_ACCION, NO_DANGER_NEUTRAL_DIARRHEA_ACCION, OLDER_DIARRHEA_RETURN_SIGNS, OLDER_RETURN_SIGNS,
+  RULES_BY_ID, olderNoDangerAccion, type ReturnSign,
+} from './rules';
+import { keywordExtract } from '../ai/keywords';
+import { EXTRACTION_SCHEMA, parseLLMOutput } from '../ai/prompt';
 import { classifySyndrome } from './syndrome';
 import { days, years } from './rules/helpers';
 
@@ -106,6 +113,8 @@ const POSITIVE: Record<string, Findings> = {
   'IITT-R-SHOCK-02': F({ manos_pies_frios: true, sudor_frio: true }, { edad_meses: years(45) }),
   'IITT-Y-VISION-01': F({ vision_borrosa: true }, { edad_meses: years(50) }),
   'MHGAP-SUI-01': F({ ideas_suicidas: true }, { edad_meses: years(30) }),
+  // Respuesta "Sí" a la revisión de signos de peligro (src/triage/screening.ts)
+  'PAHTLI-GDS-SCREEN': F({ signo_peligro_general: true }, { edad_meses: years(53) }),
 };
 
 const FINDINGS_FIELDS = new Set(['edad_meses', 'sexo', 'embarazada', 'semanas_embarazo', 'duracion_dias', 'temperatura_c', 'resp_por_min']);
@@ -134,7 +143,7 @@ describe('integridad del catálogo de reglas', () => {
   it('needs/context solo usan síntomas del catálogo o campos de Findings', () => {
     for (const r of ALL_RULES) {
       for (const n of [...(r.needs ?? []), ...(r.context ?? [])]) {
-        expect(isSymptomKey(n) || FINDINGS_FIELDS.has(n), `${r.id} → ${n}`).toBe(true);
+        expect(isSymptomKey(n) || isScreeningKey(n) || FINDINGS_FIELDS.has(n), `${r.id} → ${n}`).toBe(true);
       }
     }
   });
@@ -298,8 +307,12 @@ describe('asimetría de seguridad con el modelo', () => {
 });
 
 describe('preguntas de seguimiento', () => {
-  it('niño <5 con tos sin contar respiraciones → primero contar respiraciones', () => {
-    const q = triage(F({ tos: true }, { edad_meses: 24 })).preguntas;
+  it('niño <5 con tos sin contar respiraciones → signos de peligro y luego contar respiraciones', () => {
+    // AIEPI: primero los signos generales de peligro, después "¿tiene tos?" → contar respiraciones.
+    const q0 = triage(F({ tos: true }, { edad_meses: 24 })).preguntas;
+    // La revisión va además de las 2 preguntas clínicas, que no cambian.
+    expect(q0.map((x) => x.campo)).toEqual(['signo_peligro_general', 'resp_por_min', 'tiraje']);
+    const q = triage(F({ tos: true, signo_peligro_general: false }, { edad_meses: 24 })).preguntas;
     expect(q.length).toBeGreaterThan(0);
     expect(q.length).toBeLessThanOrEqual(2);
     expect(q[0]).toMatchObject({ campo: 'resp_por_min', tipo: 'contar_respiraciones' });
@@ -317,10 +330,11 @@ describe('preguntas de seguimiento', () => {
     expect(q[0]).toMatchObject({ campo: 'edad_meses', tipo: 'numero' });
   });
 
-  it('nunca más de 2 preguntas y sin campos repetidos', () => {
-    for (const f of [F({ fiebre: true }), F({ tos: true }), F({ diarrea: true }), F({}, { embarazada: true })]) {
+  it('nunca más de 2 preguntas clínicas (más la revisión de signos de peligro) y sin campos repetidos', () => {
+    for (const f of [F({ fiebre: true }), F({ tos: true }), F({ diarrea: true }), F({}, { embarazada: true }), F({ tos: true }, { edad_meses: 24, resp_por_min: 45 })]) {
       const q = triage(f).preguntas;
-      expect(q.length).toBeLessThanOrEqual(2);
+      expect(q.filter((x) => x.campo !== 'signo_peligro_general').length).toBeLessThanOrEqual(2);
+      expect(q.length).toBeLessThanOrEqual(3);
       expect(new Set(q.map((x) => x.campo)).size).toBe(q.length);
     }
   });
@@ -342,7 +356,7 @@ describe('preguntas de seguimiento', () => {
 
   it('embarazada sin síntomas → pregunta signos de alarma obstétrica', () => {
     const q = triage(F({}, { embarazada: true, edad_meses: years(24) })).preguntas;
-    expect(q.length).toBe(2);
+    expect(q.filter((x) => x.campo !== 'signo_peligro_general').length).toBe(2);
     expect(q.every((x) => x.tipo === 'si_no')).toBe(true);
   });
 
@@ -549,6 +563,197 @@ describe('regresiones del fact-check clínico (oct-2026)', () => {
 
   it('IMCI-RESP-02 con edad desconocida no afirma "1 a 4 años" como hecho', () => {
     expect(RULE_TEXT('IMCI-RESP-02')).toMatch(/edad aún no confirmada/);
+  });
+});
+
+describe('edad: preguntas, acción por defecto y revisión de signos de peligro (reporte: mujer de 53 años)', () => {
+  /** Palabras de lactancia o de bebé. "pecho" solo cuenta en ese sentido ("dolor en el pecho" es de adulto). */
+  const BEBE = /mamar|amamant|bebé|o el pecho|con el pecho|dar el pecho|pecho si es|mollera/i;
+  const DOSE = /\d+\s*(mg|ml|mcg|UI|gotas)\b/i;
+
+  /** Simula la pantalla de preguntas: contesta hasta 4 (la respuesta dada por campo, si no "No"), re-triando cada vez. */
+  function flow(text: string, answers: Record<string, boolean> = {}) {
+    let f = keywordExtract(text);
+    let r = triage(f);
+    const asked: { campo: string; texto: string }[] = [];
+    while (asked.length < 4) {
+      const q = r.preguntas.find((p) => !asked.some((a) => a.campo === p.campo));
+      if (!q) break;
+      asked.push({ campo: q.campo, texto: q.pregunta.es });
+      const v = answers[q.campo] ?? false;
+      f = q.campo === 'embarazada' ? { ...f, embarazada: v } : { ...f, sintomas: { ...f.sintomas, [q.campo]: v } };
+      r = triage(f);
+    }
+    return { f, r, asked };
+  }
+
+  it('mujer de 53 años con diarrea: la primera pregunta es la revisión de signos de peligro, con palabras de adulto', () => {
+    const f = keywordExtract('mujer de 53 años con diarrea');
+    expect(f.edad_meses).toBe(years(53));
+    const r = triage(f);
+    expect(r.level).toBe('aqui');
+    expect(r.preguntas[0]).toMatchObject({ campo: 'signo_peligro_general', tipo: 'si_no' });
+    const q = r.preguntas[0].pregunta.es;
+    expect(q.split('\n')[0]).toBe('¿Tiene alguno de estos signos de peligro?');
+    expect(q).toMatch(/Le cuesta mucho trabajo respirar/);
+    expect(q).toMatch(/dolor u opresión en el pecho/);
+    expect(q).not.toMatch(BEBE);
+    expect(r.preguntas[0].porque).toMatch(/signo de peligro/);
+  });
+
+  it('mujer de 53 años con diarrea: ninguna pregunta ni la acción hablan de mamar o del pecho; no pregunta embarazo', () => {
+    const { r, asked } = flow('mujer de 53 años con diarrea');
+    expect(asked[0].campo).toBe('signo_peligro_general');
+    for (const a of asked) expect(a.texto, a.campo).not.toMatch(BEBE);
+    expect(asked.map((a) => a.campo)).not.toContain('embarazada');
+    expect(asked.find((a) => a.campo === 'no_puede_beber')?.texto).toBe('Ofrézcale agua: ¿le es imposible beber?');
+    // "No" a todo → aquí con la acción de adulto (IITT verde + Plan A de la OMS 2005).
+    expect(r.level).toBe('aqui');
+    expect(r.fired.map((x) => x.id)).toEqual(['IITT-NOSIGNS-01']);
+    const d = r.fired[0];
+    expect(d.accion.es).toMatch(/Vida Suero Oral/);
+    expect(d.accion.es).toMatch(/todo lo que quiera/);
+    expect(d.accion.es).not.toMatch(BEBE);
+    expect(d.accion.es).not.toMatch(/zinc/i);
+    expect(d.accion.es).not.toMatch(DOSE);
+    expect(d.fuente).toMatch(/older children and adults/);
+    expect(d.fuente).toMatch(/Move to low acuity/);
+  });
+
+  it('mujer de 53 años con dolor de cabeza o tos: acción de adulto sin lactancia; tiraje sin "levante la ropa"', () => {
+    const head = flow('mujer de 53 años con dolor de cabeza');
+    expect(head.asked.map((a) => a.campo)).not.toContain('embarazada');
+    expect(head.r.fired[0].id).toBe('IITT-NOSIGNS-01');
+    expect(head.r.fired[0].accion.es).not.toMatch(BEBE);
+    expect(head.r.fired[0].accion.es).toMatch(/dolor u opresión en el pecho/);
+    const cough = flow('mujer de 53 años con tos');
+    for (const a of cough.asked) expect(a.texto, a.campo).not.toMatch(/^Levante la ropa/);
+    expect(cough.r.fired[0].id).toBe('IITT-NOSIGNS-01');
+  });
+
+  it('"Sí" a la revisión → urgencia por PAHTLI-GDS-SCREEN', () => {
+    const { r } = flow('mujer de 53 años con diarrea', { signo_peligro_general: true });
+    expect(r.level).toBe('urgencia');
+    expect(r.fired[0].id).toBe('PAHTLI-GDS-SCREEN');
+    expect(r.fired[0].accion.es).toMatch(/URGENTE/);
+    expect(r.preguntas).toEqual([]);
+  });
+
+  it('niño de 2 años con diarrea: conserva las palabras de AIEPI (mamar, pecho) y la acción IMCI-NOSIGNS-01', () => {
+    const r0 = triage(keywordExtract('niño de 2 años con diarrea'));
+    expect(r0.preguntas[0].campo).toBe('signo_peligro_general');
+    expect(r0.preguntas[0].pregunta.es).toMatch(/No puede beber nada ni mamar/);
+    expect(r0.preguntas[0].pregunta.es).toMatch(/Vomita todo/);
+    expect(r0.preguntas[0].pregunta.es).not.toMatch(/pecho/); // la lista de AIEPI no lleva dolor de pecho
+    const { r, asked } = flow('niño de 2 años con diarrea');
+    expect(asked.find((a) => a.campo === 'no_puede_beber')?.texto).toBe(PREGUNTAS.no_puede_beber);
+    expect(r.fired.map((x) => x.id)).toEqual(['IMCI-NOSIGNS-01']);
+    expect(r.fired[0].accion.es).toBe(NO_DANGER_DIARRHEA.accion.es);
+  });
+
+  it('edad desconocida: primero la edad (si la necesita), luego la revisión con palabras para cualquier edad', () => {
+    const r = triage(keywordExtract('tiene diarrea desde ayer'));
+    expect(r.preguntas.map((x) => x.campo).slice(0, 2)).toEqual(['edad_meses', 'signo_peligro_general']);
+    expect(r.preguntas.length).toBe(3); // + 1 pregunta clínica (2 clínicas en total, contando la edad)
+    expect(r.preguntas[1].pregunta.es).toMatch(/ni mamar, si es bebé/);
+    expect(r.fired[0].id).toBe('IMCI-NOSIGNS-01');
+    expect(r.fired[0].accion.es).toBe(NO_DANGER_NEUTRAL_DIARRHEA_ACCION);
+    expect(r.fired[0].accion.es).not.toMatch(/pecho|mamar/i);
+    const plain = triage(F({}));
+    expect(plain.fired[0].accion.es).toBe(NO_DANGER_NEUTRAL_ACCION);
+    expect(plain.fired[0].accion.es).not.toMatch(/pecho|mamar/i);
+    // Sin edad y sin datos: la revisión va primero (la edad no cambiaría nada).
+    expect(plain.preguntas[0].campo).toBe('signo_peligro_general');
+  });
+
+  it('la revisión solo se hace antes de "aquí", y nunca al lactante menor de 2 meses', () => {
+    expect(triage(F({ tos: true }, { edad_meses: 24, resp_por_min: 45 })).preguntas.map((x) => x.campo)).not.toContain('signo_peligro_general');
+    const yi = triage(F({}, { edad_meses: days(20) }));
+    expect(yi.level).toBe('aqui');
+    expect(yi.preguntas.map((x) => x.campo)).not.toContain('signo_peligro_general');
+    // Ya respondida ("No"): no se repite.
+    expect(triage(F({ diarrea: true, signo_peligro_general: false }, { edad_meses: years(53) })).preguntas.map((x) => x.campo)).not.toContain('signo_peligro_general');
+  });
+
+  it('embarazo: se pregunta de 10 a 49 años y con edad desconocida; no a los 53, a los 9 ni a un hombre', () => {
+    const asks = (f: Findings) => followUpQuestions({ ...f, sintomas: { ...f.sintomas, signo_peligro_general: false } }, 'aqui', 20).map((x) => x.campo);
+    const headache = (rest: Omit<Findings, 'sintomas'>) => asks(F({ dolor_cabeza: true }, rest));
+    expect(headache({ edad_meses: years(30), sexo: 'F' })).toContain('embarazada');
+    expect(headache({ edad_meses: years(10), sexo: 'F' })).toContain('embarazada');
+    expect(headache({ edad_meses: years(49) + 11, sexo: 'F' })).toContain('embarazada');
+    expect(headache({})).toContain('embarazada');
+    expect(headache({ edad_meses: years(50), sexo: 'F' })).not.toContain('embarazada');
+    expect(headache({ edad_meses: years(53), sexo: 'F' })).not.toContain('embarazada');
+    expect(headache({ edad_meses: years(9), sexo: 'F' })).not.toContain('embarazada');
+    expect(headache({ edad_meses: years(30), sexo: 'M' })).not.toContain('embarazada');
+    // Una regla que exige embarazo no motiva preguntas a los 53 años ("Por qué" no dice "Embarazada…").
+    for (const q of followUpQuestions(F({ dolor_cabeza: true, signo_peligro_general: false }, { edad_meses: years(53), sexo: 'F' }), 'aqui', 20)) {
+      expect(q.porque, q.campo).not.toMatch(/^Embarazada/);
+    }
+  });
+
+  it('preguntas por edad: mollera y lágrimas no se preguntan a 5 años o más', () => {
+    for (const age of [years(5), years(30)]) {
+      const q = followUpQuestions(F({ diarrea: true, ojos_hundidos: true, signo_peligro_general: false }, { edad_meses: age }), 'aqui', 30).map((x) => x.campo);
+      expect(q, String(age)).not.toContain('mollera_hundida');
+      expect(q, String(age)).not.toContain('sin_lagrimas');
+    }
+    expect(followUpQuestions(F({ diarrea: true, ojos_hundidos: true, signo_peligro_general: false }, { edad_meses: 18 }), 'aqui', 30).map((x) => x.campo)).toContain('mollera_hundida');
+  });
+
+  /** Cada `ejemplo` del signo, a esa edad, dispara al menos una de sus reglas y llega al nivel mínimo. */
+  function expectBacked(signs: (SignoConRegla | ReturnSign)[], age: number | undefined, minLevel: TriageLevel) {
+    for (const s of signs) {
+      for (const ej of s.ejemplos) {
+        const f: Findings = { ...ej, sintomas: { ...ej.sintomas }, ...(age === undefined ? {} : { edad_meses: age }) };
+        const fired = evaluateRules(f).map((r) => r.id);
+        expect(fired.some((id) => s.reglas.includes(id)), `${s.texto} @${age}: ${fired.join(',')}`).toBe(true);
+        expect(LEVEL_RANK[triage(f).level], `${s.texto} @${age}`).toBeGreaterThanOrEqual(LEVEL_RANK[minLevel]);
+        for (const id of s.reglas) expect(RULES_BY_ID[id], id).toBeDefined();
+      }
+    }
+  }
+
+  it('revisión: cada signo de cada lista ya es URGENCIA por su propia regla a esa edad', () => {
+    for (const age of [2, 12, 24, 59]) { expect(screeningSigns(age)).toBe(SIGNOS_NINO); expectBacked(SIGNOS_NINO, age, 'urgencia'); }
+    for (const age of [60, years(8), years(11) + 11, years(12), years(30), years(53), years(80)]) expectBacked(screeningSigns(age), age, 'urgencia');
+    expectBacked(SIGNOS_SIN_EDAD, undefined, 'urgencia');
+    expect(screeningSigns(undefined)).toBe(SIGNOS_SIN_EDAD);
+    // El dolor de pecho es urgencia (CDC-HEART-01) solo desde los 12 años.
+    expect(screeningSigns(years(8)).map((s) => s.texto).join(' ')).not.toMatch(/pecho/);
+    expect(screeningSigns(years(12)).map((s) => s.texto).join(' ')).toMatch(/pecho/);
+    expect(SIGNOS_MAYOR.length).toBeGreaterThan(SIGNOS_NINO.length);
+  });
+
+  it('IITT-NOSIGNS-01: cada signo para ir de inmediato ya es urgencia o centro hoy a esa edad', () => {
+    for (const age of [60, years(8), years(11) + 11, years(12), years(30), years(53), years(80)]) {
+      expectBacked(OLDER_RETURN_SIGNS.filter((s) => age >= (s.desdeMeses ?? 0)), age, 'centro_hoy');
+      expectBacked(OLDER_DIARRHEA_RETURN_SIGNS.filter((s) => age >= (s.desdeMeses ?? 0)), age, 'centro_hoy');
+    }
+    expect(olderNoDangerAccion(years(8), false)).not.toMatch(/pecho/);
+    expect(olderNoDangerAccion(years(53), false)).toMatch(/dolor u opresión en el pecho/);
+    expect(olderNoDangerAccion(years(7), true)).toMatch(/de media taza a una taza/);
+    expect(olderNoDangerAccion(years(10), true)).toMatch(/todo lo que quiera/);
+    expect(RULES_BY_ID['IITT-NOSIGNS-01']).toBeDefined();
+    expect(RULES_BY_ID['IITT-NOSIGNS-01'].level).toBe('aqui');
+  });
+
+  it('todas las variantes de la acción por defecto: sin dosis y sin lactancia (salvo la de AIEPI para menores de 5)', () => {
+    const texts = [NO_DANGER_NEUTRAL_ACCION, NO_DANGER_NEUTRAL_DIARRHEA_ACCION, ...[60, years(9), years(12), years(53)].flatMap((a) => [olderNoDangerAccion(a, false), olderNoDangerAccion(a, true)])];
+    for (const t of texts) {
+      expect(t).not.toMatch(DOSE);
+      expect(t).not.toMatch(BEBE);
+    }
+  });
+
+  it('signo_peligro_general solo se llena con la pregunta: ni el extractor ni el LLM lo pueden marcar', () => {
+    for (const t of ['tiene un signo de peligro general', 'signo peligro general', 'Tiene un signo de peligro (revisión de signos de peligro)', 'signo_peligro_general']) {
+      expect(keywordExtract(t).sintomas.signo_peligro_general, t).toBeUndefined();
+    }
+    expect(isSymptomKey('signo_peligro_general')).toBe(false);
+    expect((EXTRACTION_SCHEMA.properties.sintomas.items.enum as readonly string[]).includes('signo_peligro_general')).toBe(false);
+    const parsed = parseLLMOutput('{"sintomas":["signo_peligro_general","tos"],"edad_meses":636,"sexo":"F","embarazada":null,"semanas_embarazo":null,"duracion_dias":null,"temperatura_c":null,"resp_por_min":null,"level_hint":"aqui"}');
+    expect(parsed?.findings.sintomas).toEqual({ tos: true });
   });
 });
 

@@ -138,6 +138,7 @@ export default function About() {
                 <li>Pasa la voz a texto y encuentra edad, síntomas y signos.</li>
                 <li>Aplica reglas de guías oficiales y dice cuál regla disparó y por qué.</li>
                 <li>Hace hasta 4 preguntas cuando falta un dato que cambia el resultado.</li>
+                <li>Antes de decir “Atender aquí”, pregunta por los signos de peligro según la edad.</li>
                 <li>Avisa “No estoy segura” cuando los datos no alcanzan.</li>
                 <li>Muestra el centro de salud u hospital más cercano (catálogo CLUES).</li>
               </ul>
@@ -160,6 +161,7 @@ export default function About() {
             <li>No entendió ningún síntoma, o la descripción es muy corta o parece mal transcrita.</li>
             <li>Falta la edad y con alguna edad el nivel podría subir.</li>
             <li>Se respondió “No sé” o se saltaron preguntas que podían subir el nivel.</li>
+            <li>Iba a decir “Atender aquí”, pero no se confirmó que no tenga signos de peligro.</li>
             <li>La IA de lenguaje y las palabras clave no coinciden en un signo de alarma.</li>
             <li>Bebé de menos de 2 meses o embarazo con pocos datos (si no es ya urgencia).</li>
           </ul>

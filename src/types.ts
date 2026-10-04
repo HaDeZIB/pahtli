@@ -45,7 +45,7 @@ export interface FollowUpQuestion {
 export interface TriageResult {
   level: TriageLevel;
   fired: FiredRule[];            // reglas que dispararon (ordenadas por gravedad)
-  preguntas: FollowUpQuestion[]; // máximo 2, solo si cambian el resultado
+  preguntas: FollowUpQuestion[]; // máximo 2 clínicas (+ la revisión de signos de peligro antes de "aqui"), solo si cambian el resultado
   /** nivel sugerido por el modelo (solo puede subir) */
   model_level?: TriageLevel;
   escalated_by_model: boolean;

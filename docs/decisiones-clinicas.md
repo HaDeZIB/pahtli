@@ -21,6 +21,7 @@
 | **Cambian el código** (3) | #1 fiebre del lactante: umbral medido 38 °C · #12 aleteo nasal → `urgencia` · #14 fiebre + dolor de cabeza en ≥12 años ya no es `urgencia` sola |
 | Se mantiene lo que ya hacía el motor (16) | #2–#11, #13, #15–#19 |
 | Etiquetas de eval cambiadas | Ninguna. D35 (dengue típico del adulto) ya da el nivel esperado (`centro_hoy`) por la decisión #14. |
+| **Agregada el 4-oct-2026** (1) | #20 pregunta de revisión de signos de peligro antes de "Atender aquí", acción por defecto para 5 años o más y preguntas de embarazo solo de 10 a 49 años. No cambia ningún umbral ni nivel existente. |
 
 ---
 
@@ -91,6 +92,16 @@ Son las que más cambian qué pacientes salen de la comunidad. Le pedimos que la
 
 ---
 
+### G. Agregada el 4-oct-2026 (reporte de uso real)
+
+**Qué pasó:** "mujer de 53 años" con diarrea, dolor de cabeza o tos salía en verde ("Atender aquí") con el texto del niño ("seguir con el pecho si es bebé… no puede beber o mamar"), citaba el AIEPI comunitario (que cubre de 2 meses a 5 años) y preguntaba "¿le es imposible beber o mamar?" y "¿Está embarazada?". Además, el verde salía aunque los signos de peligro **no se hubieran mencionado**: el motor trataba "no se dijo" como "no tiene".
+
+| # | Regla(s) | La pregunta | Opciones | NUESTRA RECOMENDACIÓN | Fuente que sigue | Impacto | Estado |
+|---|---|---|---|---|---|---|---|
+| 20 | `PAHTLI-GDS-SCREEN` (nueva), `IITT-NOSIGNS-01` (nueva), `IMCI-NOSIGNS-01` | ¿Puede salir "Atender aquí" sin que la promotora haya revisado los signos de peligro? ¿Qué indicaciones de casa recibe un adulto? ¿A qué edades se pregunta embarazo? | (a) como antes: verde si no se mencionó ningún signo; (b) una pregunta Sí/No de signos de peligro antes de todo verde | **(b) Pregunta de tamizaje de signos de peligro antes de "Atender aquí".** Una sola pregunta con la lista para la edad: 2 meses a <5 años, los 4 signos generales de AIEPI; 5 años o más, solo signos que ya son `urgencia` en Pahtli a esa edad (respirar con mucho trabajo o labios morados, dolor de pecho desde 12 años, convulsiones, no despierta o se confunde, cara chueca / un lado sin fuerza / no puede hablar, sangrado abundante); edad desconocida, la unión. "Sí" → `urgencia`. Sin un "No" (sin responder, "No sé", "Saltar"), el verde sale con el aviso "No estoy segura". No se hace al lactante menor de 2 meses (con alguna molestia nunca llega a verde; decisión #5). **Acción para 5 años o más (`IITT-NOSIGNS-01`):** cuidados en casa e "ir de inmediato si…" solo con signos que ya son `urgencia` o `centro_hoy` en Pahtli a esa edad; con diarrea, Plan A de la OMS 2005 (sin zinc ni lactancia). Edad desconocida: el texto del niño sin "pecho" ni "mamar". **Embarazo:** las preguntas de embarazo solo de 10 a 49 años (antes 10 a 54), o con la edad desconocida. | AIEPI (IMCI) 2014, p. 2 impresa / p. 5 del PDF ("Check for general danger signs" antes de clasificar; "Any general danger sign… Refer URGENTLY"); AIEPI comunitario p. 6; IITT ≥12 y <12 (verde: "Move to low acuity or waiting area"); OMS *Treatment of diarrhoea* 2005, Plan A, p. 9–11 impresas ("older children and adults: as much fluid as they want"); PEF 2019, Ramo 12 Salud, p. 3 ("mujeres en edad fértil (de 15 a 49 años)"; embarazo adolescente desde los 12) | **Menos sub-triaje en silencio:** un verde ya no puede salir sin que alguien confirme que no hay signos de peligro. Costo: una pregunta más antes de cada verde. Los adultos ya no reciben indicaciones de bebé. En el eval (sin respuestas) ningún nivel cambia; el aviso aparece en todos los verdes si se salta la pregunta | provisional — pendiente de revisión Dra. Ines |
+
+**Para revisar en especial:** (1) si la lista de 5 años o más debe incluir signos que hoy son `centro_hoy` en Pahtli (no puede beber, vomita todo, muy dormido, desmayo); hoy se dejaron fuera para que "Sí" signifique siempre `urgencia`; (2) si un "Sí" debería preguntar cuál signo es, para registrar la regla específica.
+
 ## Puntos nuevos que encontramos y NO decidimos
 
 1. **Definición de fiebre en todas las edades.** La NOM-031 (3.33) define fiebre como "arriba de 38.0ºC". El motor usa ≥37.5 °C medido (IMCI 2014 p. 8) para niños mayores y adultos (`hasFever`). Por el principio 2 debería ser 38 °C, pero no era un punto [DECIDIR] y afecta muchas reglas (dengue, sarampión, embarazo, signos neurológicos). Solo se aplicó al lactante (decisión #1). **Necesita su criterio.**
@@ -105,6 +116,7 @@ Son las que más cambian qué pacientes salen de la comunidad. Le pedimos que la
 | #2 | `src/triage/rules/young_infant.ts` | `IMCI-YI-03`: texto de acción que remite a la indicación urgente de NOM031-IRA-03 (nivel sin cambio). |
 | #12 | `src/triage/rules/respiratory_child.ts`, `sources.ts` | `NICE-RESP-02` pasa a `urgencia`; cita la tarjeta de referencia del IITT (nueva URL `SRC.IITT_REFCARD`, copia publicada por el hospital ZOL de Bélgica). |
 | #14 | `src/triage/rules/fever.ts` | `IITT-R-NEURO-01` en ≥12 años exige alteración mental o cuello tieso; pasa a `adaptado`. |
+| #20 | `src/triage/screening.ts`, `src/triage/rules/general_danger.ts`, `src/triage/rules/index.ts`, `src/triage/engine.ts`, `src/triage/findings.ts`, `src/triage/uncertainty.ts` | Nueva `PAHTLI-GDS-SCREEN` (`urgencia`) y pregunta de revisión antes de `aqui`; nueva `IITT-NOSIGNS-01` (≥5 años) y texto neutral de `IMCI-NOSIGNS-01` con edad desconocida; preguntas con variante por edad; embarazo 10–49 años; aviso `danger_signs_unchecked`. |
 
 Pruebas: `src/triage/engine.test.ts` actualizado (umbral de temperatura del lactante, aleteo nasal, nueva prueba de NEURO-01 en adultos). Eval: ninguna etiqueta cambió; ver `docs/eval.md`.
 

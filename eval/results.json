@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-04T01:36:57.665Z",
+  "generated_at": "2026-10-04T08:02:49.856Z",
   "pipeline": "keywordExtract -> triage (no LLM) + assessUncertainty",
   "hidden_failures": [],
   "metrics": {
@@ -102,9 +102,9 @@
         }
       },
       "latency_ms": {
-        "mean": 0.55,
-        "p95": 1.89,
-        "max": 3.98
+        "mean": 0.58,
+        "p95": 2.05,
+        "max": 4.33
       },
       "ci": {
         "accuracy": [
@@ -140,7 +140,7 @@
         "asks_expected": 1
       },
       "flagged_without_need": {
-        "count": 30,
+        "count": 31,
         "of": 58
       },
       "flagged_without_need_answered": {
@@ -242,9 +242,9 @@
         }
       },
       "latency_ms": {
-        "mean": 0.4,
-        "p95": 0.66,
-        "max": 0.69
+        "mean": 0.38,
+        "p95": 0.62,
+        "max": 0.74
       },
       "ci": {
         "accuracy": [
@@ -280,7 +280,7 @@
         "asks_expected": 2
       },
       "flagged_without_need": {
-        "count": 11,
+        "count": 14,
         "of": 28
       },
       "flagged_without_need_answered": {
@@ -387,9 +387,9 @@
         }
       },
       "latency_ms": {
-        "mean": 0.4,
-        "p95": 1,
-        "max": 1.03
+        "mean": 0.39,
+        "p95": 0.67,
+        "max": 0.88
       },
       "ci": {
         "accuracy": [
@@ -537,9 +537,9 @@
         }
       },
       "latency_ms": {
-        "mean": 0.47,
-        "p95": 1,
-        "max": 3.98
+        "mean": 0.48,
+        "p95": 0.9,
+        "max": 4.33
       },
       "ci": {
         "accuracy": [
@@ -575,7 +575,7 @@
         "asks_expected": 5
       },
       "flagged_without_need": {
-        "count": 61,
+        "count": 65,
         "of": 122
       },
       "flagged_without_need_answered": {
@@ -634,7 +634,7 @@
       "tags": [
         "demo"
       ],
-      "latency_ms": 3.98
+      "latency_ms": 4.33
     },
     {
       "id": "D02",
@@ -679,7 +679,7 @@
       "tags": [
         "regional:chamaco"
       ],
-      "latency_ms": 2.41
+      "latency_ms": 3.19
     },
     {
       "id": "D03",
@@ -722,7 +722,7 @@
       "asks_expected": false,
       "symptom_checks": [],
       "tags": [],
-      "latency_ms": 1.03
+      "latency_ms": 1.02
     },
     {
       "id": "D04",
@@ -776,7 +776,7 @@
         "pregnancy",
         "indirect"
       ],
-      "latency_ms": 0.27
+      "latency_ms": 0.63
     },
     {
       "id": "D05",
@@ -821,7 +821,7 @@
       "tags": [
         "pregnancy"
       ],
-      "latency_ms": 0.29
+      "latency_ms": 0.34
     },
     {
       "id": "D06",
@@ -872,7 +872,7 @@
       "tags": [
         "pregnancy"
       ],
-      "latency_ms": 0.49
+      "latency_ms": 0.4
     },
     {
       "id": "D07",
@@ -922,7 +922,7 @@
       "tags": [
         "pregnancy"
       ],
-      "latency_ms": 0.65
+      "latency_ms": 0.4
     },
     {
       "id": "D08",
@@ -968,7 +968,7 @@
       "tags": [
         "young_infant"
       ],
-      "latency_ms": 0.51
+      "latency_ms": 0.58
     },
     {
       "id": "D09",
@@ -1017,7 +1017,7 @@
         "young_infant",
         "threshold"
       ],
-      "latency_ms": 1.89
+      "latency_ms": 2.05
     },
     {
       "id": "D10",
@@ -1063,7 +1063,7 @@
       "tags": [
         "young_infant"
       ],
-      "latency_ms": 0.38
+      "latency_ms": 0.35
     },
     {
       "id": "D11",
@@ -1148,7 +1148,7 @@
       "asks_expected": false,
       "symptom_checks": [],
       "tags": [],
-      "latency_ms": 0.26
+      "latency_ms": 0.31
     },
     {
       "id": "D13",
@@ -1203,7 +1203,7 @@
       "tags": [
         "dengue"
       ],
-      "latency_ms": 0.5
+      "latency_ms": 0.98
     },
     {
       "id": "D14",
@@ -1248,7 +1248,7 @@
       "tags": [
         "adversarial:buried"
       ],
-      "latency_ms": 0.65
+      "latency_ms": 0.62
     },
     {
       "id": "D15",
@@ -1287,7 +1287,7 @@
       "tags": [
         "postpartum"
       ],
-      "latency_ms": 1.23
+      "latency_ms": 0.65
     },
     {
       "id": "D16",
@@ -1332,7 +1332,7 @@
       "tags": [
         "trauma"
       ],
-      "latency_ms": 0.79
+      "latency_ms": 0.24
     },
     {
       "id": "D17",
@@ -1375,7 +1375,7 @@
       "asks_expected": false,
       "symptom_checks": [],
       "tags": [],
-      "latency_ms": 0.72
+      "latency_ms": 0.35
     },
     {
       "id": "D18",
@@ -1416,7 +1416,7 @@
       "asks_expected": false,
       "symptom_checks": [],
       "tags": [],
-      "latency_ms": 0.51
+      "latency_ms": 0.43
     },
     {
       "id": "D19",
@@ -1460,7 +1460,7 @@
       "tags": [
         "indirect"
       ],
-      "latency_ms": 0.77
+      "latency_ms": 0.35
     },
     {
       "id": "D20",
@@ -1502,7 +1502,7 @@
       "asks_expected": false,
       "symptom_checks": [],
       "tags": [],
-      "latency_ms": 0.19
+      "latency_ms": 0.21
     },
     {
       "id": "D21",
@@ -1553,7 +1553,7 @@
         "young_infant",
         "threshold:age"
       ],
-      "latency_ms": 0.19
+      "latency_ms": 0.24
     },
     {
       "id": "D22",
@@ -1603,7 +1603,7 @@
       "tags": [
         "respiratory"
       ],
-      "latency_ms": 0.5
+      "latency_ms": 0.55
     },
     {
       "id": "D23",
@@ -1657,7 +1657,7 @@
       "tags": [
         "threshold:exact"
       ],
-      "latency_ms": 0.63
+      "latency_ms": 0.9
     },
     {
       "id": "D24",
@@ -1708,7 +1708,7 @@
       "tags": [
         "diarrhea"
       ],
-      "latency_ms": 0.39
+      "latency_ms": 0.49
     },
     {
       "id": "D25",
@@ -1763,7 +1763,7 @@
       "tags": [
         "duration"
       ],
-      "latency_ms": 0.35
+      "latency_ms": 0.53
     },
     {
       "id": "D26",
@@ -1812,7 +1812,7 @@
       "asks_expected": false,
       "symptom_checks": [],
       "tags": [],
-      "latency_ms": 0.47
+      "latency_ms": 0.51
     },
     {
       "id": "D27",
@@ -1856,7 +1856,7 @@
       "tags": [
         "adult"
       ],
-      "latency_ms": 0.28
+      "latency_ms": 0.3
     },
     {
       "id": "D28",
@@ -1904,7 +1904,7 @@
       "tags": [
         "adult"
       ],
-      "latency_ms": 0.32
+      "latency_ms": 0.33
     },
     {
       "id": "D29",
@@ -1953,7 +1953,7 @@
       "tags": [
         "regional:silba"
       ],
-      "latency_ms": 0.26
+      "latency_ms": 0.31
     },
     {
       "id": "D30",
@@ -1990,7 +1990,7 @@
       "tags": [
         "missing:age"
       ],
-      "latency_ms": 0.23
+      "latency_ms": 0.27
     },
     {
       "id": "D31",
@@ -2091,7 +2091,7 @@
       "tags": [
         "pregnancy"
       ],
-      "latency_ms": 0.32
+      "latency_ms": 0.34
     },
     {
       "id": "D33",
@@ -2184,7 +2184,7 @@
       "tags": [
         "young_infant"
       ],
-      "latency_ms": 0.23
+      "latency_ms": 0.2
     },
     {
       "id": "D35",
@@ -2321,7 +2321,7 @@
       "tags": [
         "trauma"
       ],
-      "latency_ms": 0.23
+      "latency_ms": 0.24
     },
     {
       "id": "D38",
@@ -2354,14 +2354,10 @@
           "ok": true
         }
       ],
-      "preguntas": [
-        "fiebre"
-      ],
+      "preguntas": [],
       "followup_asks_missing": false,
-      "uncertain": true,
-      "uncertainty_codes": [
-        "questions_pending"
-      ],
+      "uncertain": false,
+      "uncertainty_codes": [],
       "uncertain_if_answered": false,
       "expected_uncertain": false,
       "asks_expected": false,
@@ -2369,7 +2365,7 @@
       "tags": [
         "adversarial:negated_danger"
       ],
-      "latency_ms": 0.77
+      "latency_ms": 0.39
     },
     {
       "id": "D39",
@@ -2425,7 +2421,7 @@
       "tags": [
         "threshold"
       ],
-      "latency_ms": 0.39
+      "latency_ms": 0.33
     },
     {
       "id": "D40",
@@ -2467,7 +2463,7 @@
         "regional:se_alivió",
         "postpartum"
       ],
-      "latency_ms": 0.56
+      "latency_ms": 0.46
     },
     {
       "id": "D41",
@@ -2516,7 +2512,7 @@
       "tags": [
         "young_infant"
       ],
-      "latency_ms": 0.33
+      "latency_ms": 0.3
     },
     {
       "id": "D42",
@@ -2566,7 +2562,7 @@
         "young_infant",
         "threshold:age"
       ],
-      "latency_ms": 0.3
+      "latency_ms": 0.27
     },
     {
       "id": "D43",
@@ -2608,12 +2604,14 @@
         }
       ],
       "preguntas": [
+        "signo_peligro_general",
         "tiraje",
         "estridor"
       ],
       "followup_asks_missing": false,
       "uncertain": true,
       "uncertainty_codes": [
+        "danger_signs_unchecked",
         "questions_pending"
       ],
       "uncertain_if_answered": false,
@@ -2623,7 +2621,7 @@
       "tags": [
         "threshold"
       ],
-      "latency_ms": 0.5
+      "latency_ms": 0.61
     },
     {
       "id": "D44",
@@ -2665,12 +2663,14 @@
         }
       ],
       "preguntas": [
+        "signo_peligro_general",
         "vomita_todo",
         "letargico"
       ],
       "followup_asks_missing": false,
       "uncertain": true,
       "uncertainty_codes": [
+        "danger_signs_unchecked",
         "questions_pending"
       ],
       "uncertain_if_answered": false,
@@ -2680,7 +2680,7 @@
       "tags": [
         "adversarial:negation"
       ],
-      "latency_ms": 0.57
+      "latency_ms": 0.83
     },
     {
       "id": "D45",
@@ -2693,7 +2693,7 @@
         "IMCI-NOSIGNS-01"
       ],
       "fired_rule_ids": [
-        "IMCI-NOSIGNS-01"
+        "IITT-NOSIGNS-01"
       ],
       "missing_rule_ids": [],
       "unexpected_higher_rule_ids": [],
@@ -2711,11 +2711,15 @@
           "ok": true
         }
       ],
-      "preguntas": [],
+      "preguntas": [
+        "signo_peligro_general"
+      ],
       "followup_asks_missing": false,
       "uncertain": true,
       "uncertainty_codes": [
-        "no_findings"
+        "no_findings",
+        "danger_signs_unchecked",
+        "questions_pending"
       ],
       "uncertain_if_answered": true,
       "expected_uncertain": false,
@@ -2724,7 +2728,7 @@
       "tags": [
         "mild"
       ],
-      "latency_ms": 0.24
+      "latency_ms": 0.46
     },
     {
       "id": "D46",
@@ -2737,7 +2741,7 @@
         "IMCI-NOSIGNS-01"
       ],
       "fired_rule_ids": [
-        "IMCI-NOSIGNS-01"
+        "IITT-NOSIGNS-01"
       ],
       "missing_rule_ids": [],
       "unexpected_higher_rule_ids": [],
@@ -2765,12 +2769,14 @@
         }
       ],
       "preguntas": [
+        "signo_peligro_general",
         "no_puede_beber",
         "letargico"
       ],
       "followup_asks_missing": false,
       "uncertain": true,
       "uncertainty_codes": [
+        "danger_signs_unchecked",
         "questions_pending"
       ],
       "uncertain_if_answered": false,
@@ -2780,7 +2786,7 @@
       "tags": [
         "adversarial:negation"
       ],
-      "latency_ms": 0.56
+      "latency_ms": 0.6
     },
     {
       "id": "D47",
@@ -2793,7 +2799,7 @@
         "IMCI-NOSIGNS-01"
       ],
       "fired_rule_ids": [
-        "IMCI-NOSIGNS-01"
+        "IITT-NOSIGNS-01"
       ],
       "missing_rule_ids": [],
       "unexpected_higher_rule_ids": [],
@@ -2816,12 +2822,14 @@
         }
       ],
       "preguntas": [
+        "signo_peligro_general",
         "tiraje",
         "estridor"
       ],
       "followup_asks_missing": false,
       "uncertain": true,
       "uncertainty_codes": [
+        "danger_signs_unchecked",
         "questions_pending"
       ],
       "uncertain_if_answered": false,
@@ -2831,7 +2839,7 @@
       "tags": [
         "adversarial:negated_danger"
       ],
-      "latency_ms": 0.43
+      "latency_ms": 0.37
     },
     {
       "id": "D48",
@@ -2863,10 +2871,15 @@
           "ok": true
         }
       ],
-      "preguntas": [],
+      "preguntas": [
+        "signo_peligro_general"
+      ],
       "followup_asks_missing": false,
-      "uncertain": false,
-      "uncertainty_codes": [],
+      "uncertain": true,
+      "uncertainty_codes": [
+        "danger_signs_unchecked",
+        "questions_pending"
+      ],
       "uncertain_if_answered": false,
       "expected_uncertain": false,
       "asks_expected": false,
@@ -2907,12 +2920,14 @@
         }
       ],
       "preguntas": [
+        "signo_peligro_general",
         "no_puede_beber",
         "letargico"
       ],
       "followup_asks_missing": false,
       "uncertain": true,
       "uncertainty_codes": [
+        "danger_signs_unchecked",
         "questions_pending"
       ],
       "uncertain_if_answered": false,
@@ -2922,7 +2937,7 @@
       "tags": [
         "adversarial:ya_no"
       ],
-      "latency_ms": 0.58
+      "latency_ms": 0.5
     },
     {
       "id": "D50",
@@ -2957,12 +2972,14 @@
         }
       ],
       "preguntas": [
+        "signo_peligro_general",
         "sangrado_vaginal",
         "dolor_cabeza_intenso"
       ],
       "followup_asks_missing": false,
       "uncertain": true,
       "uncertainty_codes": [
+        "danger_signs_unchecked",
         "questions_pending",
         "pregnancy_few"
       ],
@@ -2974,7 +2991,7 @@
         "adversarial:negated_danger",
         "pregnancy"
       ],
-      "latency_ms": 0.55
+      "latency_ms": 0.59
     },
     {
       "id": "D51",
@@ -2987,7 +3004,7 @@
         "IMCI-NOSIGNS-01"
       ],
       "fired_rule_ids": [
-        "IMCI-NOSIGNS-01"
+        "IITT-NOSIGNS-01"
       ],
       "missing_rule_ids": [],
       "unexpected_higher_rule_ids": [],
@@ -3006,10 +3023,15 @@
           "ok": true
         }
       ],
-      "preguntas": [],
+      "preguntas": [
+        "signo_peligro_general"
+      ],
       "followup_asks_missing": false,
-      "uncertain": false,
-      "uncertainty_codes": [],
+      "uncertain": true,
+      "uncertainty_codes": [
+        "danger_signs_unchecked",
+        "questions_pending"
+      ],
       "uncertain_if_answered": false,
       "expected_uncertain": false,
       "asks_expected": false,
@@ -3017,7 +3039,7 @@
       "tags": [
         "mild"
       ],
-      "latency_ms": 0.31
+      "latency_ms": 0.39
     },
     {
       "id": "D52",
@@ -3030,7 +3052,7 @@
         "IMCI-NOSIGNS-01"
       ],
       "fired_rule_ids": [
-        "IMCI-NOSIGNS-01"
+        "IITT-NOSIGNS-01"
       ],
       "missing_rule_ids": [],
       "unexpected_higher_rule_ids": [],
@@ -3049,12 +3071,14 @@
         }
       ],
       "preguntas": [
+        "signo_peligro_general",
         "diarrea"
       ],
       "followup_asks_missing": false,
       "uncertain": true,
       "uncertainty_codes": [
         "no_findings",
+        "danger_signs_unchecked",
         "questions_pending"
       ],
       "uncertain_if_answered": false,
@@ -3064,7 +3088,7 @@
       "tags": [
         "mild"
       ],
-      "latency_ms": 0.26
+      "latency_ms": 0.33
     },
     {
       "id": "D53",
@@ -3094,11 +3118,15 @@
           "ok": true
         }
       ],
-      "preguntas": [],
+      "preguntas": [
+        "signo_peligro_general"
+      ],
       "followup_asks_missing": false,
       "uncertain": true,
       "uncertainty_codes": [
-        "no_findings"
+        "no_findings",
+        "danger_signs_unchecked",
+        "questions_pending"
       ],
       "uncertain_if_answered": true,
       "expected_uncertain": false,
@@ -3107,7 +3135,7 @@
       "tags": [
         "mild"
       ],
-      "latency_ms": 0.17
+      "latency_ms": 0.22
     },
     {
       "id": "D54",
@@ -3120,7 +3148,7 @@
         "IMCI-NOSIGNS-01"
       ],
       "fired_rule_ids": [
-        "IMCI-NOSIGNS-01"
+        "IITT-NOSIGNS-01"
       ],
       "missing_rule_ids": [],
       "unexpected_higher_rule_ids": [],
@@ -3149,12 +3177,14 @@
         }
       ],
       "preguntas": [
+        "signo_peligro_general",
         "embarazada",
         "vomita_todo"
       ],
       "followup_asks_missing": false,
       "uncertain": true,
       "uncertainty_codes": [
+        "danger_signs_unchecked",
         "questions_pending"
       ],
       "uncertain_if_answered": false,
@@ -3164,7 +3194,7 @@
       "tags": [
         "mild"
       ],
-      "latency_ms": 0.5
+      "latency_ms": 0.62
     },
     {
       "id": "D55",
@@ -3199,12 +3229,14 @@
         }
       ],
       "preguntas": [
+        "signo_peligro_general",
         "no_puede_beber",
         "letargico"
       ],
       "followup_asks_missing": false,
       "uncertain": true,
       "uncertainty_codes": [
+        "danger_signs_unchecked",
         "questions_pending"
       ],
       "uncertain_if_answered": false,
@@ -3214,7 +3246,7 @@
       "tags": [
         "adversarial:negated_danger"
       ],
-      "latency_ms": 0.44
+      "latency_ms": 0.55
     },
     {
       "id": "D56",
@@ -3243,11 +3275,15 @@
           "ok": true
         }
       ],
-      "preguntas": [],
+      "preguntas": [
+        "signo_peligro_general"
+      ],
       "followup_asks_missing": false,
       "uncertain": true,
       "uncertainty_codes": [
-        "no_findings"
+        "no_findings",
+        "danger_signs_unchecked",
+        "questions_pending"
       ],
       "uncertain_if_answered": true,
       "expected_uncertain": false,
@@ -3256,7 +3292,7 @@
       "tags": [
         "mild"
       ],
-      "latency_ms": 0.18
+      "latency_ms": 0.24
     },
     {
       "id": "D57",
@@ -3269,7 +3305,7 @@
         "IMCI-NOSIGNS-01"
       ],
       "fired_rule_ids": [
-        "IMCI-NOSIGNS-01"
+        "IITT-NOSIGNS-01"
       ],
       "missing_rule_ids": [],
       "unexpected_higher_rule_ids": [],
@@ -3292,12 +3328,14 @@
         }
       ],
       "preguntas": [
+        "signo_peligro_general",
         "tiraje",
         "estridor"
       ],
       "followup_asks_missing": false,
       "uncertain": true,
       "uncertainty_codes": [
+        "danger_signs_unchecked",
         "questions_pending"
       ],
       "uncertain_if_answered": false,
@@ -3307,7 +3345,7 @@
       "tags": [
         "adversarial:negated_danger"
       ],
-      "latency_ms": 0.42
+      "latency_ms": 0.44
     },
     {
       "id": "D58",
@@ -3320,7 +3358,7 @@
         "IMCI-NOSIGNS-01"
       ],
       "fired_rule_ids": [
-        "IMCI-NOSIGNS-01"
+        "IITT-NOSIGNS-01"
       ],
       "missing_rule_ids": [],
       "unexpected_higher_rule_ids": [],
@@ -3343,12 +3381,14 @@
         }
       ],
       "preguntas": [
+        "signo_peligro_general",
         "tiraje",
         "vomita_todo"
       ],
       "followup_asks_missing": false,
       "uncertain": true,
       "uncertainty_codes": [
+        "danger_signs_unchecked",
         "questions_pending"
       ],
       "uncertain_if_answered": false,
@@ -3358,7 +3398,7 @@
       "tags": [
         "adversarial:ya_se_quito"
       ],
-      "latency_ms": 0.57
+      "latency_ms": 1
     },
     {
       "id": "D59",
@@ -3371,7 +3411,7 @@
         "IMCI-NOSIGNS-01"
       ],
       "fired_rule_ids": [
-        "IMCI-NOSIGNS-01"
+        "IITT-NOSIGNS-01"
       ],
       "missing_rule_ids": [],
       "unexpected_higher_rule_ids": [],
@@ -3388,11 +3428,15 @@
           "ok": true
         }
       ],
-      "preguntas": [],
+      "preguntas": [
+        "signo_peligro_general"
+      ],
       "followup_asks_missing": false,
       "uncertain": true,
       "uncertainty_codes": [
-        "no_findings"
+        "no_findings",
+        "danger_signs_unchecked",
+        "questions_pending"
       ],
       "uncertain_if_answered": true,
       "expected_uncertain": false,
@@ -3401,7 +3445,7 @@
       "tags": [
         "mild"
       ],
-      "latency_ms": 0.27
+      "latency_ms": 0.47
     },
     {
       "id": "D60",
@@ -3414,7 +3458,7 @@
         "IMCI-NOSIGNS-01"
       ],
       "fired_rule_ids": [
-        "IMCI-NOSIGNS-01"
+        "IITT-NOSIGNS-01"
       ],
       "missing_rule_ids": [],
       "unexpected_higher_rule_ids": [],
@@ -3431,11 +3475,15 @@
           "ok": true
         }
       ],
-      "preguntas": [],
+      "preguntas": [
+        "signo_peligro_general"
+      ],
       "followup_asks_missing": false,
       "uncertain": true,
       "uncertainty_codes": [
-        "no_findings"
+        "no_findings",
+        "danger_signs_unchecked",
+        "questions_pending"
       ],
       "uncertain_if_answered": true,
       "expected_uncertain": false,
@@ -3489,7 +3537,7 @@
       "tags": [
         "regional:ataque"
       ],
-      "latency_ms": 0.48
+      "latency_ms": 0.38
     },
     {
       "id": "T02",
@@ -3538,7 +3586,7 @@
       "tags": [
         "young_infant"
       ],
-      "latency_ms": 0.4
+      "latency_ms": 0.35
     },
     {
       "id": "T03",
@@ -3588,7 +3636,7 @@
       "tags": [
         "pregnancy"
       ],
-      "latency_ms": 0.4
+      "latency_ms": 0.34
     },
     {
       "id": "T04",
@@ -3632,7 +3680,7 @@
       "tags": [
         "adult"
       ],
-      "latency_ms": 0.41
+      "latency_ms": 0.34
     },
     {
       "id": "T05",
@@ -3668,7 +3716,7 @@
         "regional:picó",
         "missing:age"
       ],
-      "latency_ms": 0.69
+      "latency_ms": 0.29
     },
     {
       "id": "T06",
@@ -3759,7 +3807,7 @@
       "tags": [
         "adversarial:buried"
       ],
-      "latency_ms": 0.43
+      "latency_ms": 0.47
     },
     {
       "id": "T08",
@@ -3804,7 +3852,7 @@
         "adult",
         "indirect"
       ],
-      "latency_ms": 0.29
+      "latency_ms": 0.31
     },
     {
       "id": "T09",
@@ -3849,7 +3897,7 @@
         "adult",
         "regional:chueca"
       ],
-      "latency_ms": 0.37
+      "latency_ms": 0.36
     },
     {
       "id": "T10",
@@ -4005,7 +4053,7 @@
         "threshold",
         "adversarial:negated_danger"
       ],
-      "latency_ms": 0.47
+      "latency_ms": 0.74
     },
     {
       "id": "T13",
@@ -4060,7 +4108,7 @@
       "tags": [
         "threshold:exact"
       ],
-      "latency_ms": 0.31
+      "latency_ms": 0.32
     },
     {
       "id": "T14",
@@ -4149,7 +4197,7 @@
       "tags": [
         "adversarial:negated_danger"
       ],
-      "latency_ms": 0.27
+      "latency_ms": 0.28
     },
     {
       "id": "T16",
@@ -4204,7 +4252,7 @@
       "tags": [
         "duration"
       ],
-      "latency_ms": 0.41
+      "latency_ms": 0.37
     },
     {
       "id": "T17",
@@ -4261,7 +4309,7 @@
       "tags": [
         "pregnancy"
       ],
-      "latency_ms": 0.36
+      "latency_ms": 0.37
     },
     {
       "id": "T18",
@@ -4358,7 +4406,7 @@
         "dengue",
         "adversarial:negated_danger"
       ],
-      "latency_ms": 0.66
+      "latency_ms": 0.62
     },
     {
       "id": "T20",
@@ -4401,7 +4449,7 @@
         "regional:se_alivió",
         "postpartum"
       ],
-      "latency_ms": 0.44
+      "latency_ms": 0.49
     },
     {
       "id": "T21",
@@ -4456,7 +4504,7 @@
       "tags": [
         "duration"
       ],
-      "latency_ms": 0.34
+      "latency_ms": 0.35
     },
     {
       "id": "T22",
@@ -4491,12 +4539,14 @@
         }
       ],
       "preguntas": [
+        "signo_peligro_general",
         "resp_por_min",
         "tiraje"
       ],
       "followup_asks_missing": false,
       "uncertain": true,
       "uncertainty_codes": [
+        "danger_signs_unchecked",
         "questions_pending"
       ],
       "uncertain_if_answered": true,
@@ -4519,7 +4569,7 @@
         "IMCI-NOSIGNS-01"
       ],
       "fired_rule_ids": [
-        "IMCI-NOSIGNS-01"
+        "IITT-NOSIGNS-01"
       ],
       "missing_rule_ids": [],
       "unexpected_higher_rule_ids": [],
@@ -4539,10 +4589,15 @@
           "ok": true
         }
       ],
-      "preguntas": [],
+      "preguntas": [
+        "signo_peligro_general"
+      ],
       "followup_asks_missing": false,
-      "uncertain": false,
-      "uncertainty_codes": [],
+      "uncertain": true,
+      "uncertainty_codes": [
+        "danger_signs_unchecked",
+        "questions_pending"
+      ],
       "uncertain_if_answered": false,
       "expected_uncertain": false,
       "asks_expected": false,
@@ -4564,7 +4619,7 @@
         "IMCI-NOSIGNS-01"
       ],
       "fired_rule_ids": [
-        "IMCI-NOSIGNS-01"
+        "IITT-NOSIGNS-01"
       ],
       "missing_rule_ids": [],
       "unexpected_higher_rule_ids": [],
@@ -4585,12 +4640,14 @@
         }
       ],
       "preguntas": [
+        "signo_peligro_general",
         "vomita_todo",
         "letargico"
       ],
       "followup_asks_missing": false,
       "uncertain": true,
       "uncertainty_codes": [
+        "danger_signs_unchecked",
         "questions_pending"
       ],
       "uncertain_if_answered": false,
@@ -4600,7 +4657,7 @@
       "tags": [
         "adversarial:ya_se_quito"
       ],
-      "latency_ms": 0.48
+      "latency_ms": 0.44
     },
     {
       "id": "T25",
@@ -4613,7 +4670,7 @@
         "IMCI-NOSIGNS-01"
       ],
       "fired_rule_ids": [
-        "IMCI-NOSIGNS-01"
+        "IITT-NOSIGNS-01"
       ],
       "missing_rule_ids": [],
       "unexpected_higher_rule_ids": [],
@@ -4635,12 +4692,14 @@
         }
       ],
       "preguntas": [
+        "signo_peligro_general",
         "no_puede_beber",
         "letargico"
       ],
       "followup_asks_missing": false,
       "uncertain": true,
       "uncertainty_codes": [
+        "danger_signs_unchecked",
         "questions_pending"
       ],
       "uncertain_if_answered": false,
@@ -4650,7 +4709,7 @@
       "tags": [
         "adversarial:negation"
       ],
-      "latency_ms": 0.6
+      "latency_ms": 0.49
     },
     {
       "id": "T26",
@@ -4663,7 +4722,7 @@
         "IMCI-NOSIGNS-01"
       ],
       "fired_rule_ids": [
-        "IMCI-NOSIGNS-01"
+        "IITT-NOSIGNS-01"
       ],
       "missing_rule_ids": [],
       "unexpected_higher_rule_ids": [],
@@ -4683,10 +4742,15 @@
           "ok": true
         }
       ],
-      "preguntas": [],
+      "preguntas": [
+        "signo_peligro_general"
+      ],
       "followup_asks_missing": false,
-      "uncertain": false,
-      "uncertainty_codes": [],
+      "uncertain": true,
+      "uncertainty_codes": [
+        "danger_signs_unchecked",
+        "questions_pending"
+      ],
       "uncertain_if_answered": false,
       "expected_uncertain": false,
       "asks_expected": false,
@@ -4694,7 +4758,7 @@
       "tags": [
         "mild"
       ],
-      "latency_ms": 0.26
+      "latency_ms": 0.3
     },
     {
       "id": "T27",
@@ -4707,7 +4771,7 @@
         "IMCI-NOSIGNS-01"
       ],
       "fired_rule_ids": [
-        "IMCI-NOSIGNS-01"
+        "IITT-NOSIGNS-01"
       ],
       "missing_rule_ids": [],
       "unexpected_higher_rule_ids": [],
@@ -4735,12 +4799,14 @@
         }
       ],
       "preguntas": [
+        "signo_peligro_general",
         "letargico",
         "rigidez_nuca"
       ],
       "followup_asks_missing": false,
       "uncertain": true,
       "uncertainty_codes": [
+        "danger_signs_unchecked",
         "questions_pending"
       ],
       "uncertain_if_answered": false,
@@ -4750,7 +4816,7 @@
       "tags": [
         "adversarial:negation"
       ],
-      "latency_ms": 0.5
+      "latency_ms": 0.53
     },
     {
       "id": "T28",
@@ -4792,12 +4858,14 @@
         }
       ],
       "preguntas": [
+        "signo_peligro_general",
         "estridor",
         "cianosis"
       ],
       "followup_asks_missing": false,
       "uncertain": true,
       "uncertainty_codes": [
+        "danger_signs_unchecked",
         "questions_pending"
       ],
       "uncertain_if_answered": false,
@@ -4808,7 +4876,7 @@
         "threshold",
         "adversarial:negated_danger"
       ],
-      "latency_ms": 0.46
+      "latency_ms": 0.54
     },
     {
       "id": "T29",
@@ -4821,7 +4889,7 @@
         "IMCI-NOSIGNS-01"
       ],
       "fired_rule_ids": [
-        "IMCI-NOSIGNS-01"
+        "IITT-NOSIGNS-01"
       ],
       "missing_rule_ids": [],
       "unexpected_higher_rule_ids": [],
@@ -4838,11 +4906,15 @@
           "ok": true
         }
       ],
-      "preguntas": [],
+      "preguntas": [
+        "signo_peligro_general"
+      ],
       "followup_asks_missing": false,
       "uncertain": true,
       "uncertainty_codes": [
-        "no_findings"
+        "no_findings",
+        "danger_signs_unchecked",
+        "questions_pending"
       ],
       "uncertain_if_answered": true,
       "expected_uncertain": false,
@@ -4886,10 +4958,15 @@
           "ok": true
         }
       ],
-      "preguntas": [],
+      "preguntas": [
+        "signo_peligro_general"
+      ],
       "followup_asks_missing": false,
-      "uncertain": false,
-      "uncertainty_codes": [],
+      "uncertain": true,
+      "uncertainty_codes": [
+        "danger_signs_unchecked",
+        "questions_pending"
+      ],
       "uncertain_if_answered": false,
       "expected_uncertain": false,
       "asks_expected": false,
@@ -4897,7 +4974,7 @@
       "tags": [
         "adversarial:negation"
       ],
-      "latency_ms": 0.42
+      "latency_ms": 0.38
     },
     {
       "id": "T2-V01",
@@ -4961,7 +5038,7 @@
         "recien_nacido",
         "coloquial"
       ],
-      "latency_ms": 0.36
+      "latency_ms": 0.35
     },
     {
       "id": "T2-V02",
@@ -4998,12 +5075,14 @@
         }
       ],
       "preguntas": [
+        "signo_peligro_general",
         "resp_por_min",
         "tiraje"
       ],
       "followup_asks_missing": true,
       "uncertain": true,
       "uncertainty_codes": [
+        "danger_signs_unchecked",
         "questions_pending"
       ],
       "uncertain_if_answered": true,
@@ -5033,7 +5112,7 @@
         "relleno",
         "coloquial"
       ],
-      "latency_ms": 0.69,
+      "latency_ms": 0.67,
       "reason": "SUB-TRIAJE (extracción incompleta): no disparó IMCI-RESP-03 [tiraje=?]"
     },
     {
@@ -5216,7 +5295,7 @@
       "tags": [
         "adulto"
       ],
-      "latency_ms": 0.33
+      "latency_ms": 0.34
     },
     {
       "id": "T2-V06",
@@ -5282,7 +5361,7 @@
         "relleno",
         "adulto"
       ],
-      "latency_ms": 0.39
+      "latency_ms": 0.4
     },
     {
       "id": "T2-V07",
@@ -5365,7 +5444,7 @@
         "ya_no:capacidad",
         "regional:obrar"
       ],
-      "latency_ms": 0.46
+      "latency_ms": 0.34
     },
     {
       "id": "T2-V08",
@@ -5433,7 +5512,7 @@
         "coloquial",
         "diminutivos"
       ],
-      "latency_ms": 0.35
+      "latency_ms": 0.37
     },
     {
       "id": "T2-V09",
@@ -5496,7 +5575,7 @@
       "tags": [
         "adulto"
       ],
-      "latency_ms": 0.32,
+      "latency_ms": 0.33,
       "reason": "SUB-TRIAJE (extracción incompleta): no disparó IITT-R-POISON-01 [intoxicacion=?]"
     },
     {
@@ -5559,7 +5638,7 @@
         "recien_nacido",
         "numeros_en_palabras"
       ],
-      "latency_ms": 0.31
+      "latency_ms": 0.32
     },
     {
       "id": "T2-V11",
@@ -5628,7 +5707,7 @@
         "embarazo",
         "coloquial"
       ],
-      "latency_ms": 0.26
+      "latency_ms": 0.27
     },
     {
       "id": "T2-V12",
@@ -5699,7 +5778,7 @@
         "dengue",
         "relleno"
       ],
-      "latency_ms": 0.38
+      "latency_ms": 0.35
     },
     {
       "id": "T2-V13",
@@ -5812,7 +5891,7 @@
         "ya_no:capacidad",
         "salud_mental"
       ],
-      "latency_ms": 0.33
+      "latency_ms": 0.31
     },
     {
       "id": "T2-V15",
@@ -5881,7 +5960,7 @@
         "trauma",
         "coloquial"
       ],
-      "latency_ms": 0.34
+      "latency_ms": 0.37
     },
     {
       "id": "T2-V16",
@@ -5927,7 +6006,7 @@
       "tags": [
         "edad_desconocida"
       ],
-      "latency_ms": 0.24
+      "latency_ms": 0.27
     },
     {
       "id": "T2-C01",
@@ -6082,7 +6161,7 @@
         "coloquial",
         "diminutivos"
       ],
-      "latency_ms": 0.37
+      "latency_ms": 0.39
     },
     {
       "id": "T2-C03",
@@ -6146,7 +6225,7 @@
       "tags": [
         "relleno"
       ],
-      "latency_ms": 0.29
+      "latency_ms": 0.31
     },
     {
       "id": "T2-C04",
@@ -6197,7 +6276,7 @@
       "tags": [
         "orden_de_palabras"
       ],
-      "latency_ms": 0.23
+      "latency_ms": 0.25
     },
     {
       "id": "T2-C05",
@@ -6250,7 +6329,7 @@
         "trauma",
         "ya_no:capacidad"
       ],
-      "latency_ms": 0.31
+      "latency_ms": 0.32
     },
     {
       "id": "T2-C06",
@@ -6315,7 +6394,7 @@
         "embarazo",
         "regional:hacer_del_uno"
       ],
-      "latency_ms": 0.33
+      "latency_ms": 0.34
     },
     {
       "id": "T2-C07",
@@ -6379,7 +6458,7 @@
         "relleno",
         "ambiguo:pecho"
       ],
-      "latency_ms": 0.39
+      "latency_ms": 0.42
     },
     {
       "id": "T2-C08",
@@ -6442,7 +6521,7 @@
       "tags": [
         "duracion"
       ],
-      "latency_ms": 0.4
+      "latency_ms": 0.41
     },
     {
       "id": "T2-C09",
@@ -6520,7 +6599,7 @@
         "dengue",
         "diminutivos"
       ],
-      "latency_ms": 0.46
+      "latency_ms": 0.45
     },
     {
       "id": "T2-C10",
@@ -6577,7 +6656,7 @@
         "recien_nacido",
         "diminutivos"
       ],
-      "latency_ms": 0.3
+      "latency_ms": 0.31
     },
     {
       "id": "T2-C11",
@@ -6633,7 +6712,7 @@
       "tags": [
         "adulto"
       ],
-      "latency_ms": 0.28
+      "latency_ms": 0.3
     },
     {
       "id": "T2-C12",
@@ -6762,7 +6841,7 @@
         "relleno",
         "embarazo"
       ],
-      "latency_ms": 0.45
+      "latency_ms": 0.52
     },
     {
       "id": "T2-C14",
@@ -6818,7 +6897,7 @@
       "tags": [
         "edad_desconocida"
       ],
-      "latency_ms": 0.33
+      "latency_ms": 0.88
     },
     {
       "id": "T2-A01",
@@ -6855,12 +6934,14 @@
         }
       ],
       "preguntas": [
+        "signo_peligro_general",
         "resp_por_min",
         "estridor"
       ],
       "followup_asks_missing": false,
       "uncertain": true,
       "uncertainty_codes": [
+        "danger_signs_unchecked",
         "questions_pending"
       ],
       "uncertain_if_answered": true,
@@ -6896,7 +6977,7 @@
       "tags": [
         "negacion"
       ],
-      "latency_ms": 1.03
+      "latency_ms": 0.53
     },
     {
       "id": "T2-A02",
@@ -6909,7 +6990,7 @@
         "IMCI-NOSIGNS-01"
       ],
       "fired_rule_ids": [
-        "IMCI-NOSIGNS-01"
+        "IITT-NOSIGNS-01"
       ],
       "missing_rule_ids": [],
       "unexpected_higher_rule_ids": [],
@@ -6937,12 +7018,14 @@
         }
       ],
       "preguntas": [
+        "signo_peligro_general",
         "no_puede_beber",
         "letargico"
       ],
       "followup_asks_missing": false,
       "uncertain": true,
       "uncertainty_codes": [
+        "danger_signs_unchecked",
         "questions_pending"
       ],
       "uncertain_if_answered": false,
@@ -6960,7 +7043,7 @@
       "tags": [
         "negacion"
       ],
-      "latency_ms": 1
+      "latency_ms": 0.52
     },
     {
       "id": "T2-A03",
@@ -6973,7 +7056,7 @@
         "IMCI-NOSIGNS-01"
       ],
       "fired_rule_ids": [
-        "IMCI-NOSIGNS-01"
+        "IITT-NOSIGNS-01"
       ],
       "missing_rule_ids": [],
       "unexpected_higher_rule_ids": [],
@@ -6994,12 +7077,14 @@
         }
       ],
       "preguntas": [
+        "signo_peligro_general",
         "vomita_todo",
         "sangrado_mucosas"
       ],
       "followup_asks_missing": false,
       "uncertain": true,
       "uncertainty_codes": [
+        "danger_signs_unchecked",
         "questions_pending"
       ],
       "uncertain_if_answered": false,
@@ -7009,7 +7094,7 @@
       "tags": [
         "ya_no:resuelto"
       ],
-      "latency_ms": 0.51
+      "latency_ms": 0.47
     },
     {
       "id": "T2-A04",
@@ -7022,7 +7107,7 @@
         "IMCI-NOSIGNS-01"
       ],
       "fired_rule_ids": [
-        "IMCI-NOSIGNS-01"
+        "IITT-NOSIGNS-01"
       ],
       "missing_rule_ids": [],
       "unexpected_higher_rule_ids": [],
@@ -7044,12 +7129,14 @@
         }
       ],
       "preguntas": [
+        "signo_peligro_general",
         "tiraje",
         "estridor"
       ],
       "followup_asks_missing": false,
       "uncertain": true,
       "uncertainty_codes": [
+        "danger_signs_unchecked",
         "questions_pending"
       ],
       "uncertain_if_answered": false,
@@ -7086,7 +7173,7 @@
         "IMCI-NOSIGNS-01"
       ],
       "fired_rule_ids": [
-        "IMCI-NOSIGNS-01"
+        "IITT-NOSIGNS-01"
       ],
       "missing_rule_ids": [],
       "unexpected_higher_rule_ids": [],
@@ -7103,11 +7190,15 @@
           "ok": true
         }
       ],
-      "preguntas": [],
+      "preguntas": [
+        "signo_peligro_general"
+      ],
       "followup_asks_missing": false,
       "uncertain": true,
       "uncertainty_codes": [
-        "no_findings"
+        "no_findings",
+        "danger_signs_unchecked",
+        "questions_pending"
       ],
       "uncertain_if_answered": true,
       "expected_uncertain": false,
@@ -7116,7 +7207,7 @@
       "tags": [
         "adulto"
       ],
-      "latency_ms": 0.29
+      "latency_ms": 0.34
     },
     {
       "id": "T2-A06",
@@ -7149,12 +7240,14 @@
         }
       ],
       "preguntas": [
+        "signo_peligro_general",
         "fiebre_reciente",
         "oliguria"
       ],
       "followup_asks_missing": false,
       "uncertain": true,
       "uncertainty_codes": [
+        "danger_signs_unchecked",
         "questions_pending"
       ],
       "uncertain_if_answered": false,
@@ -7178,7 +7271,7 @@
       "tags": [
         "negacion"
       ],
-      "latency_ms": 0.36
+      "latency_ms": 0.41
     },
     {
       "id": "T2-A07",
@@ -7219,12 +7312,14 @@
         }
       ],
       "preguntas": [
+        "signo_peligro_general",
         "sangrado_vaginal",
         "dolor_cabeza_intenso"
       ],
       "followup_asks_missing": false,
       "uncertain": true,
       "uncertainty_codes": [
+        "danger_signs_unchecked",
         "questions_pending",
         "pregnancy_few"
       ],
@@ -7244,7 +7339,7 @@
         "negacion",
         "embarazo"
       ],
-      "latency_ms": 0.49
+      "latency_ms": 0.51
     },
     {
       "id": "T2-A08",
@@ -7257,7 +7352,7 @@
         "IMCI-NOSIGNS-01"
       ],
       "fired_rule_ids": [
-        "IMCI-NOSIGNS-01"
+        "IITT-NOSIGNS-01"
       ],
       "missing_rule_ids": [],
       "unexpected_higher_rule_ids": [],
@@ -7274,11 +7369,15 @@
           "ok": true
         }
       ],
-      "preguntas": [],
+      "preguntas": [
+        "signo_peligro_general"
+      ],
       "followup_asks_missing": false,
       "uncertain": true,
       "uncertainty_codes": [
-        "no_findings"
+        "no_findings",
+        "danger_signs_unchecked",
+        "questions_pending"
       ],
       "uncertain_if_answered": true,
       "expected_uncertain": false,
@@ -7287,7 +7386,7 @@
       "tags": [
         "ya_no:resuelto"
       ],
-      "latency_ms": 0.3
+      "latency_ms": 0.33
     },
     {
       "id": "T2-A09",
@@ -7328,12 +7427,14 @@
         }
       ],
       "preguntas": [
+        "signo_peligro_general",
         "tiraje",
         "estridor"
       ],
       "followup_asks_missing": false,
       "uncertain": true,
       "uncertainty_codes": [
+        "danger_signs_unchecked",
         "questions_pending"
       ],
       "uncertain_if_answered": false,
@@ -7403,7 +7504,7 @@
         "incertidumbre",
         "recien_nacido"
       ],
-      "latency_ms": 0.38
+      "latency_ms": 0.36
     }
   ]
 }

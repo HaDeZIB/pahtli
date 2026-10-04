@@ -1,6 +1,7 @@
 import type { Rule } from './types';
 import { anyOf, has, isPostpartum, isPregnant, knownAge, possiblyAge, years } from './helpers';
 import { CITE, SRC } from './sources';
+import { SCREENING_KEY } from '../screening';
 
 const REFER_NOW =
   'Referir URGENTE al hospital: conseguir transporte o llamar al 911 ahora. No esperar. Acompañar al paciente.';
@@ -159,6 +160,28 @@ export const GENERAL_DANGER_RULES: Rule[] = [
     fuente: `${CITE.IITT}, criterios amarillos "Circulation": "Unable to feed or drink", "Vomits everything", "Severe pallor" (tablas adulto y pediátrica; la pediátrica incluye al lactante <2 meses); ${CITE.NOM_007}, num. 5.6.1.9 ("vómito" del recién nacido)`,
     fuente_url: SRC.IITT_ADULT,
     needs: ['no_puede_beber', 'vomita_todo', 'palidez_intensa', 'edad_meses'],
+    fidelidad: 'adaptado',
+  },
+  {
+    // Respuesta "Sí" a la revisión de signos de peligro (src/triage/screening.ts), que el motor pregunta antes de
+    // "Atender aquí". Cada signo de la lista ya es urgencia por su propia regla a esa edad:
+    //   2 meses a <5 años: IMCI-GDS-02 (no puede beber ni mamar), IMCI-GDS-03 (vomita todo), GEN-CONV-01 (convulsiones),
+    //                      IMCI-GDS-01 / GEN-UNC-01 (muy dormido / no despierta).
+    //   5 años o más: IITT-R-RESP-01 / GEN-CYAN-01 (respirar / labios morados), CDC-HEART-01 (pecho, solo ≥12 años),
+    //                 GEN-CONV-01, GEN-UNC-01 / CDC-STROKE-01 (no despierta / confusión), CDC-STROKE-01 (cara, un lado,
+    //                 habla), GEN-BLEED-01 (sangrado abundante).
+    //   Edad desconocida: la unión de las dos listas.
+    // El extractor y el LLM nunca marcan esta clave (no está en SYMPTOMS).
+    id: 'PAHTLI-GDS-SCREEN',
+    block: 'general_danger',
+    level: 'urgencia',
+    applies: (f) => has(f, SCREENING_KEY),
+    explicacion: { es: 'Usted confirmó al menos un signo de peligro de la lista. Cualquiera de ellos necesita atención urgente.', nah: '' },
+    accion: { es: `${REFER_NOW} Anote cuál de los signos tiene para decirlo al llegar.`, nah: '' },
+    fuente: `${CITE.IMCI_2014}, p. 2 impresa / p. 5 del PDF, "Check for general danger signs" (2 meses a 5 años: no puede beber ni mamar, vomita todo, convulsiones, letárgico o inconsciente; "Any general danger sign… Refer URGENTLY"); ${CITE.ICCM}, p. 6 ("Danger signs"); 5 años o más: ${CITE.IITT}, criterios rojos ("Unresponsive", "Respiratory distress* or central cyanosis", "Heavy bleeding", "Active convulsions") y CDC (infarto y derrame cerebral: "Call 9-1-1")`,
+    fuente_url: SRC.IMCI_2014,
+    needs: [SCREENING_KEY],
+    // adaptado: una sola pregunta resume varios signos; en ≥5 años la lista combina IITT rojo y CDC (ver docs/decisiones-clinicas.md #20).
     fidelidad: 'adaptado',
   },
 ];

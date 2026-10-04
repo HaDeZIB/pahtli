@@ -218,6 +218,9 @@ export function evaluateCase(c: EvalCase): CaseResult {
   const r = triage(findings);
   const latency_ms = performance.now() - t0;
   const fired = r.fired.map((x) => x.id);
+  // La regla por defecto tiene variante por edad: IITT-NOSIGNS-01 en ≥5 años (antes IMCI-NOSIGNS-01 a toda edad).
+  // Las etiquetas (y test_v2, congelado) dicen IMCI-NOSIGNS-01: para comparar reglas esperadas, cuentan igual.
+  const matched = fired.includes('IITT-NOSIGNS-01') ? [...fired, 'IMCI-NOSIGNS-01'] : fired;
   const predicted = r.level;
   let unc = { uncertain: false, codes: [] as string[], ifAnswered: false };
   try {
@@ -242,7 +245,7 @@ export function evaluateCase(c: EvalCase): CaseResult {
     outcome,
     expected_rule_ids: c.expected_rule_ids,
     fired_rule_ids: fired,
-    missing_rule_ids: c.expected_rule_ids.filter((id) => !fired.includes(id)),
+    missing_rule_ids: c.expected_rule_ids.filter((id) => !matched.includes(id)),
     unexpected_higher_rule_ids: r.fired
       .filter((x) => LEVEL_RANK[x.level] > LEVEL_RANK[c.expected_level])
       .map((x) => x.id),
@@ -251,7 +254,7 @@ export function evaluateCase(c: EvalCase): CaseResult {
     preguntas: r.preguntas.map((p) => p.campo),
     followup_asks_missing:
       outcome === 'under' &&
-      r.preguntas.some((p) => c.expected_rule_ids.some((id) => !fired.includes(id) && (RULES_BY_ID[id]?.needs ?? []).includes(p.campo))),
+      r.preguntas.some((p) => c.expected_rule_ids.some((id) => !matched.includes(id) && (RULES_BY_ID[id]?.needs ?? []).includes(p.campo))),
     uncertain: unc.uncertain,
     uncertainty_codes: unc.codes,
     uncertain_if_answered: unc.ifAnswered,

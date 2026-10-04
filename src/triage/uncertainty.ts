@@ -16,6 +16,7 @@ import { evaluateRules } from './engine';
 import { ALL_RULES } from './rules';
 import { isSymptomKey } from './findings';
 import { days, years } from './rules/helpers';
+import { SCREENING_KEY, screeningApplies } from './screening';
 
 export interface AnsweredQuestion {
   /** Campo preguntado (SymptomKey o 'edad_meses', 'resp_por_min', ...). */
@@ -48,7 +49,8 @@ export type UncertaintyCode =
   | 'questions_pending'
   | 'llm_disagree'
   | 'young_infant_few'
-  | 'pregnancy_few';
+  | 'pregnancy_few'
+  | 'danger_signs_unchecked';
 
 export interface Uncertainty {
   uncertain: boolean;
@@ -69,8 +71,11 @@ export const MIN_WORDS = 4;
 export const FEW_FINDINGS = 2;
 
 const BUTTONS_PREFIX = '[botones]';
-/** Claves de contexto: no son una molestia del paciente. */
-const CONTEXT_KEYS = new Set(['posparto', 'lejos_unidad', 'bajo_peso_nacer', 'sarampion_reciente']);
+/**
+ * Claves de contexto: no son una molestia del paciente. La respuesta a la revisión de signos de peligro tampoco
+ * cuenta como "síntoma entendido" (un "No" no convierte un relato vacío en un caso claro).
+ */
+const CONTEXT_KEYS = new Set(['posparto', 'lejos_unidad', 'bajo_peso_nacer', 'sarampion_reciente', SCREENING_KEY]);
 const PREGNANCY_KEYS = ['sangrado_vaginal', 'movimientos_fetales_disminuidos', 'contracciones', 'salida_liquido_vaginal'];
 
 /** Signos que, solos o combinados, pueden llevar a urgencia: los `needs` de las reglas de urgencia. */
@@ -188,9 +193,17 @@ export function assessUncertainty(input: UncertaintyInput): Uncertainty {
 
   // 2) Falta información clave.
   if (resultDependsOnAge(findings)) add('age_missing', 'Falta la edad y el resultado podría cambiar con ella.');
-  const unknown = answered.filter((q) => !q.known && !q.skipped && !(q.campo === 'edad_meses' && codes.includes('age_missing')));
+  // "Atender aquí" supone que se revisaron los signos de peligro (AIEPI). Sin un "No" explícito a la revisión
+  // (sin responder, "No sé" o "Saltar"), el verde no es confiable.
+  if (triageResult.level === 'aqui' && screeningApplies(findings) && findings.sintomas?.[SCREENING_KEY] !== false) {
+    add('danger_signs_unchecked', 'No se confirmó si tiene signos de peligro.');
+  }
+  const covered = (campo: string) =>
+    (campo === 'edad_meses' && codes.includes('age_missing')) || (campo === SCREENING_KEY && codes.includes('danger_signs_unchecked'));
+  const unknown = answered.filter((q) => !q.known && !q.skipped && !covered(q.campo));
   if (unknown.length) {
-    const list = unknown.map((q) => q.pregunta ?? q.campo).join(' · ');
+    // Solo la primera línea: la revisión de signos de peligro trae una lista de varias líneas.
+    const list = unknown.map((q) => (q.pregunta ?? q.campo).split('\n')[0]).join(' · ');
     add('answered_unknown', `Respondió “No sé” a: ${list}`);
   }
   // Sin responder = tocó "Saltar", o quedaron preguntas antes de llegar al máximo (p. ej. volvió atrás).

@@ -1,11 +1,15 @@
 import type { Findings, FiredRule, FollowUpQuestion, TriageLevel, TriageResult } from '../types';
 import { LEVEL_RANK } from '../types';
-import { NUMERIC_FIELDS, PREGUNTAS, SYMPTOMS, isSymptomKey } from './findings';
-import { ALL_RULES, NO_DANGER_DIARRHEA, NO_DANGER_RULE } from './rules';
+import { NUMERIC_FIELDS, SYMPTOMS, isSymptomKey, preguntaPorEdad } from './findings';
+import {
+  ALL_RULES, NO_DANGER_DIARRHEA, NO_DANGER_NEUTRAL_ACCION, NO_DANGER_NEUTRAL_DIARRHEA_ACCION, NO_DANGER_OLDER_DIARRHEA,
+  NO_DANGER_OLDER_RULE, NO_DANGER_RULE, olderNoDangerAccion,
+} from './rules';
 import type { Rule } from './rules';
 import { coughOrDB, days, has, isNum, possiblyAge, years } from './rules/helpers';
+import { SCREENING_KEY, SCREENING_WHY, screeningApplies, screeningQuestionText } from './screening';
 
-export { ALL_RULES, NO_DANGER_DIARRHEA, NO_DANGER_RULE } from './rules';
+export { ALL_RULES, NO_DANGER_DIARRHEA, NO_DANGER_OLDER_RULE, NO_DANGER_RULE } from './rules';
 
 const MAX_QUESTIONS = 2;
 
@@ -100,13 +104,28 @@ function canFire(r: Rule, f: Findings, fill: FieldName[]): boolean {
   return rec(0, base);
 }
 
+const PREGNANCY_FIELDS = new Set(['embarazada', 'posparto', 'semanas_embarazo', 'movimientos_fetales_disminuidos', 'contracciones', 'salida_liquido_vaginal', 'sangrado_vaginal']);
+
+/**
+ * ¿Puede estar embarazada o en el puerperio? No si es hombre o si la edad conocida está fuera de 10–49 años
+ * ("mujeres en edad fértil (de 15 a 49 años)": PEF 2019, Ramo 12 Salud, Estrategia programática, p. 3; el mismo
+ * documento cuenta el embarazo adolescente desde los 12 años, así que se amplía hacia abajo hasta los 10).
+ * Con la edad desconocida, sí. Si ya se dijo que está embarazada o en la cuarentena, se respeta.
+ */
+function pregnancyPossible(f: Findings): boolean {
+  if (f.embarazada === true || has(f, 'posparto')) return true;
+  if (f.sexo === 'M') return false;
+  return !(isNum(f.edad_meses) && (f.edad_meses < years(10) || f.edad_meses >= years(50)));
+}
+
 /** ¿Tiene sentido preguntar este campo a este paciente? */
 function askable(field: FieldName, f: Findings): boolean {
-  if (field === 'embarazada' || field === 'posparto' || field === 'semanas_embarazo' || field === 'movimientos_fetales_disminuidos' || field === 'contracciones' || field === 'salida_liquido_vaginal' || field === 'sangrado_vaginal') {
-    if (f.sexo === 'M') return false;
-    if (isNum(f.edad_meses) && (f.edad_meses < years(10) || f.edad_meses >= years(55))) return false;
+  if (PREGNANCY_FIELDS.has(field)) {
+    if (!pregnancyPossible(f)) return false;
     if (field === 'semanas_embarazo' || field === 'movimientos_fetales_disminuidos' || field === 'contracciones' || field === 'salida_liquido_vaginal') return f.embarazada === true;
   }
+  // Signos que no aplican a esta edad (p. ej. mollera hundida a los 30 años): PREGUNTAS_EDAD[...].mayor5 = null.
+  if (preguntaPorEdad(field, f.edad_meses) === null) return false;
   return true;
 }
 
@@ -128,10 +147,20 @@ interface Candidate {
   rule: Rule;
 }
 
-function buildQuestion(field: FieldName, rule: Rule): FollowUpQuestion {
+function buildQuestion(field: FieldName, rule: Rule, f: Findings): FollowUpQuestion {
   const tipo: FollowUpQuestion['tipo'] = field === 'resp_por_min' ? 'contar_respiraciones' : NUMERIC.has(field) ? 'numero' : 'si_no';
-  const es = PREGUNTAS[field] ?? (isSymptomKey(field) ? `¿${SYMPTOMS[field].es}?` : `¿${field}?`);
+  const es = preguntaPorEdad(field, f.edad_meses) ?? (isSymptomKey(field) ? `¿${SYMPTOMS[field].es}?` : `¿${field}?`);
   return { campo: field, tipo, pregunta: { es, nah: '' }, porque: rule.explicacion.es };
+}
+
+/** Pregunta de revisión de signos de peligro (src/triage/screening.ts): una sola, Sí/No, lista según la edad. */
+function screeningQuestion(f: Findings): FollowUpQuestion {
+  return { campo: SCREENING_KEY, tipo: 'si_no', pregunta: { es: screeningQuestionText(f.edad_meses), nah: '' }, porque: SCREENING_WHY };
+}
+
+/** ¿Hay que revisar los signos de peligro antes de dar "Atender aquí"? */
+export function needsScreening(f: Findings, currentLevel: TriageLevel): boolean {
+  return currentLevel === 'aqui' && screeningApplies(f) && f.sintomas?.[SCREENING_KEY] === undefined;
 }
 
 export function followUpQuestions(f: Findings, currentLevel: TriageLevel, max = MAX_QUESTIONS): FollowUpQuestion[] {
@@ -140,7 +169,8 @@ export function followUpQuestions(f: Findings, currentLevel: TriageLevel, max = 
   ALL_RULES.forEach((r, ruleIndex) => {
     if (LEVEL_RANK[r.level] <= cur) return;
     const needs = r.needs ?? [];
-    const missing = needs.filter((n) => !isKnown(f, n));
+    // Si no puede haber embarazo (hombre, o edad fuera de 10–49 años), una regla que lo exige no motiva preguntas.
+    const missing = needs.filter((n) => !isKnown(f, n) && !((n === 'embarazada' || n === 'posparto') && !pregnancyPossible(f)));
     if (missing.length === 0) return;
     const evidence = needs.some((n) => isPositive(f, n)) || (r.context ?? []).some((k) => f.sintomas[k] === true);
     if (!evidence) return;
@@ -157,19 +187,27 @@ export function followUpQuestions(f: Findings, currentLevel: TriageLevel, max = 
 
   const out: FollowUpQuestion[] = [];
   const seen = new Set<string>();
-  // AIEPI: en menores de 5 años con tos/dificultad para respirar, contar respiraciones va primero.
+  const push = (q: FollowUpQuestion) => { out.push(q); seen.add(q.campo); };
+  // Antes de "Atender aquí": revisar los signos de peligro (AIEPI los revisa antes que todo lo demás).
+  // Excepción: si falta la edad y el motor la necesita, va antes, porque la lista de signos depende de la edad
+  // y el lactante menor de 2 meses no usa esta revisión (tiene sus propias reglas).
+  // La revisión es una compuerta, no un dato clínico faltante: va ADEMÁS de las `max` preguntas clínicas.
+  const screen = needsScreening(f, currentLevel);
+  const limit = max + (screen ? 1 : 0);
+  if (screen) {
+    const age = cands.find((c) => c.field === 'edad_meses');
+    if (age) push(buildQuestion('edad_meses', age.rule, f));
+    push(screeningQuestion(f));
+  }
+  // AIEPI: en menores de 5 años con tos/dificultad para respirar, contar respiraciones va primero (después de los signos de peligro).
   const rr = cands.find((c) => c.field === 'resp_por_min');
-  if (rr && coughOrDB(f) && possiblyAge(f, 0, 60)) {
-    out.push(buildQuestion('resp_por_min', rr.rule));
-    seen.add('resp_por_min');
-  }
+  if (rr && !seen.has('resp_por_min') && coughOrDB(f) && possiblyAge(f, 0, 60)) push(buildQuestion('resp_por_min', rr.rule, f));
   for (const c of cands) {
-    if (out.length >= max) break;
+    if (out.length >= limit) break;
     if (seen.has(c.field)) continue;
-    seen.add(c.field);
-    out.push(buildQuestion(c.field, c.rule));
+    push(buildQuestion(c.field, c.rule, f));
   }
-  return out.slice(0, max);
+  return out.slice(0, limit);
 }
 
 // ── API pública ─────────────────────────────────────────────────────────────
@@ -183,6 +221,33 @@ export function evaluateRules(findings: Findings): Rule[] {
     .map(({ r }) => r);
 }
 
+/**
+ * Regla por defecto ("sin signos de peligro") según la edad:
+ *  - menor de 5 años: IMCI-NOSIGNS-01 (AIEPI comunitario; con diarrea, Plan A de la NOM-031);
+ *  - edad desconocida: IMCI-NOSIGNS-01 con texto neutral, sin indicaciones de lactancia;
+ *  - 5 años o más: IITT-NOSIGNS-01 (verde del IITT; con diarrea, Plan A de la OMS 2005).
+ */
+function noDangerDefault(f: Findings): FiredRule {
+  const diarrea = has(f, 'diarrea');
+  const age = f.edad_meses;
+  if (isNum(age) && age >= years(5)) {
+    const d = toFired(NO_DANGER_OLDER_RULE);
+    const accion = { es: olderNoDangerAccion(age, diarrea), nah: '' };
+    return diarrea ? { ...d, accion, fuente: NO_DANGER_OLDER_DIARRHEA.fuente, fuente_url: NO_DANGER_OLDER_DIARRHEA.fuente_url } : { ...d, accion };
+  }
+  const d = toFired(NO_DANGER_RULE);
+  const known = isNum(age);
+  // Diarrea sin signos de deshidratación: la acción por defecto es el Plan A (Vida Suero Oral tras cada evacuación).
+  if (diarrea) {
+    return {
+      ...d,
+      accion: known ? { ...NO_DANGER_DIARRHEA.accion } : { es: NO_DANGER_NEUTRAL_DIARRHEA_ACCION, nah: '' },
+      fuente: `${d.fuente}; ${NO_DANGER_DIARRHEA.fuente}`,
+    };
+  }
+  return known ? d : { ...d, accion: { es: NO_DANGER_NEUTRAL_ACCION, nah: '' } };
+}
+
 export function triage(findings: Findings, modelHint?: TriageLevel): TriageResult {
   const f = normalize(findings);
   const rules = evaluateRules(f);
@@ -193,12 +258,7 @@ export function triage(findings: Findings, modelHint?: TriageLevel): TriageResul
 
   const fired: FiredRule[] = rules.map(toFired);
   if (escalated) fired.unshift(modelEscalation(level));
-  if (fired.length === 0) {
-    const d = toFired(NO_DANGER_RULE);
-    // Diarrea sin signos de deshidratación: la acción por defecto es el Plan A (Vida Suero Oral tras cada evacuación).
-    if (has(f, 'diarrea')) fired.push({ ...d, accion: { ...NO_DANGER_DIARRHEA.accion }, fuente: `${d.fuente}; ${NO_DANGER_DIARRHEA.fuente}` });
-    else fired.push(d);
-  }
+  if (fired.length === 0) fired.push(noDangerDefault(f));
 
   return {
     level,

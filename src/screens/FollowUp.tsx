@@ -67,6 +67,8 @@ export default function FollowUp() {
   const total = Math.min(MAX_QUESTIONS, asked.length + pending.length);
   const isBreath = q.tipo === 'contar_respiraciones' || (q.campo === 'resp_por_min' && q.tipo !== 'si_no');
   const pregunta = (lang === 'nah' && q.pregunta.nah) || q.pregunta.es;
+  // Preguntas de varias líneas (revisión de signos de peligro): la primera es el título, el resto una lista.
+  const [titulo, ...lineas] = pregunta.split('\n');
 
   return (
     <div className="pb-10">
@@ -80,7 +82,17 @@ export default function FollowUp() {
         <p className="text-[14px] font-bold uppercase tracking-wide text-muted">{t('q_progress', lang, { i: asked.length + 1, n: total })}</p>
 
         <Card className="animate-rise mt-2" key={q.campo}>
-          <h2 className="text-[26px] font-extrabold leading-tight">{pregunta}</h2>
+          <h2 className="text-[26px] font-extrabold leading-tight">{titulo}</h2>
+          {lineas.length > 0 && (
+            <ul className="mt-3 flex flex-col gap-2" data-testid="question-list">
+              {lineas.map((l) => (
+                <li key={l} className="flex gap-2.5 text-[19px] font-semibold leading-snug">
+                  <span className="mt-[9px] inline-block h-2.5 w-2.5 shrink-0 rounded-full bg-brand" aria-hidden="true" />
+                  <span>{l.replace(/^\s*•\s*/, '')}</span>
+                </li>
+              ))}
+            </ul>
+          )}
           {q.porque && (
             <p className="mt-2 text-[14px] text-muted"><span className="font-bold">{t('q_why', lang)}:</span> {q.porque}</p>
           )}

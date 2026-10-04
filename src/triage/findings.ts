@@ -626,13 +626,13 @@ export const PREGUNTAS: Record<string, string> = {
   semanas_embarazo: '¿De cuántas semanas (o meses) es el embarazo?',
   embarazada: '¿Está embarazada?',
   convulsiones: '¿Ha tenido convulsiones (ataques) en esta enfermedad?',
-  inconsciente: '¿Está inconsciente o no responde cuando le habla o lo toca?',
-  letargico: '¿Está muy dormido, le cuesta despertarlo?',
+  inconsciente: '¿Está inconsciente o no responde cuando le habla o le toca el hombro?',
+  letargico: '¿Tiene mucho sueño fuera de lo normal o le cuesta despertar?',
   no_puede_beber: 'Ofrézcale agua o el pecho: ¿le es imposible beber o mamar?',
   vomita_todo: '¿Vomita todo lo que come o bebe?',
   palidez_intensa: '¿Las palmas de las manos se ven muy pálidas, casi blancas?',
-  palidez: '¿Se ve pálido (palmas pálidas)?',
-  irritable: '¿Está inquieto o irritable, no se calma?',
+  palidez: '¿Tiene pálidas las palmas de las manos?',
+  irritable: '¿Está irritable o con mucha inquietud, y no se calma?',
   debilidad_general: '¿Está tan débil que no se puede levantar?',
   desmayo: '¿Se desmayó hace poco?',
   dolor_intenso: '¿Tiene un dolor muy fuerte?',
@@ -643,7 +643,7 @@ export const PREGUNTAS: Record<string, string> = {
   dificultad_respirar: '¿Le cuesta trabajo respirar?',
   respira_rapido: '¿Respira rápido?',
   tiraje: 'Levante la ropa: ¿se le hunden las costillas (la parte de abajo del pecho) cuando jala aire?',
-  estridor: 'Estando tranquilo, ¿hace un ruido áspero cuando jala aire?',
+  estridor: 'En calma, ¿hace un ruido áspero cuando jala aire?',
   sibilancias: '¿Le silba el pecho al sacar el aire?',
   cianosis: '¿Se le ponen morados los labios o la cara?',
   apnea: '¿Deja de respirar por momentos?',
@@ -662,7 +662,7 @@ export const PREGUNTAS: Record<string, string> = {
   mollera_hundida: '¿Tiene la mollera hundida?',
   sin_lagrimas: '¿Llora sin lágrimas?',
   boca_seca: '¿Tiene la boca y la lengua secas?',
-  bebe_con_avidez: 'Ofrézcale agua o suero: ¿bebe con mucha sed, desesperado?',
+  bebe_con_avidez: 'Ofrézcale agua o suero: ¿bebe con mucha sed, con desesperación?',
   bebe_mal: 'Ofrézcale agua o suero: ¿bebe muy poquito o con trabajo?',
   pliegue_lento: 'Pellizque suavemente la piel de la panza: ¿tarda en regresar?',
   pliegue_muy_lento: 'Pellizque la piel de la panza: ¿tarda más de 2 segundos en regresar?',
@@ -679,7 +679,7 @@ export const PREGUNTAS: Record<string, string> = {
   dolor_muscular_articular: '¿Le duelen los músculos o las articulaciones?',
   ojo_nublado: '¿Tiene un ojo nublado u opaco?',
   ulceras_boca_extensas: '¿Tiene llagas profundas o en toda la boca?',
-  confusion: '¿Está confundido de repente, no sabe dónde está?',
+  confusion: '¿De repente se confunde o no sabe dónde está?',
   cara_caida: 'Pídale que sonría: ¿se le cae un lado de la cara?',
   debilidad_un_lado: 'Pídale que levante los dos brazos: ¿uno se le cae o no lo puede mover?',
   dificultad_hablar: '¿Habla raro, arrastra las palabras o no entiende lo que le dicen?',
@@ -710,15 +710,15 @@ export const PREGUNTAS: Record<string, string> = {
   trauma_grave: '¿Tuvo un golpe fuerte o accidente grave?',
   fractura: '¿Parece tener un hueso roto o un brazo/pierna chueco?',
   quemadura: '¿Tiene una quemadura?',
-  mordedura_serpiente: '¿Lo mordió una víbora?',
-  mordedura_animal: '¿Lo mordió o arañó un animal (perro, gato, murciélago)?',
+  mordedura_serpiente: '¿Le mordió una víbora?',
+  mordedura_animal: '¿Le mordió o le arañó un animal (perro, gato, murciélago)?',
   intoxicacion: '¿Tomó veneno, plaguicida, cloro u otro químico?',
   ardor_orinar: '¿Le arde al orinar u orina muy seguido?',
   no_puede_orinar: '¿Quiere orinar y no le sale nada?',
   no_orina_no_evacua: '¿El bebé ha dejado de hacer pipí (pañal seco) o de hacer popó?',
   bajo_peso_nacer: '¿Nació con bajo peso?',
-  lejos_unidad: '¿Es difícil llevarlo HOY a la unidad de salud (queda lejos o no hay transporte)?',
-  desnutricion: '¿Está desnutrido o muy flaquito?',
+  lejos_unidad: '¿Es difícil llegar HOY a la unidad de salud (queda lejos o no hay transporte)?',
+  desnutricion: '¿Tiene desnutrición o está muy bajo de peso?',
   quejido: 'Escuche su respiración: ¿se queja (hace un quejido) cada vez que saca el aire?',
   aleteo_nasal: '¿Se le abren las alitas de la nariz cada vez que respira?',
   adenomegalias: '¿Tiene bolitas detrás de las orejas, en la nuca o en el cuello?',
@@ -734,3 +734,37 @@ export const PREGUNTAS: Record<string, string> = {
   pulso_debil_rapido: '¿El pulso se siente débil y rápido?',
   oliguria: '¿Lleva 6 horas o más sin orinar, u orina casi nada?',
 };
+
+/**
+ * Variantes por edad de las preguntas que usan palabras de bebé (mamar, el pecho, mollera, "levante la ropa").
+ * PREGUNTAS es el texto para menores de 5 años. Aquí:
+ *  - `mayor5`: 5 años o más (edad_meses >= 60). `null` = no se pregunta a esa edad (no aplica).
+ *  - `sin_edad`: edad desconocida; válida para cualquier edad.
+ * Los campos que no están aquí usan PREGUNTAS a cualquier edad (ya son neutrales).
+ */
+export const PREGUNTAS_EDAD: Record<string, { mayor5: string | null; sin_edad: string }> = {
+  no_puede_beber: {
+    mayor5: 'Ofrézcale agua: ¿le es imposible beber?',
+    sin_edad: 'Ofrézcale agua: ¿le es imposible beber (o mamar, si es bebé)?',
+  },
+  tiraje: {
+    mayor5: 'Mire el pecho mientras respira (con permiso, si hay que levantar la ropa): ¿se le hunden las costillas, la parte de abajo del pecho, cuando jala aire?',
+    sin_edad: 'Mire el pecho mientras respira (con permiso, si hay que levantar la ropa): ¿se le hunden las costillas, la parte de abajo del pecho, cuando jala aire?',
+  },
+  // La mollera se cierra antes de los 2 años; las lágrimas son un signo de AIEPI/NOM-031 para niños pequeños.
+  mollera_hundida: { mayor5: null, sin_edad: 'Si es bebé: ¿tiene la mollera hundida?' },
+  sin_lagrimas: { mayor5: null, sin_edad: 'Si es menor de 5 años: ¿llora sin lágrimas?' },
+  // Signos del lactante menor de 2 meses: sus reglas exigen la edad conocida, así que a 5 años o más no se preguntan.
+  no_come_bien: { mayor5: null, sin_edad: 'Si es bebé: ¿come mal o mama poco?' },
+  no_se_mueve: { mayor5: null, sin_edad: 'Si es bebé: ¿solo se mueve si lo tocan o lo mueven, o ya no se mueve nada?' },
+  se_siente_frio: { mayor5: null, sin_edad: 'Si es bebé: ¿se siente frío al tocarlo?' },
+  no_orina_no_evacua: { mayor5: null, sin_edad: 'Si es bebé: ¿ha dejado de hacer pipí (pañal seco) o de hacer popó?' },
+};
+
+/** Texto de la pregunta para esta edad (meses). Sin variante: PREGUNTAS. `null` = no se pregunta a esa edad. */
+export function preguntaPorEdad(field: string, edadMeses?: number): string | null | undefined {
+  const v = PREGUNTAS_EDAD[field];
+  if (!v) return PREGUNTAS[field];
+  if (typeof edadMeses !== 'number' || !Number.isFinite(edadMeses)) return v.sin_edad;
+  return edadMeses >= 60 ? v.mayor5 : PREGUNTAS[field];
+}

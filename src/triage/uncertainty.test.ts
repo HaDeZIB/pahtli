@@ -3,6 +3,8 @@ import type { ExtractionResult, Findings } from '../types';
 import { keywordExtract } from '../ai/keywords';
 import { triage } from './engine';
 import { assessUncertainty, looksGarbled, MAX_FOLLOWUP_QUESTIONS, RED_FLAG_KEYS, resultDependsOnAge, type AnsweredQuestion } from './uncertainty';
+import { SCREENING_KEY, screeningQuestionText } from './screening';
+import { years } from './rules/helpers';
 
 function run(text: string, opts: { answered?: AnsweredQuestion[]; extraction?: Partial<ExtractionResult>; findings?: Findings } = {}) {
   const f = opts.findings ?? keywordExtract(text);
@@ -13,8 +15,11 @@ function run(text: string, opts: { answered?: AnsweredQuestion[]; extraction?: P
 }
 
 describe('assessUncertainty', () => {
-  it('un relato claro y completo NO es incierto', () => {
-    const { u } = run('Niño de 4 años con tos y mocos desde hace dos días, come y juega bien.');
+  it('un relato claro y completo NO es incierto (con los signos de peligro revisados)', () => {
+    const text = 'Niño de 4 años con tos y mocos desde hace dos días, come y juega bien.';
+    const f = keywordExtract(text);
+    f.sintomas = { ...f.sintomas, signo_peligro_general: false }; // respondió "No" a la revisión
+    const { u } = run(text, { findings: f });
     expect(u.uncertain).toBe(false);
     expect(u.reasons).toEqual([]);
   });
@@ -149,6 +154,63 @@ describe('assessUncertainty', () => {
     const { u } = run('[botones] tos, mocos', { findings: f });
     expect(u.codes).not.toContain('short_transcript');
     expect(u.codes).not.toContain('no_findings');
+  });
+
+  describe('revisión de signos de peligro antes de "Atender aquí"', () => {
+    const text = 'Mujer de 53 años con diarrea desde ayer.';
+    const withScreen = (v: boolean | undefined) => {
+      const f = keywordExtract(text);
+      return { ...f, sintomas: { ...f.sintomas, ...(v === undefined ? {} : { [SCREENING_KEY]: v }) } };
+    };
+
+    it('sin responder: "aquí" no es confiable → danger_signs_unchecked', () => {
+      const { triageResult, u } = run(text, { answered: [], findings: withScreen(undefined) });
+      expect(triageResult.level).toBe('aqui');
+      expect(u.codes).toContain('danger_signs_unchecked');
+      expect(u.reasons).toContain('No se confirmó si tiene signos de peligro.');
+    });
+
+    it('"No sé" a la revisión: un solo motivo (no se repite en "Respondió No sé")', () => {
+      const answered = [{ campo: SCREENING_KEY, known: false, pregunta: screeningQuestionText(years(53)) }];
+      const { u } = run(text, { answered, findings: withScreen(undefined) });
+      expect(u.codes).toContain('danger_signs_unchecked');
+      expect(u.codes).not.toContain('answered_unknown');
+    });
+
+    it('"Saltar" en la revisión: danger_signs_unchecked y preguntas pendientes', () => {
+      const answered = [{ campo: SCREENING_KEY, known: false, skipped: true, pregunta: screeningQuestionText(years(53)) }];
+      const { u } = run(text, { answered, findings: withScreen(undefined) });
+      expect(u.codes).toEqual(expect.arrayContaining(['danger_signs_unchecked', 'questions_pending']));
+    });
+
+    it('"No" a la revisión: sin ese motivo', () => {
+      const f = withScreen(false);
+      const { triageResult, u } = run(text, { findings: f });
+      expect(triageResult.level).toBe('aqui');
+      expect(u.codes).not.toContain('danger_signs_unchecked');
+    });
+
+    it('no aplica si el resultado no es "aquí" ni al lactante menor de 2 meses', () => {
+      const centro = run('Niño de 3 años con diarrea desde hace 15 días.', { answered: [] });
+      expect(centro.triageResult.level).toBe('centro_hoy');
+      expect(centro.u.codes).not.toContain('danger_signs_unchecked');
+      const yi = run('[botones] ', { findings: { edad_meses: 0.7, sintomas: {} } });
+      expect(yi.triageResult.level).toBe('aqui');
+      expect(yi.u.codes).not.toContain('danger_signs_unchecked');
+    });
+
+    it('un "No" a la revisión no convierte un relato sin síntomas en un caso claro', () => {
+      const t = 'le duele algo desde hace días';
+      const f = keywordExtract(t);
+      const { u } = run(t, { findings: { ...f, sintomas: { ...f.sintomas, [SCREENING_KEY]: false } } });
+      expect(u.codes).toContain('no_findings');
+      expect(u.codes).not.toContain('danger_signs_unchecked');
+    });
+
+    it('"No sé" a una pregunta de varias líneas: el motivo muestra solo el título', () => {
+      const { u } = run('Niño de 3 años con tos desde hace tres días.', { answered: [{ campo: 'x', known: false, pregunta: 'Título\n• a\n• b' }] });
+      expect(u.reasons).toContain('Respondió “No sé” a: Título');
+    });
   });
 
   it('es determinista y no lanza con entradas vacías', () => {

@@ -46,7 +46,7 @@ flowchart TD
     T --> K["Keyword extractor<br/>src/ai/keywords.ts<br/>colloquial MX Spanish → structured findings"]
     T -.->|"optional, experimental<br/>WebGPU phones only"| L["Small LLM (Llama-3.2-1B)<br/>can only ADD findings"]
     L -.-> K
-    K --> R["Cited rule engine<br/>src/triage · 93 rules, 15 guidelines"]
+    K --> R["Cited rule engine<br/>src/triage · 94 rules, 15 guidelines"]
     R -->|"missing data that could raise the level"| Q["Follow-up questions (max 4)"]
     Q --> R
     R --> U["Uncertainty check<br/>src/triage/uncertainty.ts"]
@@ -90,13 +90,14 @@ Details: [`docs/ai.md`](docs/ai.md) (models), [`docs/clinical-sources.md`](docs/
 
 ## Responsible AI & safety
 
-**1. Rules decide; the model can only escalate.** `final_level = max(rules, model hint)`. The 93 rules are deterministic TypeScript, each linked to a guideline page. Unit tests check that the model never lowers a level, that an unknown never fires a rule, and that no rule contains a drug dose.
+**1. Rules decide; the model can only escalate.** `final_level = max(rules, model hint)`. The 94 rules are deterministic TypeScript, each linked to a guideline page. Unit tests check that the model never lowers a level, that an unknown never fires a rule, and that no rule contains a drug dose.
 
 **2. "No estoy segura — consulta al personal de salud" (the fail-safe).** A fourth, grey result appears instead of a confident colour when:
 - nothing was recognised (`no_findings`);
 - the transcript is short or garbled;
 - the age is missing *and* some plausible age would raise the level;
 - she answered "No sé" or skipped a question that could raise the level;
+- the result would be "Atender aquí" but the danger-sign check was not answered "No" (`danger_signs_unchecked`): before any green result the engine asks one yes/no question listing the danger signs for the patient's age;
 - the optional LLM and the keywords disagree;
 - a baby under 2 months or a pregnancy has few findings.
 
@@ -118,7 +119,7 @@ The reasons are shown in plain Spanish. The rules' level stays visible: the fail
 
 ## Clinical sources
 
-- **93 rules from 15 primary sources**, each downloaded and read before writing the rules that use it: WHO/UNICEF IMCI 2014 and the 2019 young-infant booklet, WHO/UNICEF *Caring for the sick child in the community* (iCCM), NOM-031-SSA2-1999 (child health), NOM-007-SSA2-2016 (pregnancy, birth, newborn), IMSS GPC prenatal care, WHO PCPNC 2015, PAHO dengue algorithms 2020, WHO/ICRC/MSF IITT (adult and paediatric), CDC stroke and heart-attack, NICE NG143, WHO diarrhoea manual 2005, WHO mhGAP 2.0 (suicide risk) and IMSS measles.
+- **94 rules from 15 primary sources**, each downloaded and read before writing the rules that use it: WHO/UNICEF IMCI 2014 and the 2019 young-infant booklet, WHO/UNICEF *Caring for the sick child in the community* (iCCM), NOM-031-SSA2-1999 (child health), NOM-007-SSA2-2016 (pregnancy, birth, newborn), IMSS GPC prenatal care, WHO PCPNC 2015, PAHO dengue algorithms 2020, WHO/ICRC/MSF IITT (adult and paediatric), CDC stroke and heart-attack, NICE NG143, WHO diarrhoea manual 2005, WHO mhGAP 2.0 (suicide risk) and IMSS measles.
 - Each rule is marked **verbatim** or **adapted**, with the page and a short quote. The rule-to-source table is generated from the code: [`docs/clinical-sources.md`](docs/clinical-sources.md).
 - Where sources disagree, the team made a provisional recommendation for each of the 19 open decisions using written principles (Mexican NOM first; community-level guideline over clinic-level; the more protective level only when that source applies to community care). See `docs/decisiones-clinicas.md`; all are pending the physician's review.
 - **Pending review by a physician: Dra. Ines.** Until she signs off, nothing here should be called "clinically validated".
@@ -170,7 +171,7 @@ On 12 synthetic Mexican-Spanish clips (macOS TTS, 2 voices), Whisper base gave *
 
 | Data | Source · licence | Used for | What it does **not** cover |
 |---|---|---|---|
-| Clinical guidelines | WHO, PAHO, Secretaría de Salud (NOMs), IMSS, CDC, NICE (public or free with attribution) | The 93 rules | Mostly children under 5 and pregnancy. No chronic disease, labs or vital-sign devices. iCCM treatment is deliberately left out. |
+| Clinical guidelines | WHO, PAHO, Secretaría de Salud (NOMs), IMSS, CDC, NICE (public or free with attribution) | The 94 rules | Mostly children under 5 and pregnancy. No chronic disease, labs or vital-sign devices. iCCM treatment is deliberately left out. |
 | Facility registry | **CLUES**, DGIS / Secretaría de Salud, Aug 2026 snapshot; "no existen restricciones para su uso" | Offline referral: 3,956 public facilities in Puebla, Hidalgo, San Luis Potosí, Veracruz | **Whether anyone is there today**, opening hours, road distance or travel time (we use straight-line km), eligibility. Only 4 states. |
 | Speech model | **Whisper** (OpenAI), code MIT, weights Apache-2.0; 11,100 h of Spanish training audio (not released) | Voice to text | Rural, noisy, spontaneous or Indigenous-accented speech; no Náhuatl |
 | Optional LLM | Llama-3.2-1B-Instruct (Llama 3.2 licence) | Experimental extra findings | Training data not public; no measured gain |
@@ -239,7 +240,6 @@ On the phone, enter the enrollment token in **Ajustes → Envío al centro de sa
 - **Clinical review pending.** 19 provisional clinical decisions (`docs/decisiones-clinicas.md`) await the physician. Known gaps:
   - An adult with fever for 7+ days gets "Atender aquí" (the prolonged-fever rule covers children under 5 only).
   - Ear pain or discharge has no rule; it only triggers the fail-safe.
-  - Adult "no danger signs" results cite the child rule `IMCI-NOSIGNS-01`.
 - **Evidence is synthetic and team-written.** The held-out set is only "nearly" held out (see above). One silent under-triage remains (T2-V13).
 - **The colloquial vocabulary is not validated with promotoras**, and broader vocabulary raises false-positive risk on long, rambling real speech.
 - **Not yet tested on a real phone** (iPhone or low-end Android). The iOS audio path follows the Web Audio documentation only.

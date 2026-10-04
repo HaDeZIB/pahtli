@@ -86,11 +86,19 @@ describe('contrato cliente -> /api/sync', () => {
     });
     expect(u.codes.length).toBeGreaterThanOrEqual(4);
     expect(u.reasons.map(uncertaintyCode)).toEqual(u.codes);
+    // Adulto en "aquí" sin revisar los signos de peligro (código nuevo).
+    const adult = assessUncertainty({ transcript: 'mmm', extraction: null, triageResult: { ...base, preguntas: [q] }, answeredQuestions: [], findings: { edad_meses: 636, sintomas: { diarrea: true } } });
+    expect(adult.codes).toContain('danger_signs_unchecked');
+    expect(adult.reasons.map(uncertaintyCode)).toEqual(adult.codes);
+    const v = validateCase({ ...toSyncCase(seed[0]), uncertain: true, uncertainty_reasons: adult.codes });
+    expect(v.ok).toBe(true);
   });
 
   it('uncertaintyCode mapea frases conocidas y deja pasar códigos', () => {
     expect(uncertaintyCode('La IA y las palabras clave no coinciden en un signo de alarma.')).toBe('llm_disagree');
     expect(uncertaintyCode('no_findings')).toBe('no_findings');
+    expect(uncertaintyCode('No se confirmó si tiene signos de peligro.')).toBe('danger_signs_unchecked');
+    expect(uncertaintyCode('danger_signs_unchecked')).toBe('danger_signs_unchecked');
     expect(uncertaintyCode('Algo nuevo')).toBe('otro');
   });
 
