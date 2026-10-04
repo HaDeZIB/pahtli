@@ -52,6 +52,7 @@ export function LevelChip({ level, short = true }: { level: TriageLevel; short?:
 export function TopBar({ title, onBack }: { title?: string; onBack?: () => void }) {
   const { lang, setLang } = useApp();
   return (
+    <>
     <header className="flex items-center gap-3 px-4 pb-2 pt-3">
       {onBack ? (
         <button type="button" onClick={onBack} className="-ml-2 flex h-12 w-12 items-center justify-center rounded-full active:bg-sand" aria-label={t('back', lang)}>
@@ -79,11 +80,32 @@ export function TopBar({ title, onBack }: { title?: string; onBack?: () => void 
             aria-pressed={lang === l}
             className={`min-h-9 rounded-full px-3 uppercase ${lang === l ? 'bg-brand text-white' : 'text-muted'}`}
           >
-            {l}
+            {l === 'es' ? 'ES' : 'NAH'}
           </button>
         ))}
       </div>
     </header>
+    {lang === 'nah' && <NahNotice />}
+    </>
+  );
+}
+
+/** Aviso honesto: el selector NAH solo cambia palabras verificadas de la interfaz; la voz y el modelo siguen en español. */
+function NahNotice() {
+  return (
+    <div role="note" className="mx-4 mb-2 rounded-2xl border border-amber-300 bg-amber-50 px-4 py-3 text-[14px] leading-snug text-amber-950">
+      <p className="font-bold">Náhuatl: en preparación</p>
+      <p className="mt-1">
+        Este botón cambia solo la interfaz, y únicamente las palabras verificadas en fuentes académicas:
+        <b> Quema</b> (sí), <b>Amo</b> (no), <b>Tlazohcamati</b> (gracias). La voz, las preguntas y los resultados
+        siguen en español.
+      </p>
+      <p className="mt-1">
+        Reconocer voz en náhuatl en el celular todavía no es posible: el modelo que lo soporta (Meta MMS) pesa ~1,000
+        millones de parámetros y hay 30 variantes. Siguiente paso: validar con hablantes de la región y adaptar un
+        modelo pequeño.
+      </p>
+    </div>
   );
 }
 
