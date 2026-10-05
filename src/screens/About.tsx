@@ -92,6 +92,20 @@ export default function About() {
           </p>
         </div>
 
+        <Card>
+          <p className="text-[13px] font-bold uppercase tracking-wider text-muted">Aviso de actualización</p>
+          <p className="mt-1 text-[15px] leading-relaxed">
+            Esta versión se actualizó el 4 de octubre de 2026, <b>después de la entrega</b> al Hack-Nation 7th Global AI Hackathon.
+            Corrige errores de seguridad clínica encontrados al seguir probando y agrega más molestias comunes.
+            El código exacto que se entregó está en la etiqueta <b>v1.0-entrega</b> de GitHub.
+          </p>
+          <p className="mt-2 text-[15px] font-bold">
+            <a className="text-brand-dark underline" href="https://github.com/HaDeZIB/pahtli/blob/main/CHANGELOG.md" target="_blank" rel="noopener">Ver qué cambió</a>
+            {' · '}
+            <a className="text-brand-dark underline" href="https://github.com/HaDeZIB/pahtli/tree/v1.0-entrega" target="_blank" rel="noopener">Versión entregada</a>
+          </p>
+        </Card>
+
         <Section title="Qué IA corre en este celular" icon={<Info size={20} />}>
           <ul className="flex flex-col divide-y divide-line">
             <li className="flex items-start gap-3 py-2.5">

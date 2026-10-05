@@ -337,6 +337,11 @@ export default function Capture() {
           </div>
         )}
 
+        <p className="mt-6 text-center text-[12px] text-muted">
+          Actualizada el 4-oct-2026, después de la entrega del hackathon ·{' '}
+          <a className="underline" href="https://github.com/HaDeZIB/pahtli/blob/main/CHANGELOG.md" target="_blank" rel="noopener">ver cambios</a>
+        </p>
+
         {err && <p className="mt-4 rounded-2xl bg-red-50 px-4 py-3 text-[15px] font-semibold text-red-800" role="alert">{err}</p>}
       </div>
 

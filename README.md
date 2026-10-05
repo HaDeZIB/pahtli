@@ -8,6 +8,8 @@
 
 **Live demo:** https://pahtli.vercel.app · **Status:** hackathon prototype. Clinical rules are pending review by a licensed physician. It is **not** a medical device and does not diagnose or prescribe.
 
+> **📌 Post-submission update (4 Oct 2026).** This repository and the live demo were updated **after** the Hack-Nation deadline to fix clinical-safety bugs found by continued testing and to cover more everyday complaints. The exact submitted version is tagged [`v1.0-entrega`](https://github.com/HaDeZIB/pahtli/tree/v1.0-entrega). What changed and why: [`CHANGELOG.md`](CHANGELOG.md).
+
 ---
 
 ## Problem statement
